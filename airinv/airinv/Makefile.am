@@ -1,6 +1,6 @@
 # airinv
 include $(top_srcdir)/Makefile.common
-include $(srcdir)/sources.mk
+include $(srcdir)/core/sources.mk
 
 ## Source directory
 
@@ -12,6 +12,6 @@ EXTRA_DIST = config_msvc.h
 
 
 # Header files
-#nobase_pkginclude_HEADERS = $(service_h_sources)
+nobase_pkginclude_HEADERS = $(service_h_sources)
 #nobase_nodist_pkginclude_HEADERS = $(top_builddir)/@PACKAGE@/config.h
 

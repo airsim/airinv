@@ -24,6 +24,6 @@ libairinv_la_LDFLAGS = \
 	$(SOCI_LIBS) -version-info $(GENERIC_LIBRARY_VERSION)
 
 # Header files
-pkginclude_HEADERS = $(service_h_sources)
+#pkginclude_HEADERS = $(service_h_sources)
 #nobase_nodist_pkginclude_HEADERS = $(top_builddir)/airinv/config.h
 
