@@ -2,9 +2,6 @@
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
-#include <iosfwd>
-#include <string>
-#include <vector>
 #include <exception>
 // AirInv
 #include <airinv/command/InventoryManager.hpp>

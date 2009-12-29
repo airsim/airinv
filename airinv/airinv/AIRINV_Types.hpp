@@ -49,8 +49,7 @@ namespace AIRINV {
 
 
   // //////// Type definitions /////////
-  /** Xapian database name, corresponding to the (potentially relative)
-      directory name (on the filesystem) where Xapian stores its index. */
+  /** IATA code of the airline owner of the inventory system. */
   typedef std::string AirlineCode_T;
 
   /** Number of passengers (in a group) for a booking. */

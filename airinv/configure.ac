@@ -125,10 +125,10 @@ AC_SUBST(PYTHON_ADD_LIBS)
 # MPICH2: http://www.mcs.anl.gov/research/projects/mpich2
 # Note: Boost.MPI depends on MPICH2, rather than on OpenMPI
 # -----------------------------------------------------------
-#AX_MPICH2
-#AC_SUBST(MPICH2_VERSION)
-#AC_SUBST(MPICH2_CFLAGS)
-#AC_SUBST(MPICH2_LIBS)
+AX_MPICH2
+AC_SUBST(MPICH2_VERSION)
+AC_SUBST(MPICH2_CFLAGS)
+AC_SUBST(MPICH2_LIBS)
 
 # -----------------------------------------------------------
 # OpenMPI: http://www.open-mpi.org
@@ -150,9 +150,9 @@ AC_SUBST(BOOST_PROGRAM_OPTIONS_LIB)
 AC_SUBST(BOOST_FILESYSTEM_LIB)
 AC_SUBST(BOOST_THREAD_LIB)
 AC_SUBST(BOOST_PYTHON_LIB)
-#AC_SUBST(BOOST_ASIO_LIB)
-#AC_SUBST(BOOST_MPI_LIB)
-#AC_SUBST(BOOST_MPI_PYTHON_LIB)
+AC_SUBST(BOOST_ASIO_LIB)
+AC_SUBST(BOOST_MPI_LIB)
+AC_SUBST(BOOST_MPI_PYTHON_LIB)
 
 # --------------------------------------------------------------------
 # Support for MySQL (C client API): http://www.mysql.org
@@ -169,23 +169,6 @@ AX_SOCI([3.0])
 AC_SUBST(SOCI_VERSION)
 AC_SUBST(SOCI_CFLAGS)
 AC_SUBST(SOCI_LIBS)
-
-# -----------------------------------------------------------
-# Xapian (Indexing & Search API: http://www.xapian.org
-# -----------------------------------------------------------
-XO_LIB_XAPIAN
-AC_SUBST(XAPIAN_VERSION)
-AC_SUBST(XAPIAN_CFLAGS)
-AC_SUBST(XAPIAN_LIBS)
-
-# --------------------------------------------------------------------
-# Support for ICU (i18n C API): http://www.icu-project.org
-# --------------------------------------------------------------------
-AX_ICU
-AC_SUBST(ICU_VERSION)
-AC_SUBST(ICU_CFLAGS)
-AC_SUBST(ICU_LIBS)
-AC_SUBST(ICU_IO_LIB)
 
 
 # -------------------------------------------------------------------
@@ -271,6 +254,7 @@ AC_CONFIG_FILES(
 	airinv/core/Makefile
 	airinv/batches/Makefile
 	test/Makefile
+	test/airinv/Makefile
 )
 AC_OUTPUT
 
@@ -343,17 +327,6 @@ External libraries:
     o SOCI_VERSION .... : ${SOCI_VERSION}
     o SOCI_CFLAGS ..... : ${SOCI_CFLAGS}
     o SOCI_LIBS ....... : ${SOCI_LIBS}
-
-  - Xapian ............ :
-    o XAPIAN_VERSION .. : ${XAPIAN_VERSION}
-    o XAPIAN_CFLAGS ... : ${XAPIAN_CFLAGS}
-    o XAPIAN_LIBS ..... : ${XAPIAN_LIBS}
-
-  - ICU ............... :
-    o ICU_version ..... : ${ICU_VERSION}
-    o ICU_CFLAGS ...... : ${ICU_CFLAGS}
-    o ICU_LIBS ........ : ${ICU_LIBS} 
-    o ICU_IO_LIB ...... : ${ICU_IO_LIB}
 
   - CPPUNIT ........... :
     o CPPUNIT_VERSION . : ${CPPUNIT_VERSION}
