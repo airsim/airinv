@@ -244,6 +244,12 @@ AC_CONFIG_FILES(
 	airinv.pc
 	airinv.spec
 	airinv.m4
+	stdair/Makefile
+	stdair/basic/Makefile
+	stdair/bom/Makefile
+	stdair/factory/Makefile
+	stdair/config/Makefile
+	stdair/core/Makefile
 	airinv/Makefile
 	airinv/basic/Makefile
 	airinv/bom/Makefile
@@ -253,7 +259,9 @@ AC_CONFIG_FILES(
 	airinv/config/Makefile
 	airinv/core/Makefile
 	airinv/batches/Makefile
+	extracppunit/Makefile
 	test/Makefile
+	test/stdair/Makefile
 	test/airinv/Makefile
 )
 AC_OUTPUT
