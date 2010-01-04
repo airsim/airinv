@@ -7,8 +7,8 @@
 // STL
 #include <ostream>
 #include <string>
-// Airinv
-#include <airinv/AIRINV_Types.hpp>
+// STDAIR
+#include <stdair/STDAIR_Types.hpp>
 
 namespace AIRINV {
 
@@ -21,14 +21,14 @@ namespace AIRINV {
   public:
     // /////////// Business Methods /////////////
     /** Register a booking (segment sell). */
-    void sell (const PartySize_T&);
+    void sell (const stdair::PartySize_T&);
 
     
     // ////////// Constructors and destructors //////////
     /** Constructor.
         @param std::ostream& Output log stream (for instance, std::cout)
         @param AirlineCode_T& Code of the owner airline. */
-    AIRINV_Service (std::ostream& ioLogStream, const AirlineCode_T&);
+    AIRINV_Service (std::ostream& ioLogStream, const stdair::AirlineCode_T&);
 
     /** Destructor. */
     ~AIRINV_Service();
@@ -42,7 +42,7 @@ namespace AIRINV {
     AIRINV_Service (const AIRINV_Service&);
 
     /** Initialise. */
-    void init (std::ostream& ioLogStream, const AirlineCode_T&);
+    void init (std::ostream& ioLogStream, const stdair::AirlineCode_T&);
 
     /** Finalise. */
     void finalise ();

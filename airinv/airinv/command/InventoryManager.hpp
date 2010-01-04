@@ -4,8 +4,8 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// Airinv
-#include <airinv/AIRINV_Types.hpp>
+// STDAIR
+#include <stdair/STDAIR_Types.hpp>
 
 namespace AIRINV {
 
@@ -15,7 +15,7 @@ namespace AIRINV {
   private:
 
     /** Register a booking (segment sell). */
-    static void sell (const AirlineCode_T&, const PartySize_T&);
+    static void sell (const stdair::AirlineCode_T&, const stdair::PartySize_T&);
 
   private:
     /** Constructors. */

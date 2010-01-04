@@ -19,7 +19,8 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::
-  AIRINV_Service (std::ostream& ioLogStream, const AirlineCode_T& iAirlineCode)
+  AIRINV_Service (std::ostream& ioLogStream, 
+                  const stdair::AirlineCode_T& iAirlineCode)
     : _airinvServiceContext (NULL) {
     init (ioLogStream, iAirlineCode);
   }
@@ -49,7 +50,7 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   void AIRINV_Service::init (std::ostream& ioLogStream,
-                             const AirlineCode_T& iAirlineCode) {
+                             const stdair::AirlineCode_T& iAirlineCode) {
     // Set the log file
     logInit (LOG::DEBUG, ioLogStream);
 
@@ -65,7 +66,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::sell (const PartySize_T& iPartySize) {
+  void AIRINV_Service::sell (const stdair::PartySize_T& iPartySize) {
     
     if (_airinvServiceContext == NULL) {
       throw NonInitialisedServiceException();

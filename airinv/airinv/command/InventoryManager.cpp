@@ -10,8 +10,8 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  void InventoryManager::
-  sell (const AirlineCode_T& iAirlineCode, const PartySize_T& iPartySize) {
+  void InventoryManager:: sell (const stdair::AirlineCode_T& iAirlineCode, 
+                                const stdair::PartySize_T& iPartySize) {
 
     try {
 
