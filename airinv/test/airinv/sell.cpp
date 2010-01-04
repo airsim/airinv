@@ -4,6 +4,8 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+// STDAIR
+#include <stdair/STDAIR_Types.hpp>
 // AIRINV
 #include <airinv/AIRINV_Service.hpp>
 #include <airinv/config/airinv-paths.hpp>
@@ -17,7 +19,7 @@ int main (int argc, char* argv[]) {
     std::string lAirlineCode ("LH");
     
     // Number of passengers in the travelling group
-    AIRINV::PartySize_T lPartySize = 5;
+    stdair::PartySize_T lPartySize = 5;
     
     // Output log File
     std::string lLogFilename ("sell.log");
