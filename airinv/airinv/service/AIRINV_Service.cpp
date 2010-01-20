@@ -6,9 +6,10 @@
 // Boost
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/ptime.hpp>
+// StdAir
+#include <stdair/basic/BasChronometer.hpp>
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
-#include <airinv/basic/BasChronometer.hpp>
 #include <airinv/command/InventoryManager.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
@@ -81,7 +82,7 @@ namespace AIRINV {
         lAIRINV_ServiceContext.getAirlineCode();
       
       // Delegate the booking to the dedicated command
-      BasChronometer lSellChronometer;
+      stdair::BasChronometer lSellChronometer;
       lSellChronometer.start();
       InventoryManager::sell (lAirlineCode, iPartySize);
       const double lSellMeasure = lSellChronometer.elapsed();

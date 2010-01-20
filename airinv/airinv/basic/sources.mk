@@ -1,5 +1,3 @@
 bas_h_sources = $(top_srcdir)/airinv/basic/BasConst_General.hpp \
-				$(top_srcdir)/airinv/basic/BasConst_AIRINV_Service.hpp \
-				$(top_srcdir)/airinv/basic/BasChronometer.hpp
-bas_cc_sources = $(top_srcdir)/airinv/basic/BasConst.cpp \
-				$(top_srcdir)/airinv/basic/BasChronometer.cpp
+				$(top_srcdir)/airinv/basic/BasConst_AIRINV_Service.hpp
+bas_cc_sources = $(top_srcdir)/airinv/basic/BasConst.cpp
