@@ -15,7 +15,7 @@ RPM_RELEASE="1"
 AC_SUBST(RPM_RELEASE)
 
 # Shared library versioning
-GENERIC_LIBRARY_VERSION="0:1:0"
+GENERIC_LIBRARY_VERSION="99:99:99"
 #                        | | |
 #                 +------+ | +---+
 #                 |        |     |
@@ -249,6 +249,7 @@ AC_CONFIG_FILES(
 	stdair/bom/Makefile
 	stdair/factory/Makefile
 	stdair/config/Makefile
+	stdair/service/Makefile
 	stdair/core/Makefile
 	airinv/Makefile
 	airinv/basic/Makefile
