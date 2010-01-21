@@ -3,7 +3,6 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
-#include <ostream>
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/bom/BomManager.hpp> // for display()
@@ -23,7 +22,8 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_Service::AIRINV_Service (const AIRINV_Service& iService) {
+  AIRINV_Service::AIRINV_Service (const AIRINV_Service& iService)
+  : _airinvServiceContext (NULL) {
     assert (false);
   }
 

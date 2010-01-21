@@ -7,15 +7,13 @@
 #include <airinv/factory/FacBomAbstract.hpp>
 #include <airinv/factory/FacServiceAbstract.hpp>
 #include <airinv/factory/FacSupervisor.hpp>
-#include <airinv/service/Logger.hpp>
 
 namespace AIRINV {
 
   FacSupervisor* FacSupervisor::_instance = NULL;
 
   // //////////////////////////////////////////////////////////////////////
-  FacSupervisor::FacSupervisor () :
-    _logger (NULL) {
+  FacSupervisor::FacSupervisor () {
   }
     
   // //////////////////////////////////////////////////////////////////////
@@ -40,15 +38,9 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void FacSupervisor::registerLoggerService (Logger* ioLogger_ptr) {
-    _logger = ioLogger_ptr;
-  }
-
-  // //////////////////////////////////////////////////////////////////////
   FacSupervisor::~FacSupervisor() {
     cleanBomLayer();
     cleanServiceLayer();
-    cleanLoggerService();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -80,16 +72,10 @@ namespace AIRINV {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void FacSupervisor::cleanLoggerService() {
-    delete _logger; _logger = NULL;
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
   void FacSupervisor::cleanFactory () {
 	if (_instance != NULL) {
 		_instance->cleanBomLayer();
 		_instance->cleanServiceLayer();
-		_instance->cleanLoggerService();
 	}
     delete (_instance); _instance = NULL;
   }

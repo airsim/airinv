@@ -3,9 +3,11 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <exception>
+// StdAir
+#include <stdair/service/Logger.hpp>
 // AirInv
+#include <airinv/AIRINV_Types.hpp>
 #include <airinv/command/InventoryManager.hpp>
-#include <airinv/service/Logger.hpp>
 
 namespace AIRINV {
 
@@ -16,12 +18,12 @@ namespace AIRINV {
     try {
 
       // DEBUG
-      AIRINV_LOG_DEBUG ("A booking has been made for the airline "
+      STDAIR_LOG_DEBUG ("A booking has been made for the airline "
                         << iAirlineCode << " for " << iPartySize
                         << " passengers.");
     
     } catch (const std::exception& lStdError) {
-      AIRINV_LOG_ERROR ("Error: " << lStdError.what());
+      STDAIR_LOG_ERROR ("Error: " << lStdError.what());
       throw BookingException();
     }
   }
