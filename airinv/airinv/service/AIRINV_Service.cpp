@@ -3,32 +3,22 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
-// Boost
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/ptime.hpp>
+#include <ostream>
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
+#include <stdair/bom/BomManager.hpp> // for display()
+#include <stdair/service/Logger.hpp>
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/command/InventoryManager.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
-#include <airinv/service/Logger.hpp>
 #include <airinv/AIRINV_Service.hpp>
 
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_Service::
-  AIRINV_Service (std::ostream& ioLogStream, 
-                  const stdair::AirlineCode_T& iAirlineCode)
-    : _airinvServiceContext (NULL) {
-    init (ioLogStream, iAirlineCode);
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  AIRINV_Service::AIRINV_Service ()
-    : _airinvServiceContext (NULL) {
+  AIRINV_Service::AIRINV_Service () : _airinvServiceContext (NULL) {
     assert (false);
   }
 
@@ -38,23 +28,38 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  AIRINV_Service::AIRINV_Service (const stdair::AirlineCode_T& iAirlineCode)
+    : _airinvServiceContext (NULL) {
+
+    // Initialise the context
+    init (iAirlineCode);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  AIRINV_Service::AIRINV_Service (const stdair::BasLogParams& iLogParams,
+                                  const stdair::AirlineCode_T& iAirlineCode)
+    : _airinvServiceContext (NULL) {
+    
+    // Set the log file
+    logInit (iLogParams);
+
+    // Initialise the (remaining of the) context
+    init (iAirlineCode);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::~AIRINV_Service () {
     // Delete/Clean all the objects from memory
     finalise();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void logInit (const LOG::EN_LogLevel iLogLevel,
-                std::ostream& ioLogOutputFile) {
-    Logger::instance().setLogParameters (iLogLevel, ioLogOutputFile);
+  void AIRINV_Service::logInit (const stdair::BasLogParams& iLogParams) {
+    stdair::Logger::init (iLogParams);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::init (std::ostream& ioLogStream,
-                             const stdair::AirlineCode_T& iAirlineCode) {
-    // Set the log file
-    logInit (LOG::DEBUG, ioLogStream);
-
+  void AIRINV_Service::init (const stdair::AirlineCode_T& iAirlineCode) {
     // Initialise the context
     AIRINV_ServiceContext& lAIRINV_ServiceContext = 
       FacAirinvServiceContext::instance().create (iAirlineCode);
@@ -88,11 +93,11 @@ namespace AIRINV {
       const double lSellMeasure = lSellChronometer.elapsed();
       
       // DEBUG
-      AIRINV_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
+      STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
                         << lAIRINV_ServiceContext.display());
 
     } catch (const std::exception& error) {
-      AIRINV_LOG_ERROR ("Exception: "  << error.what());
+      STDAIR_LOG_ERROR ("Exception: "  << error.what());
       throw BookingException();
     }
   }
