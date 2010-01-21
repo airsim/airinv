@@ -4,9 +4,9 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-// STDAIR
+// StdAir
 #include <stdair/STDAIR_Types.hpp>
-// AIRINV
+// AirInv
 #include <airinv/AIRINV_Service.hpp>
 #include <airinv/config/airinv-paths.hpp>
 
@@ -31,7 +31,8 @@ int main (int argc, char* argv[]) {
     logOutputFile.clear();
     
     // Initialise the list of classes/buckets
-    AIRINV::AIRINV_Service airinvService (logOutputFile, lAirlineCode);
+    const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
+    AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode);
 
     // Make a booking
     airinvService.sell (lPartySize);
