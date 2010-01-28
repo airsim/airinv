@@ -8,6 +8,11 @@
 #include <stdair/STDAIR_Types.hpp>
 #include <stdair/basic/BasLogParams.hpp>
 
+// Forward declaration
+namespace stdair {
+  class Inventory;
+}
+
 namespace AIRINV {
 
   // Forward declaration
@@ -30,7 +35,8 @@ namespace AIRINV {
         that log outputs can be directed onto that stream.       
         @param const stdair::BasLogParams& Parameters for the output log stream.
         @param AirlineCode_T& Code of the owner airline. */
-    AIRINV_Service (const stdair::BasLogParams&, const stdair::AirlineCode_T&);
+    AIRINV_Service (const stdair::BasLogParams&, const stdair::AirlineCode_T&,
+                    stdair::Inventory&);
 
     /** Constructor.
         <br>The init() method is called; see the corresponding documentation
@@ -42,7 +48,7 @@ namespace AIRINV {
         is itself being initialised by another library service such as
         SIMCRS_Service).
         @param AirlineCode_T& Code of the owner airline. */
-    AIRINV_Service (const stdair::AirlineCode_T&);
+    AIRINV_Service (const stdair::AirlineCode_T&, stdair::Inventory&);
 
     /** Destructor. */
     ~AIRINV_Service();
@@ -61,7 +67,7 @@ namespace AIRINV {
     /** Initialise.
         @param const stdair::AirlineCode_T& Airline code of the inventory
                owner. */
-    void init (const stdair::AirlineCode_T&);
+    void init (const stdair::AirlineCode_T&, stdair::Inventory&);
 
     /** Finalise. */
     void finalise ();

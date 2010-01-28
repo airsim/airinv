@@ -6,6 +6,9 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <string>
+// STDAIR
+#include <stdair/STDAIR_Types.hpp>
+#include <stdair/bom/Inventory.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
 #include <airinv/service/ServiceAbstract.hpp>
@@ -18,14 +21,14 @@ namespace AIRINV {
   public:
     // ///////// Getters //////////
     /** Get the airline code. */
-    const AirlineCode_T& getAirlineCode () const {
+    const stdair::AirlineCode_T& getAirlineCode () const {
       return _airlineCode;
     }
 
     
     // ///////// Setters //////////
     /** Set the airline code. */
-    void setAirlineCode (const AirlineCode_T& iAirlineCode) {
+    void setAirlineCode (const stdair::AirlineCode_T& iAirlineCode) {
       _airlineCode = iAirlineCode;
     }
 
@@ -42,7 +45,8 @@ namespace AIRINV {
     // /////// Construction / initialisation ////////
     /** Constructors. */
     AIRINV_ServiceContext ();
-    AIRINV_ServiceContext (const AirlineCode_T& iAirlineCode);
+    AIRINV_ServiceContext (const stdair::AirlineCode_T& iAirlineCode,
+                           stdair::Inventory& ioInventory);
     AIRINV_ServiceContext (const AIRINV_ServiceContext&);
 
     /** Destructor. */
@@ -51,7 +55,10 @@ namespace AIRINV {
   private:
     // //////////// Attributes //////////////////
     /** Airline code. */
-    AirlineCode_T _airlineCode;
+    stdair::AirlineCode_T _airlineCode;
+
+    /** Airline inventory object. */
+    stdair::Inventory& _inventory;
   };
 
 }

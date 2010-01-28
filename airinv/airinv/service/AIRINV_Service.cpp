@@ -28,23 +28,25 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_Service::AIRINV_Service (const stdair::AirlineCode_T& iAirlineCode)
+  AIRINV_Service::AIRINV_Service (const stdair::AirlineCode_T& iAirlineCode,
+                                  stdair::Inventory& ioIventory)
     : _airinvServiceContext (NULL) {
 
     // Initialise the context
-    init (iAirlineCode);
+    init (iAirlineCode, ioIventory);
   }
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::AIRINV_Service (const stdair::BasLogParams& iLogParams,
-                                  const stdair::AirlineCode_T& iAirlineCode)
+                                  const stdair::AirlineCode_T& iAirlineCode,
+                                  stdair::Inventory& ioIventory)
     : _airinvServiceContext (NULL) {
     
     // Set the log file
     logInit (iLogParams);
 
     // Initialise the (remaining of the) context
-    init (iAirlineCode);
+    init (iAirlineCode, ioIventory);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -59,10 +61,11 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::init (const stdair::AirlineCode_T& iAirlineCode) {
+  void AIRINV_Service::init (const stdair::AirlineCode_T& iAirlineCode,
+                             stdair::Inventory& ioIventory) {
     // Initialise the context
     AIRINV_ServiceContext& lAIRINV_ServiceContext = 
-      FacAirinvServiceContext::instance().create (iAirlineCode);
+      FacAirinvServiceContext::instance().create (iAirlineCode, ioIventory);
     _airinvServiceContext = &lAIRINV_ServiceContext;
   }
   
@@ -83,7 +86,7 @@ namespace AIRINV {
     try {
       
       // Retrieve the airline code
-      const AirlineCode_T& lAirlineCode =
+      const stdair::AirlineCode_T& lAirlineCode =
         lAIRINV_ServiceContext.getAirlineCode();
       
       // Delegate the booking to the dedicated command

@@ -12,14 +12,10 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_ServiceContext::AIRINV_ServiceContext ()
-    : _airlineCode (DEFAULT_AIRLINE_CODE) {
-  }
-
-  // //////////////////////////////////////////////////////////////////////
   AIRINV_ServiceContext::
-  AIRINV_ServiceContext (const AirlineCode_T& iAirlineCode)
-    : _airlineCode (iAirlineCode) {
+  AIRINV_ServiceContext (const stdair::AirlineCode_T& iAirlineCode,
+                         stdair::Inventory& ioInventory)
+    : _airlineCode (iAirlineCode), _inventory (ioInventory) {
   }
 
   // //////////////////////////////////////////////////////////////////////

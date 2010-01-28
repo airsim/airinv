@@ -9,6 +9,11 @@
 // Airinv
 #include <airinv/factory/FacServiceAbstract.hpp>
 
+// Forward declarations.
+namespace stdair {
+  class Inventory;
+}
+
 namespace AIRINV {
 
   /** Forward declarations. */
@@ -32,7 +37,8 @@ namespace AIRINV {
     /** Create a new AIRINV_ServiceContext object.
         <br>This new object is added to the list of instantiated objects.
         @return AIRINV_ServiceContext& The newly created object. */
-    AIRINV_ServiceContext& create (const std::string& iTravelDatabaseName);
+    AIRINV_ServiceContext& create (const std::string& iTravelDatabaseName,
+                                   stdair::Inventory& ioIventory);
 
     
   protected:

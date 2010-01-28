@@ -49,11 +49,6 @@ namespace AIRINV {
 
 
   // //////// Type definitions /////////
-  /** IATA code of the airline owner of the inventory system. */
-  typedef std::string AirlineCode_T;
-
-  /** Number of passengers (in a group) for a booking. */
-  typedef unsigned short PartySize_T;
   
 }
 #endif // __AIRINV_AIRINV_TYPES_HPP
