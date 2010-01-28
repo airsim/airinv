@@ -32,10 +32,10 @@ int main (int argc, char* argv[]) {
     
     // Initialise the list of classes/buckets
     const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode);
+    //AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode);
 
     // Make a booking
-    airinvService.sell (lPartySize);
+    //airinvService.sell (lPartySize);
     
   } catch (const std::exception& stde) {
     std::cerr << "Standard exception: " << stde.what() << std::endl;
