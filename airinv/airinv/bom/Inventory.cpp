@@ -46,9 +46,13 @@ namespace AIRINV {
         lBookingClass_ptr->getAirlineCode ();
 
       if (lAirlineCode == lCurrentAirlineCode) {
-        STDAIR_LOG_DEBUG ("Make a reservation of " << iPartySize
+        STDAIR_LOG_DEBUG ("\n**********************************************"
+                          << "**********************************************\n"
+                          << "Make a reservation of " << iPartySize
                           << " seats for the following class: "
-                          << lBookingClass_ptr->describeKey());
+                          << lBookingClass_ptr->describeKey()
+                          << "\n**********************************************"
+                          << "**********************************************");
       }
     }
   }
