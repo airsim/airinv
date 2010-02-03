@@ -7,8 +7,14 @@
 // STL
 #include <exception>
 #include <string>
+#include <map>
+// Boost
+#include <boost/shared_ptr.hpp>
 
 namespace AIRINV {
+
+  // Forward declarations
+  class AIRINV_Service;
 
   // ///////// Exceptions ///////////
   class RootException : public std::exception {
@@ -49,7 +55,13 @@ namespace AIRINV {
 
 
   // //////// Type definitions /////////
+  /** Pointer on the AIRINV Service handler. */
+  typedef boost::shared_ptr<AIRINV::AIRINV_Service> AIRINV_ServicePtr_T;
   
+  /** Typedef which defines a map of airline codes and the corresponding
+      airline inventories. */
+  typedef std::map<const stdair::AirlineCode_T,
+                   AIRINV_ServicePtr_T> AIRINV_ServicePtr_Map_T;
 }
 #endif // __AIRINV_AIRINV_TYPES_HPP
 

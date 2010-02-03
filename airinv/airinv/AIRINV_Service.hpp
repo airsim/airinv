@@ -11,6 +11,7 @@
 // Forward declaration
 namespace stdair {
   class Inventory;
+  struct TravelSolutionStruct;
 }
 
 namespace AIRINV {
@@ -23,8 +24,8 @@ namespace AIRINV {
   class AIRINV_Service {
   public:
     // /////////// Business Methods /////////////
-    /** Register a booking (segment sell). */
-    void sell (const stdair::PartySize_T&);
+    /** Register a booking. */
+    void sell (const stdair::TravelSolutionStruct&, const stdair::PartySize_T&);
 
     
     // ////////// Constructors and destructors //////////

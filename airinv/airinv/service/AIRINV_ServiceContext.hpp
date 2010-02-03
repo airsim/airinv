@@ -25,6 +25,10 @@ namespace AIRINV {
       return _airlineCode;
     }
 
+    /** Get the airline inventory. */
+    stdair::Inventory& getInventory () {
+      return _inventory;
+    }
     
     // ///////// Setters //////////
     /** Set the airline code. */

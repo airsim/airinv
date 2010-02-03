@@ -7,6 +7,12 @@
 // STDAIR
 #include <stdair/STDAIR_Types.hpp>
 
+// Forward declarations
+namespace stdair {
+  class Inventory;
+  struct TravelSolutionStruct;
+}
+
 namespace AIRINV {
 
   /** Command wrapping the travel request process. */
@@ -15,7 +21,8 @@ namespace AIRINV {
   private:
 
     /** Register a booking (segment sell). */
-    static void sell (const stdair::AirlineCode_T&, const stdair::PartySize_T&);
+    static void sell (stdair::Inventory&, const stdair::TravelSolutionStruct&,
+                      const stdair::PartySize_T&);
 
   private:
     /** Constructors. */

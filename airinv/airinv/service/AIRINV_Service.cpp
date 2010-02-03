@@ -75,7 +75,8 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::sell (const stdair::PartySize_T& iPartySize) {
+  void AIRINV_Service::sell (const stdair::TravelSolutionStruct& iTravelSolution,
+                             const stdair::PartySize_T& iPartySize) {
     
     if (_airinvServiceContext == NULL) {
       throw NonInitialisedServiceException();
@@ -85,14 +86,14 @@ namespace AIRINV {
 
     try {
       
-      // Retrieve the airline code
-      const stdair::AirlineCode_T& lAirlineCode =
-        lAIRINV_ServiceContext.getAirlineCode();
+      // Retrieve the airline inventory
+      stdair::Inventory& lInventory =
+        lAIRINV_ServiceContext.getInventory();
       
       // Delegate the booking to the dedicated command
       stdair::BasChronometer lSellChronometer;
       lSellChronometer.start();
-      InventoryManager::sell (lAirlineCode, iPartySize);
+      InventoryManager::sell (lInventory, iTravelSolution, iPartySize);
       const double lSellMeasure = lSellChronometer.elapsed();
       
       // DEBUG
