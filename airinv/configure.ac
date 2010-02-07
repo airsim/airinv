@@ -104,15 +104,6 @@ fi
 
 
 # -----------------------------------------------------------
-# Python
-# -----------------------------------------------------------
-PGAC_CHECK_PYTHON_EMBED_SETUP
-AC_SUBST(PYTHON_VERSION)
-AC_SUBST(PYTHON_LIBS)
-AC_SUBST(PYTHON_CFLAGS)
-AC_SUBST(PYTHON_ADD_LIBS)
-
-# -----------------------------------------------------------
 # Python: http://www.python.org
 # -----------------------------------------------------------
 PGAC_CHECK_PYTHON_EMBED_SETUP
@@ -125,18 +116,18 @@ AC_SUBST(PYTHON_ADD_LIBS)
 # MPICH2: http://www.mcs.anl.gov/research/projects/mpich2
 # Note: Boost.MPI depends on MPICH2, rather than on OpenMPI
 # -----------------------------------------------------------
-AX_MPICH2
-AC_SUBST(MPICH2_VERSION)
-AC_SUBST(MPICH2_CFLAGS)
-AC_SUBST(MPICH2_LIBS)
+#AX_MPICH2
+#AC_SUBST(MPICH2_VERSION)
+#AC_SUBST(MPICH2_CFLAGS)
+#AC_SUBST(MPICH2_LIBS)
 
 # -----------------------------------------------------------
 # OpenMPI: http://www.open-mpi.org
 # -----------------------------------------------------------
-#AX_OPENMPI
-#AC_SUBST(OPENMPI_VERSION)
-#AC_SUBST(OPENMPI_CFLAGS)
-#AC_SUBST(OPENMPI_LIBS)
+AX_OPENMPI
+AC_SUBST(OPENMPI_VERSION)
+AC_SUBST(OPENMPI_CFLAGS)
+AC_SUBST(OPENMPI_LIBS)
 
 # ---------------------------------------------------------------
 # Boost (STL Extensions): http://www.boost.org
@@ -247,6 +238,7 @@ AC_CONFIG_FILES(
 	stdair/Makefile
 	stdair/basic/Makefile
 	stdair/bom/Makefile
+	stdair/dbadaptor/Makefile
 	stdair/factory/Makefile
 	stdair/config/Makefile
 	stdair/service/Makefile
