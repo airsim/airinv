@@ -6,6 +6,9 @@
 #include <string>
 // StdAir
 #include <stdair/STDAIR_Types.hpp>
+#include <stdair/basic/BasLogParams.hpp>
+#include <stdair/basic/BasDBParams.hpp>
+#include <stdair/bom/TravelSolutionStruct.hpp>
 // AirInv
 #include <airinv/AIRINV_Service.hpp>
 #include <airinv/config/airinv-paths.hpp>
@@ -21,6 +24,9 @@ int main (int argc, char* argv[]) {
     // Number of passengers in the travelling group
     stdair::PartySize_T lPartySize = 5;
     
+    // Travel solution
+    // stdair::TravelSolutionStruct lTravelSolution;
+    
     // Output log File
     std::string lLogFilename ("sell.log");
 
@@ -32,10 +38,10 @@ int main (int argc, char* argv[]) {
     
     // Initialise the list of classes/buckets
     const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    //AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode);
+    AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode);
 
     // Make a booking
-    //airinvService.sell (lPartySize);
+    // airinvService.sell (lTravelSolution, lPartySize);
     
   } catch (const std::exception& stde) {
     std::cerr << "Standard exception: " << stde.what() << std::endl;
