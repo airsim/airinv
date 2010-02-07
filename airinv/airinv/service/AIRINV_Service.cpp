@@ -3,14 +3,23 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
+// Boost
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/ptime.hpp>
+#include <boost/make_shared.hpp>
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/bom/BomManager.hpp> // for display()
+#include <stdair/bom/BomRoot.hpp>
+#include <stdair/bom/AirlineFeature.hpp>
+#include <stdair/bom/AirlineFeatureSet.hpp>
+#include <stdair/factory/FacBomContent.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/STDAIR_Service.hpp>
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
-#include <airinv/command/InventoryManager.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
+#include <airinv/command/InventoryManager.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
 #include <airinv/AIRINV_Service.hpp>
 
@@ -28,25 +37,83 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_Service::AIRINV_Service (const stdair::AirlineCode_T& iAirlineCode,
-                                  stdair::Inventory& ioIventory)
+  AIRINV_Service::
+  AIRINV_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr,
+                  const stdair::AirlineCode_T& iAirlineCode)
     : _airinvServiceContext (NULL) {
 
+    // Retrieve the Inventory object, at the root of the BOM tree, on
+    // which all of the other BOM objects of the airline inventory will be
+    // attached
+    assert (ioSTDAIR_Service_ptr != NULL);
+    stdair::Inventory& lInventory =
+      ioSTDAIR_Service_ptr->getInventory (iAirlineCode);
+
+    // Initialise the service context
+    initServiceContext (iAirlineCode, lInventory);
+
+    // Retrieve the AirInv service context
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+    
+    // Store the STDAIR service object within the (AIRINV) service context
+    lAIRINV_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr);
+    
     // Initialise the context
-    init (iAirlineCode, ioIventory);
+    init ();
   }
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::AIRINV_Service (const stdair::BasLogParams& iLogParams,
-                                  const stdair::AirlineCode_T& iAirlineCode,
-                                  stdair::Inventory& ioIventory)
+                                  const stdair::BasDBParams& iDBParams,
+                                  const stdair::AirlineCode_T& iAirlineCode)
     : _airinvServiceContext (NULL) {
     
-    // Set the log file
-    logInit (iLogParams);
+    // Initialise the STDAIR service handler
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      initStdAirService (iLogParams, iDBParams, iAirlineCode);
+    
+    // Create an Inventory object, at the root of the BOM tree, and on
+    // which all of the other BOM objects of the airline inventory will be
+    // attached
+    assert (lSTDAIR_Service_ptr != NULL);
+    stdair::Inventory& lInventory =
+      lSTDAIR_Service_ptr->createInventory (iAirlineCode);
 
+    // Initialise the service context
+    initServiceContext (iAirlineCode, lInventory);
+
+    // Add the StdAir service context to the AIRINV service context
+    addStdAirService (lSTDAIR_Service_ptr);
+    
     // Initialise the (remaining of the) context
-    init (iAirlineCode, ioIventory);
+    init ();
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  AIRINV_Service::AIRINV_Service (const stdair::BasLogParams& iLogParams,
+                                  const stdair::AirlineCode_T& iAirlineCode)
+    : _airinvServiceContext (NULL) {
+    
+    // Initialise the STDAIR service handler
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      initStdAirService (iLogParams, iAirlineCode);
+    
+    // Create an Inventory object, at the root of the BOM tree, and on
+    // which all of the other BOM objects of the airline inventory will be
+    // attached
+    assert (lSTDAIR_Service_ptr != NULL);
+    stdair::Inventory& lInventory =
+      lSTDAIR_Service_ptr->createInventory (iAirlineCode);
+
+    // Initialise the service context
+    initServiceContext (iAirlineCode, lInventory);
+    
+    // Add the StdAir service context to the AIRINV service context
+    addStdAirService (lSTDAIR_Service_ptr);
+    
+    // Initialise the (remaining of the) context
+    init ();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -56,17 +123,67 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::logInit (const stdair::BasLogParams& iLogParams) {
-    stdair::Logger::init (iLogParams);
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::init (const stdair::AirlineCode_T& iAirlineCode,
-                             stdair::Inventory& ioIventory) {
+  void AIRINV_Service::
+  initServiceContext (const stdair::AirlineCode_T& iAirlineCode,
+                      stdair::Inventory& ioIventory) {
     // Initialise the context
     AIRINV_ServiceContext& lAIRINV_ServiceContext = 
       FacAirinvServiceContext::instance().create (iAirlineCode, ioIventory);
     _airinvServiceContext = &lAIRINV_ServiceContext;
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::
+  addStdAirService (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr) {
+
+    // Retrieve the Airinv service context
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+
+    // Store the STDAIR service object within the (AIRINV) service context
+    lAIRINV_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr);
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  stdair::STDAIR_ServicePtr_T AIRINV_Service::
+  initStdAirService (const stdair::BasLogParams& iLogParams,
+                     const stdair::BasDBParams& iDBParams,
+                     const stdair::AirlineCode_T& iAirlineCode) {
+
+    // Initialise the STDAIR service handler
+    // Note that the track on the object memory is kept thanks to the Boost
+    // Smart Pointers component.
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
+      boost::make_shared<stdair::STDAIR_Service> (iLogParams, iDBParams);
+    assert (lSTDAIR_Service_ptr != NULL);
+
+    // Create and add the AirlineFeature object to the context
+    lSTDAIR_Service_ptr->addAirlineFeature (iAirlineCode);
+    
+    return lSTDAIR_Service_ptr;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  stdair::STDAIR_ServicePtr_T AIRINV_Service::
+  initStdAirService (const stdair::BasLogParams& iLogParams,
+                     const stdair::AirlineCode_T& iAirlineCode) {
+
+    // Initialise the STDAIR service handler
+    // Note that the track on the object memory is kept thanks to the Boost
+    // Smart Pointers component.
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
+      boost::make_shared<stdair::STDAIR_Service> (iLogParams);
+
+    assert (lSTDAIR_Service_ptr != NULL);
+
+    // Create and add the AirlineFeature object to the context
+    lSTDAIR_Service_ptr->addAirlineFeature (iAirlineCode);
+
+    return lSTDAIR_Service_ptr;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::init () {
   }
   
   // //////////////////////////////////////////////////////////////////////

@@ -6,10 +6,13 @@
 // //////////////////////////////////////////////////////////////////////
 // StdAir
 #include <stdair/STDAIR_Types.hpp>
-#include <stdair/basic/BasLogParams.hpp>
 
 // Forward declaration
 namespace stdair {
+  class AirlineFeatureSet;
+  class STDAIR_Service;
+  struct BasLogParams;
+  struct BasDBParams;
   class Inventory;
   struct TravelSolutionStruct;
 }
@@ -22,22 +25,29 @@ namespace AIRINV {
   
   /** Interface for the AIRINV Services. */
   class AIRINV_Service {
-  public:
-    // /////////// Business Methods /////////////
-    /** Register a booking. */
-    void sell (const stdair::TravelSolutionStruct&, const stdair::PartySize_T&);
-
-    
+  public:   
     // ////////// Constructors and destructors //////////
+    /** Constructor.
+        <br>The init() method is called; see the corresponding documentation
+        for more details.
+        <br>A reference on an output stream is given, so that log
+        outputs can be directed onto that stream.
+        <br>Moreover, database connection parameters are given, so that a
+        session can be created on the corresponding database.
+        @param const stdair::BasLogParams& Parameters for the output log stream.
+        @param const stdair::BasDBParams& Parameters for the database access.
+        @param const stdair::AirlineCode_T& Code of the owner airline. */
+    AIRINV_Service (const stdair::BasLogParams&, const stdair::BasDBParams&,
+                    const stdair::AirlineCode_T&);
+
     /** Constructor.
         <br>The init() method is called; see the corresponding documentation
         for more details.
         <br>Moreover, a reference on an output stream is given, so
         that log outputs can be directed onto that stream.       
         @param const stdair::BasLogParams& Parameters for the output log stream.
-        @param AirlineCode_T& Code of the owner airline. */
-    AIRINV_Service (const stdair::BasLogParams&, const stdair::AirlineCode_T&,
-                    stdair::Inventory&);
+        @param const stdair::AirlineCode_T& Code of the owner airline. */
+    AIRINV_Service (const stdair::BasLogParams&, const stdair::AirlineCode_T&);
 
     /** Constructor.
         <br>The init() method is called; see the corresponding documentation
@@ -48,27 +58,57 @@ namespace AIRINV {
         methods in the calling chain (for instance, when the AIRINV_Service
         is itself being initialised by another library service such as
         SIMCRS_Service).
+        @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
         @param AirlineCode_T& Code of the owner airline. */
-    AIRINV_Service (const stdair::AirlineCode_T&, stdair::Inventory&);
+    AIRINV_Service (stdair::STDAIR_ServicePtr_T, const stdair::AirlineCode_T&);
 
     /** Destructor. */
     ~AIRINV_Service();
 
     
+    // /////////// Business Methods /////////////
+    /** Register a booking. */
+    void sell (const stdair::TravelSolutionStruct&, const stdair::PartySize_T&);
+
+    
   private:
     // /////// Construction and Destruction helper methods ///////
-    /** Default constructor. */
+    /** Default constructor. It should not be used. */
     AIRINV_Service ();
-    /** Default copy constructor. */
+    /** Default copy constructor. It should not be used. */
     AIRINV_Service (const AIRINV_Service&);
 
-    /** Initialise the log. */
-    void logInit (const stdair::BasLogParams&);
+    /** Initialise the STDAIR service (including the log service).
+        <br>A reference on the root of the BOM tree, namely the BomRoot object,
+        is stored within the service context for later use.
+        @param const stdair::BasLogParams& Parameters for the output log stream.
+        @param const stdair::BasDBParams& Parameters for the database access.
+        @param AirlineCode_T& Code of the owner airline. */
+    stdair::STDAIR_ServicePtr_T initStdAirService(const stdair::BasLogParams&,
+                                                  const stdair::BasDBParams&,
+                                                  const stdair::AirlineCode_T&);
 
-    /** Initialise.
-        @param const stdair::AirlineCode_T& Airline code of the inventory
-               owner. */
-    void init (const stdair::AirlineCode_T&, stdair::Inventory&);
+    /** Initialise the STDAIR service (including the log service).
+        <br>A reference on the root of the BOM tree, namely the BomRoot object,
+        is stored within the service context for later use.
+        @param const stdair::BasLogParams& Parameters for the output log stream.
+        @param AirlineCode_T& Code of the owner airline. */
+    stdair::STDAIR_ServicePtr_T initStdAirService(const stdair::BasLogParams&,
+                                                  const stdair::AirlineCode_T&);
+    
+    /** Attach the STDAIR service (holding the log and database services) to
+        the AIRINV_Service.
+        @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service. */
+    void addStdAirService (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr);
+    
+    /** Initialise the (AIRINV) service context (i.e., the
+        AIRINV_ServiceContext object).
+        @param const stdair::AirlineCode_T& Code of the owner airline.
+        @param stdair::Inventory& Root of the Airline-dedicated BOM tree. */
+    void initServiceContext (const stdair::AirlineCode_T&, stdair::Inventory&);
+
+    /** Initialise. */
+    void init ();
 
     /** Finalise. */
     void finalise ();

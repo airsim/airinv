@@ -6,10 +6,13 @@ include $(srcdir)/sources.mk
 
 MAINTAINERCLEANFILES = Makefile.in
 
-# Binaries (batches)
-bin_PROGRAMS =
 
-#airinv_SOURCES = $(batches_h_sources) $(batches_cc_sources)
-#airinv_CXXFLAGS = $(BOOST_CFLAGS)
-#airinv_LDADD =
-#airinv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LIB) $(top_builddir)/airinv/core/libairinv.la
+# Binaries (batches)
+bin_PROGRAMS = airinv
+
+airinv_SOURCES = $(batches_h_sources) $(batches_cc_sources)
+airinv_CXXFLAGS = $(BOOST_CFLAGS)
+airinv_LDADD =
+airinv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LIB) \
+	$(top_builddir)/stdair/core/libstdair.la \
+	$(top_builddir)/airinv/core/libairinv.la
