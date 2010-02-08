@@ -82,19 +82,16 @@ namespace AIRINV {
         <br>A reference on the root of the BOM tree, namely the BomRoot object,
         is stored within the service context for later use.
         @param const stdair::BasLogParams& Parameters for the output log stream.
-        @param const stdair::BasDBParams& Parameters for the database access.
-        @param AirlineCode_T& Code of the owner airline. */
-    stdair::STDAIR_ServicePtr_T initStdAirService(const stdair::BasLogParams&,
-                                                  const stdair::BasDBParams&,
-                                                  const stdair::AirlineCode_T&);
+        @param const stdair::BasDBParams& Parameters for the database access. */
+    stdair::STDAIR_ServicePtr_T initStdAirService (const stdair::BasLogParams&,
+                                                   const stdair::BasDBParams&);
 
     /** Initialise the STDAIR service (including the log service).
         <br>A reference on the root of the BOM tree, namely the BomRoot object,
         is stored within the service context for later use.
-        @param const stdair::BasLogParams& Parameters for the output log stream.
-        @param AirlineCode_T& Code of the owner airline. */
-    stdair::STDAIR_ServicePtr_T initStdAirService(const stdair::BasLogParams&,
-                                                  const stdair::AirlineCode_T&);
+        @param const stdair::BasLogParams& Parameters for the output log
+               stream. */
+    stdair::STDAIR_ServicePtr_T initStdAirService (const stdair::BasLogParams&);
     
     /** Attach the STDAIR service (holding the log and database services) to
         the AIRINV_Service.

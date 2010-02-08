@@ -71,7 +71,7 @@ namespace AIRINV {
     
     // Initialise the STDAIR service handler
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      initStdAirService (iLogParams, iDBParams, iAirlineCode);
+      initStdAirService (iLogParams, iDBParams);
     
     // Create an Inventory object, at the root of the BOM tree, and on
     // which all of the other BOM objects of the airline inventory will be
@@ -97,7 +97,7 @@ namespace AIRINV {
     
     // Initialise the STDAIR service handler
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      initStdAirService (iLogParams, iAirlineCode);
+      initStdAirService (iLogParams);
     
     // Create an Inventory object, at the root of the BOM tree, and on
     // which all of the other BOM objects of the airline inventory will be
@@ -147,37 +147,26 @@ namespace AIRINV {
   // //////////////////////////////////////////////////////////////////////
   stdair::STDAIR_ServicePtr_T AIRINV_Service::
   initStdAirService (const stdair::BasLogParams& iLogParams,
-                     const stdair::BasDBParams& iDBParams,
-                     const stdair::AirlineCode_T& iAirlineCode) {
+                     const stdair::BasDBParams& iDBParams) {
 
     // Initialise the STDAIR service handler
     // Note that the track on the object memory is kept thanks to the Boost
     // Smart Pointers component.
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
       boost::make_shared<stdair::STDAIR_Service> (iLogParams, iDBParams);
-    assert (lSTDAIR_Service_ptr != NULL);
-
-    // Create and add the AirlineFeature object to the context
-    lSTDAIR_Service_ptr->addAirlineFeature (iAirlineCode);
     
     return lSTDAIR_Service_ptr;
   }
   
   // //////////////////////////////////////////////////////////////////////
   stdair::STDAIR_ServicePtr_T AIRINV_Service::
-  initStdAirService (const stdair::BasLogParams& iLogParams,
-                     const stdair::AirlineCode_T& iAirlineCode) {
+  initStdAirService (const stdair::BasLogParams& iLogParams) {
 
     // Initialise the STDAIR service handler
     // Note that the track on the object memory is kept thanks to the Boost
     // Smart Pointers component.
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
       boost::make_shared<stdair::STDAIR_Service> (iLogParams);
-
-    assert (lSTDAIR_Service_ptr != NULL);
-
-    // Create and add the AirlineFeature object to the context
-    lSTDAIR_Service_ptr->addAirlineFeature (iAirlineCode);
 
     return lSTDAIR_Service_ptr;
   }
@@ -199,7 +188,7 @@ namespace AIRINV {
       throw NonInitialisedServiceException();
     }
     assert (_airinvServiceContext != NULL);
-    AIRINV_ServiceContext& lAIRINV_ServiceContext= *_airinvServiceContext;
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
 
     try {
       
