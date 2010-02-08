@@ -16,13 +16,13 @@
 // ///////// M A I N ////////////
 int main (int argc, char* argv[]) {
 
-  try {
+  // try {
     
     // Airline code
     std::string lAirlineCode ("LH");
     
     // Number of passengers in the travelling group
-    stdair::PartySize_T lPartySize = 5;
+    //stdair::PartySize_T lPartySize = 5;
     
     // Travel solution
     // stdair::TravelSolutionStruct lTravelSolution;
@@ -40,9 +40,12 @@ int main (int argc, char* argv[]) {
     const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
     AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode);
 
+    std::cout << "All is well..." << std::endl;
+    
     // Make a booking
     // airinvService.sell (lTravelSolution, lPartySize);
-    
+
+    /*    
   } catch (const std::exception& stde) {
     std::cerr << "Standard exception: " << stde.what() << std::endl;
     return -1;
@@ -50,6 +53,9 @@ int main (int argc, char* argv[]) {
   } catch (...) {
     return -1;
   }
+    */
+    
+  std::cout << "... that ends well!" << std::endl;
   
   return 0;	
 }
