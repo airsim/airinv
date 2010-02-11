@@ -56,4 +56,11 @@ namespace AIRINV {
       }
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////
+  void Inventory::sell (const stdair::TravelSolutionStruct& iTravelSolution,
+                        const stdair::PartySize_T& iPartySize) {
+    // Forward the business the the corresponding static function.
+    sell (*this, iTravelSolution, iPartySize);
+  }
 }
