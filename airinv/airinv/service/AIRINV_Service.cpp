@@ -203,8 +203,8 @@ namespace AIRINV {
       const double lSellMeasure = lSellChronometer.elapsed();
       
       // DEBUG
-      STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
-                        << lAIRINV_ServiceContext.display());
+      // STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
+      //                   << lAIRINV_ServiceContext.display());
 
     } catch (const std::exception& error) {
       STDAIR_LOG_ERROR ("Exception: "  << error.what());
