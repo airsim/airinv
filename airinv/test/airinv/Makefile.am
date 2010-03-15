@@ -19,10 +19,12 @@ XFAIL_TESTS = #
 #InventoryTestSuite_LDADD = $(top_builddir)/test/com/libcppunitcore.la
 #InventoryTestSuite_LDFLAGS = \
 #		$(BOOST_LIBS) $(CPPUNIT_LIBS) \
+#		$(top_builddir)/stdair/core/libstdair.la \
 #		$(top_builddir)/airinv/libairinv.la
 
 sell_SOURCES = sell.cpp
 sell_CXXFLAGS= $(CPPUNIT_CFLAGS) $(BOOST_CFLAGS)
 sell_LDADD =
 sell_LDFLAGS = $(BOOST_LIBS) \
+		$(top_builddir)/stdair/core/libstdair.la \
 		$(top_builddir)/airinv/core/libairinv.la
