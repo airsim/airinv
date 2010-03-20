@@ -41,8 +41,7 @@ namespace AIRINV {
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::
   AIRINV_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr,
-                  const stdair::AirlineCode_T& iAirlineCode,
-                  const stdair::Filename_T& iInventoryInputFilename)
+                  const stdair::AirlineCode_T& iAirlineCode)
     : _airinvServiceContext (NULL) {
 
     // Retrieve the Inventory object, at the root of the BOM tree, on
@@ -63,7 +62,7 @@ namespace AIRINV {
     lAIRINV_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr);
     
     // Initialise the context
-    init (iInventoryInputFilename);
+    init ();
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -176,6 +175,10 @@ namespace AIRINV {
       boost::make_shared<stdair::STDAIR_Service> (iLogParams);
 
     return lSTDAIR_Service_ptr;
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::init () {
   }
   
   // //////////////////////////////////////////////////////////////////////

@@ -62,11 +62,10 @@ namespace AIRINV {
         methods in the calling chain (for instance, when the AIRINV_Service
         is itself being initialised by another library service such as
         SIMCRS_Service).
+        <br>The same logic is true about the absence of inventory input file.
         @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
-        @param AirlineCode_T& Code of the owner airline.
-        @param const stdair::Filename_T& Filename of the input demand file.  */
-    AIRINV_Service (stdair::STDAIR_ServicePtr_T, const stdair::AirlineCode_T&,
-                    const stdair::Filename_T& iInventoryInputFilename);
+        @param AirlineCode_T& Code of the owner airline. */
+    AIRINV_Service (stdair::STDAIR_ServicePtr_T, const stdair::AirlineCode_T&);
 
     /** Destructor. */
     ~AIRINV_Service();
@@ -115,6 +114,12 @@ namespace AIRINV {
         simulator, is parsed and instantiated in memory accordingly.
         @param const stdair::Filename_T& Filename of the input demand file. */
     void init (const stdair::Filename_T& iInventoryInputFilename);
+
+    /** Initialise.
+        <br>No inventory input file is given, because the Inventory is
+        assumed to have been built in memory from an external component
+        (typically, from the SimCRS library). */
+    void init ();
 
     /** Finalise. */
     void finalise ();
