@@ -20,6 +20,7 @@
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
+#include <airinv/command/InventoryParser.hpp>
 #include <airinv/command/InventoryManager.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
 #include <airinv/AIRINV_Service.hpp>
@@ -196,13 +197,14 @@ namespace AIRINV {
     // Retrieve the StdAir service context
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_ServicePtr();
+    assert (lSTDAIR_Service != NULL);
     
     // Get the root of the BOM tree, on which all of the other BOM objects
     // will be attached
     stdair::BomRoot& lBomRoot = lSTDAIR_Service->getBomRoot();
 
     // Initialise the airline inventory
-    // InventoryParser::parseInventory (iInventoryInputFilename, lBomRoot);
+    InventoryParser::generateInventory (iInventoryInputFilename, lBomRoot);
 
     // DEBUG
     STDAIR_LOG_DEBUG ("Generated BomRoot:");
