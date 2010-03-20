@@ -38,6 +38,9 @@ namespace AIRINV {
   class CodeDuplicationException : public ParserException {
   };
 
+  class SegmentDateNotFoundException : public ParserException {
+  };
+
   class SQLDatabaseException : public RootException {
   };
 

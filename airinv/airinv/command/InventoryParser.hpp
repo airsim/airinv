@@ -20,11 +20,11 @@ namespace AIRINV {
   /** Class wrapping the parser entry point. */
   class InventoryParser : public stdair::CmdAbstract {
   public:
-    /** Parses the CSV file describing travel inventory, for instance for generating
-        simulated booking request in a simulator.
+    /** Parses the CSV file describing an airline inventory, and generates
+        the corresponding data model in memory. It can then be used,
+        for instance in a simulator.
         @param const stdair::Filename_T& The file-name of the CSV-formatted
                inventory input file.
-        @param const stdair::Date_T&
         @param stdair::BomRoot& Root of the BOM tree. */
     static void generateInventory (const stdair::Filename_T&, stdair::BomRoot&);
   };

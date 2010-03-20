@@ -22,7 +22,7 @@ namespace AIRINV {
     InventoryFileParser lInventoryParser (ioBomRoot, iFilename);
 
     // Parse the CSV-formatted inventory input file, and generate the
-    // corresponding InventoryCharacteristic objects.
+    // corresponding Inventory-related objects.
     lInventoryParser.generateInventory ();
   }
 

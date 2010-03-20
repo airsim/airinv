@@ -18,38 +18,269 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
 
     ParserSemanticAction::
-    ParserSemanticAction (InventoryStruct_T& ioInventory)
-      : _inventory (ioInventory) {
+    ParserSemanticAction (FlightDateStruct_T& ioFlightDate)
+      : _flightDate (ioFlightDate) {
     }      
 
     // //////////////////////////////////////////////////////////////////
-    storeFlightDepartureDate::
-    storeFlightDepartureDate (InventoryStruct_T& ioInventory)
-      : ParserSemanticAction (ioInventory) {
+    storeSnapshotDate::
+    storeSnapshotDate (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeFlightDepartureDate::operator() (iterator_t iStr,
-                                               iterator_t iStrEnd) const {
-      _inventory._flightDate = _inventory.getFlightDate();
+    void storeSnapshotDate::operator() (iterator_t iStr,
+                                        iterator_t iStrEnd) const {
+      _flightDate._flightDate = _flightDate.getDate();
     }
       
     // //////////////////////////////////////////////////////////////////
-    doEndInventory::doEndInventory (stdair::BomRoot& ioBomRoot,
-                              InventoryStruct_T& ioInventory)
-      : ParserSemanticAction (ioInventory), _bomRoot (ioBomRoot) {
+    storeAirlineCode::
+    storeAirlineCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    // void doEndInventory::operator() (char iChar) const {
-    void doEndInventory::operator() (iterator_t iStr,
-                                     iterator_t iStrEnd) const {
+    void storeAirlineCode::operator() (iterator_t iStr,
+                                       iterator_t iStrEnd) const {
+      const stdair::AirlineCode_T lAirlineCode (iStr, iStrEnd);
+      _flightDate._airlineCode = lAirlineCode;
+                
+      // As that's the beginning of a new flight, the list of legs
+      // must be reset
+      _flightDate._legList.clear();
+    }
+      
+    // //////////////////////////////////////////////////////////////////
+    storeFlightNumber::
+    storeFlightNumber (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeFlightNumber::operator() (unsigned int iNumber) const { 
+      _flightDate._flightNumber = iNumber;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeFlightDate::
+    storeFlightDate (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeFlightDate::operator() (iterator_t iStr,
+                                      iterator_t iStrEnd) const {
+      _flightDate._flightDate = _flightDate.getDate();
+    }
+      
+    // //////////////////////////////////////////////////////////////////
+    storeFlightTypeCode::storeFlightTypeCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeFlightTypeCode::operator() (iterator_t iStr,
+                                          iterator_t iStrEnd) const {
+      const std::string lFlightTypeCodeStr (iStr, iStrEnd);
+      const FlightTypeCode lFlightTypeCode (lFlightTypeCodeStr);
+      _flightDate._flightTypeCode = lFlightTypeCode.getCode();
+      //STDAIR_LOG_DEBUG ("FlightType code: " << lFlightTypeCode);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeLegBoardingPoint::
+    storeLegBoardingPoint (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeLegBoardingPoint::operator() (iterator_t iStr,
+                                            iterator_t iStrEnd) const {
+      stdair::AirportCode_T lBoardingPoint (iStr, iStrEnd);
+
+      // If a leg has already been parsed, add it to the FlightDate
+      if (_flightDate._legAlreadyDefined == true) {
+        _flightDate._legList.push_back (_flightDate._itLeg);
+      } else {
+        _flightDate._legAlreadyDefined = true;
+      }
+        
+      // Set the (new) boarding point
+      _flightDate._itLeg._boardingPoint = lBoardingPoint;
+      
+      // As that's the beginning of a new leg, the list of cabins
+      // must be reset
+      _flightDate._itLeg._cabinList.clear();
+
+      // Add the airport code if it is not already stored in the airport lists
+      _flightDate.addAirport (lBoardingPoint);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeLegOffPoint::
+    storeLegOffPoint (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeLegOffPoint::operator() (iterator_t iStr,
+                                       iterator_t iStrEnd) const {
+      stdair::AirportCode_T lOffPoint (iStr, iStrEnd);
+      _flightDate._itLeg._offPoint = lOffPoint;
+
+      // Add the airport code if it is not already stored in the airport lists
+      _flightDate.addAirport (lOffPoint);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeBoardingTime::
+    storeBoardingTime (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeBoardingTime::operator() (iterator_t iStr,
+                                        iterator_t iStrEnd) const {
+      _flightDate._itLeg._boardingTime = _flightDate.getTime();
+        
+      // Reset the number of seconds
+      _flightDate._itSeconds = 0;
+
+      // Reset the date off-set
+      _flightDate._dateOffSet = 0;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeOffTime::
+    storeOffTime (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeOffTime::operator() (iterator_t iStr,
+                                   iterator_t iStrEnd) const {
+      _flightDate._itLeg._offTime = _flightDate.getTime();
+        
+      // Reset the number of seconds
+      _flightDate._itSeconds = 0;
+
+      // As the boarding date off set is optional, it can be set only
+      // afterwards, based on the staging date off-set value
+      // (_flightDate._dateOffSet).
+      const stdair::DateOffSet_T lDateOffSet (_flightDate._dateOffSet);
+      _flightDate._itLeg._boardingDateOffSet = lDateOffSet;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeLegCabinCode::
+    storeLegCabinCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeLegCabinCode::operator() (char iChar) const { 
+      _flightDate._itLegCabin._cabinCode = iChar; 
+      //std::cout << "Cabin code: " << iChar << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeCapacity::
+    storeCapacity (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCapacity::operator() (double iReal) const { 
+      _flightDate._itLegCabin._capacity = iReal; 
+      //std::cout << "Capacity: " << iReal << std::endl;
+
+      // The capacity is the last (according to the arrival order
+      // within the schedule input file) detail of the leg cabin. Hence,
+      // when a capacity is parsed, it means that the full cabin
+      // details have already been parsed as well: the cabin can
+      // thus be added to the leg.
+      _flightDate._itLeg._cabinList.push_back (_flightDate._itLegCabin);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeSegmentBoardingPoint::
+    storeSegmentBoardingPoint (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeSegmentBoardingPoint::operator() (iterator_t iStr,
+                                             iterator_t iStrEnd) const {
+      stdair::AirportCode_T lBoardingPoint (iStr, iStrEnd);
+      _flightDate._itSegment._boardingPoint = lBoardingPoint;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeSegmentOffPoint::
+    storeSegmentOffPoint (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeSegmentOffPoint::operator() (iterator_t iStr,
+                                           iterator_t iStrEnd) const {
+      stdair::AirportCode_T lOffPoint (iStr, iStrEnd);
+      _flightDate._itSegment._offPoint = lOffPoint;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeSegmentCabinCode::
+    storeSegmentCabinCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeSegmentCabinCode::operator() (char iChar) const { 
+      _flightDate._itSegmentCabin._cabinCode = iChar; 
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeClasses::
+    storeClasses (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeClasses::operator() (iterator_t iStr,
+                                   iterator_t iStrEnd) const {
+      std::string lClasses (iStr, iStrEnd);
+      _flightDate._itSegmentCabin._classes = lClasses;
+
+      // The list of classes is the last (according to the arrival order
+      // within the schedule input file) detail of the segment cabin. Hence,
+      // when a list of classes is parsed, it means that the full segment
+      // cabin details have already been parsed as well: the segment cabin
+      // can thus be added to the segment.
+      if (_flightDate._areSegmentDefinitionsSpecific == true) {
+        _flightDate.addSegmentCabin (_flightDate._itSegment,
+                                       _flightDate._itSegmentCabin);
+      } else {
+        _flightDate.addSegmentCabin (_flightDate._itSegmentCabin);
+      }
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    doEndFlightDate::doEndFlightDate (stdair::BomRoot& ioBomRoot,
+                              FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate), _bomRoot (ioBomRoot) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    // void doEndFlightDate::operator() (char iChar) const {
+    void doEndFlightDate::operator() (iterator_t iStr,
+                                      iterator_t iStrEnd) const {
         
       // DEBUG: Display the result
-      // STDAIR_LOG_DEBUG ("Inventory: " << _inventory.describe());
+      // STDAIR_LOG_DEBUG ("FlightDate: " << _flightDate.describe());
 
-      // Create the Inventory BOM objects
-      // InventoryGenerator::createInventory (_bomRoot, _inventory);
+      // Create the FlightDate BOM objects
+      // InventoryGenerator::createInventory (_bomRoot, _flightDate);
     }
 
       
@@ -82,8 +313,8 @@ namespace AIRINV {
     /** Flight Number Parser: limit_d(0u, 9999u)[uint1_4_p] */
     bounded1_4_p_t flight_number_p (uint1_4_p.derived(), 0u, 9999u);
 
-    /** Year Parser: limit_d(2000u, 2099u)[uint4_p] */
-    bounded4_p_t year_p (uint4_p.derived(), 2000u, 2099u);
+    /** Year Parser: limit_d(00u, 99u)[uint4_p] */
+    bounded2_p_t year_p (uint2_p.derived(), 0u, 99u);
       
     /** Month Parser: limit_d(1u, 12u)[uint2_p] */
     bounded2_p_t month_p (uint2_p.derived(), 1u, 12u);
@@ -128,8 +359,8 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     InventoryParser::InventoryParser (stdair::BomRoot& ioBomRoot,
-                                InventoryStruct_T& ioInventory) 
-      : _bomRoot (ioBomRoot), _inventory (ioInventory) {
+                                FlightDateStruct_T& ioFlightDate) 
+      : _bomRoot (ioBomRoot), _flightDate (ioFlightDate) {
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -137,48 +368,130 @@ namespace AIRINV {
     InventoryParser::definition<ScannerT>::
     definition (InventoryParser const& self) {
 
-      inventory_list = *( boost::spirit::classic::comment_p("//")
-                       | boost::spirit::classic::comment_p("/*", "*/")
-                       | inventory )
+      flight_date_list = *( boost::spirit::classic::comment_p("//")
+                            | boost::spirit::classic::comment_p("/*", "*/")
+                            | flight_date )
+        ;
+      
+      flight_date = flight_key
+        >> +( '/' >> leg )
+        >> +( '/' >> segment )
+        >> flight_date_end[doEndFlightDate (self._bomRoot, self._flightDate)]
         ;
 
-      inventory =
-        flight_dep_date
-        >> inventory_end[doEndInventory(self._bomRoot, self._inventory)]
-        ;
-
-      inventory_end =
+      flight_date_end =
         boost::spirit::classic::ch_p(';')
         ;
       
-      flight_dep_date =
-        date[storeFlightDepartureDate(self._inventory)]
+      flight_key =
+        date[storeSnapshotDate(self._flightDate)]
+        >> '/' >> airline_code
+        >> '/' >> flight_number
+        >> '/' >> date[storeFlightDate(self._flightDate)]
+        >> '/' >> flight_type_code
+        ;
+
+      airline_code =
+        boost::spirit::classic::lexeme_d[
+                                (airline_code_p)[storeAirlineCode(self._flightDate)]
+                                ]
+        ;
+        
+      flight_number =
+        boost::spirit::classic::lexeme_d[
+                                (flight_number_p)[storeFlightNumber(self._flightDate)]
+                                ]
         ;
 
       date =
         boost::spirit::classic::lexeme_d[
-         (year_p)[boost::spirit::classic::assign_a(self._inventory._itYear)]
-         >> '-'
-         >> (month_p)[boost::spirit::classic::assign_a(self._inventory._itMonth)]
-         >> '-'
-         >> (day_p)[boost::spirit::classic::assign_a(self._inventory._itDay)]
-         ]
+                                (day_p)[boost::spirit::classic::assign_a(self._flightDate._itDay)]
+                                >> (month_p)[boost::spirit::classic::assign_a(self._flightDate._itMonth)]
+                                >> (year_p)[boost::spirit::classic::assign_a(self._flightDate._itYear)]
+                                ]
         ;
 
+      flight_type_code =
+        boost::spirit::classic::chseq_p("INT")
+        | boost::spirit::classic::chseq_p("DOM")
+        | boost::spirit::classic::chseq_p("GRD")
+        | boost::spirit::classic::chseq_p("HID")
+        | boost::spirit::classic::chseq_p("PSD")
+        ;
       
+      leg = leg_key >> ';' >> leg_details >> +( ';' >> leg_cabin_details )
+        ;
+	 
+      leg_key =
+        (airport_p)[storeLegBoardingPoint(self._flightDate)]
+        >> ';'
+        >> (airport_p)[storeLegOffPoint(self._flightDate)]
+        ;
+	 
+      leg_details =
+        date[storeBoardingDate(self._flightDate)]
+        >> ';' >> time[storeBoardingTime(self._flightDate)]
+        >> ';' >> date[storeOffDate(self._flightDate)]
+        >> ';' >> time[storeOffTime(self._flightDate)]
+        ;
+        
+      time =
+        boost::spirit::classic::lexeme_d[
+                                (hours_p)[boost::spirit::classic::assign_a(self._flightDate._itHours)]
+                                >> (minutes_p)[boost::spirit::classic::assign_a(self._flightDate._itMinutes)]
+                                >> !((seconds_p)[boost::spirit::classic::assign_a(self._flightDate._itSeconds)])
+                                ]
+        ;
+
+      leg_cabin_details =
+        (cabin_code_p)[storeLegCabinCode(self._flightDate)]
+        >> ';' >> (boost::spirit::classic::ureal_p)[storeCapacity(self._flightDate)]
+        ;
+        
+      segment_key =
+        (airport_p)[storeSegmentBoardingPoint(self._flightDate)]
+        >> ';'
+        >> (airport_p)[storeSegmentOffPoint(self._flightDate)]
+        ;
+	 
+      segment =
+        +(';' >> segment_key >> full_segment_cabin_details)
+        ;
+
+      full_segment_cabin_details =
+        +(';' >> segment_cabin_details)
+        ;
+
+      segment_cabin_details =
+        (cabin_code_p)[storeSegmentCabinCode(self._flightDate)]
+        >> ';' >> (class_code_list_p)[storeClasses(self._flightDate)]
+        ;
+
       // BOOST_SPIRIT_DEBUG_NODE (InventoryParser);
-      BOOST_SPIRIT_DEBUG_NODE (inventory_list);
-      BOOST_SPIRIT_DEBUG_NODE (inventory);
-      BOOST_SPIRIT_DEBUG_NODE (inventory_end);
-      BOOST_SPIRIT_DEBUG_NODE (flight_dep_date);
+      BOOST_SPIRIT_DEBUG_NODE (flight_date_list);
+      BOOST_SPIRIT_DEBUG_NODE (flight_date);
+      BOOST_SPIRIT_DEBUG_NODE (flight_date_end);
+      BOOST_SPIRIT_DEBUG_NODE (flight_key);
+      BOOST_SPIRIT_DEBUG_NODE (airline_code);
+      BOOST_SPIRIT_DEBUG_NODE (flight_number);
+      BOOST_SPIRIT_DEBUG_NODE (flight_type_code);
       BOOST_SPIRIT_DEBUG_NODE (date);
+      BOOST_SPIRIT_DEBUG_NODE (leg);
+      BOOST_SPIRIT_DEBUG_NODE (leg_key);
+      BOOST_SPIRIT_DEBUG_NODE (leg_details);
+      BOOST_SPIRIT_DEBUG_NODE (time);
+      BOOST_SPIRIT_DEBUG_NODE (leg_cabin_details);
+      BOOST_SPIRIT_DEBUG_NODE (segment);
+      BOOST_SPIRIT_DEBUG_NODE (segment_key);
+      BOOST_SPIRIT_DEBUG_NODE (full_segment_cabin_details);
+      BOOST_SPIRIT_DEBUG_NODE (segment_cabin_details);
     }
 
     // //////////////////////////////////////////////////////////////////
     template<typename ScannerT>
     boost::spirit::classic::rule<ScannerT> const&
     InventoryParser::definition<ScannerT>::start() const {
-      return inventory_list;
+      return flight_date_list;
     }
     
   }
@@ -221,13 +534,15 @@ namespace AIRINV {
     STDAIR_LOG_DEBUG ("Parsing inventory input file: " << _filename);
 
     // Initialise the parser (grammar) with the helper/staging structure.
-    InventoryParserHelper::InventoryParser lInventoryParser (_bomRoot, _inventory);
+    InventoryParserHelper::InventoryParser lInventoryParser (_bomRoot,
+                                                             _flightDate);
       
-    // Launch the parsing of the file and, thanks to the doEndInventory
+    // Launch the parsing of the file and, thanks to the doEndFlightDate
     // call-back structure, the building of the whole BomRoot BOM
     // (i.e., including Inventory, FlightDate, LegDate, SegmentDate, etc.)
     boost::spirit::classic::parse_info<iterator_t> info =
-      boost::spirit::classic::parse (_startIterator, _endIterator, lInventoryParser,
+      boost::spirit::classic::parse (_startIterator, _endIterator,
+                                     lInventoryParser,
                                      boost::spirit::classic::space_p);
 
     // Retrieves whether or not the parsing was successful
