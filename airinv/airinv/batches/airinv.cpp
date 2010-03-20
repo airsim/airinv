@@ -19,16 +19,19 @@ int main (int argc, char* argv[]) {
   try {
     
     // Airline code
-    const std::string lAirlineCode ("LH");
+    const std::string lAirlineCode ("SV");
     
     // Number of passengers in the travelling group
-    const stdair::PartySize_T lPartySize = 5;
+    // const stdair::PartySize_T lPartySize = 5;
 
     // Travel solution
-    stdair::TravelSolutionStruct lTravelSolution;
+    // stdair::TravelSolutionStruct lTravelSolution;
     
+    // Input file name
+    stdair::Filename_T lInputFilename ("../../test/samples/invdump01.csv");
+
     // Output log File
-    std::string lLogFilename ("airinv.log");
+    stdair::Filename_T lLogFilename ("airinv.log");
 
     // Set the log parameters
     std::ofstream logOutputFile;
@@ -38,7 +41,8 @@ int main (int argc, char* argv[]) {
     
     // Initialise the list of classes/buckets
     const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode);
+    AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode,
+                                          lInputFilename);
 
     // Make a booking
     // airinvService.sell (lTravelSolution, lPartySize);

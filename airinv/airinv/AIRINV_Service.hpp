@@ -36,9 +36,11 @@ namespace AIRINV {
         session can be created on the corresponding database.
         @param const stdair::BasLogParams& Parameters for the output log stream.
         @param const stdair::BasDBParams& Parameters for the database access.
-        @param const stdair::AirlineCode_T& Code of the owner airline. */
+        @param const stdair::AirlineCode_T& Code of the owner airline.
+        @param const stdair::Filename_T& Filename of the input demand file. */
     AIRINV_Service (const stdair::BasLogParams&, const stdair::BasDBParams&,
-                    const stdair::AirlineCode_T&);
+                    const stdair::AirlineCode_T&,
+                    const stdair::Filename_T& iInventoryInputFilename);
 
     /** Constructor.
         <br>The init() method is called; see the corresponding documentation
@@ -46,8 +48,10 @@ namespace AIRINV {
         <br>Moreover, a reference on an output stream is given, so
         that log outputs can be directed onto that stream.       
         @param const stdair::BasLogParams& Parameters for the output log stream.
-        @param const stdair::AirlineCode_T& Code of the owner airline. */
-    AIRINV_Service (const stdair::BasLogParams&, const stdair::AirlineCode_T&);
+        @param const stdair::AirlineCode_T& Code of the owner airline.
+        @param const stdair::Filename_T& Filename of the input demand file.  */
+    AIRINV_Service (const stdair::BasLogParams&, const stdair::AirlineCode_T&,
+                    const stdair::Filename_T& iInventoryInputFilename);
 
     /** Constructor.
         <br>The init() method is called; see the corresponding documentation
@@ -59,8 +63,10 @@ namespace AIRINV {
         is itself being initialised by another library service such as
         SIMCRS_Service).
         @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
-        @param AirlineCode_T& Code of the owner airline. */
-    AIRINV_Service (stdair::STDAIR_ServicePtr_T, const stdair::AirlineCode_T&);
+        @param AirlineCode_T& Code of the owner airline.
+        @param const stdair::Filename_T& Filename of the input demand file.  */
+    AIRINV_Service (stdair::STDAIR_ServicePtr_T, const stdair::AirlineCode_T&,
+                    const stdair::Filename_T& iInventoryInputFilename);
 
     /** Destructor. */
     ~AIRINV_Service();
@@ -104,8 +110,11 @@ namespace AIRINV {
         @param stdair::Inventory& Root of the Airline-dedicated BOM tree. */
     void initServiceContext (const stdair::AirlineCode_T&, stdair::Inventory&);
 
-    /** Initialise. */
-    void init ();
+    /** Initialise.
+        <br>The CSV file, describing the airline inventory for the
+        simulator, is parsed and instantiated in memory accordingly.
+        @param const stdair::Filename_T& Filename of the input demand file. */
+    void init (const stdair::Filename_T& iInventoryInputFilename);
 
     /** Finalise. */
     void finalise ();
