@@ -10,7 +10,7 @@
 #include <stdair/command/CmdAbstract.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-//#define BOOST_SPIRIT_DEBUG
+// #define BOOST_SPIRIT_DEBUG
 #include <airinv/basic/BasParserTypes.hpp>
 #include <airinv/bom/FlightDateStruct.hpp>
 
@@ -193,7 +193,31 @@ namespace AIRINV {
       /** Actor Function (functor). */
       void operator() (double iReal) const;
     };
-  
+
+    /** Store the parsed Yield Upper Range value. */
+    struct storeYieldUpperRange : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeYieldUpperRange (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+    
+    /** Store the parsed bucket availability. */
+    struct storeBucketAvaibality : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeBucketAvaibality (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+    
+    /** Store the parsed leg-cabin seat index. */
+    struct storeSeatIndex : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeSeatIndex (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+    
     /** Store the parsed segment boarding point. */
     struct storeSegmentBoardingPoint : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -266,9 +290,10 @@ namespace AIRINV {
         // Instantiation of rules
         boost::spirit::classic::rule<ScannerT> flight_date_list, flight_date,
           flight_date_end, flight_key, airline_code, flight_number,
-          flight_type_code,
-          date, leg, leg_key, leg_details, time,
-          leg_cabin_details, segment, segment_key, full_segment_cabin_details,
+          flight_type_code, date, leg, leg_key, leg_details,
+          full_leg_cabin_details, leg_cabin_details,
+          bucket_list, bucket_details,
+          time, segment, segment_key, full_segment_cabin_details,
           segment_cabin_details;
 
         /** Entry point of the parser. */

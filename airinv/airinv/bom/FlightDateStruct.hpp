@@ -12,8 +12,9 @@
 #include <stdair/bom/DoWStruct.hpp>
 // AirInv
 #include <airinv/basic/FlightTypeCode.hpp>
-#include <airinv/bom/LegCabinStruct.hpp>
 #include <airinv/bom/LegStruct.hpp>
+#include <airinv/bom/LegCabinStruct.hpp>
+#include <airinv/bom/BucketStruct.hpp>
 #include <airinv/bom/SegmentStruct.hpp>
 #include <airinv/bom/SegmentCabinStruct.hpp>
 #include <airinv/bom/FareFamilyStruct.hpp>
@@ -81,6 +82,7 @@ namespace AIRINV {
     stdair::Date_T _flightDate;
     FlightTypeCode _flightTypeCode;
     LegStructList_T _legList;
+    BucketStructList_T _bucketList;
     SegmentStructList_T _segmentList;
 
     /** Staging Leg (resp. Cabin) structure, gathering the result of
@@ -88,6 +90,7 @@ namespace AIRINV {
     bool _legAlreadyDefined;
     LegStruct_T _itLeg;
     LegCabinStruct_T _itLegCabin;
+    BucketStruct_T _itBucket;
 
     /** Staging Date. */
     unsigned int _itYear;

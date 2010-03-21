@@ -4,9 +4,9 @@
 // STL
 #include <cassert>
 #include <sstream>
-// STDAIR
+// StdAir
 #include <stdair/bom/LegCabin.hpp>
-// AIRINV
+// AirInv
 #include <airinv/bom/LegCabinStruct.hpp>
 
 namespace AIRINV {
@@ -14,15 +14,29 @@ namespace AIRINV {
   // //////////////////////////////////////////////////////////////////////
   const std::string LegCabinStruct_T::describe() const {
     std::ostringstream ostr;
-    ostr << "        " << _cabinCode << " " << _capacity << ", ";
+    ostr << "        " << _cabinCode << ", " << _saleableCapacity
+         << ", " << _adjustment  << ", " << _dcsRegrade
+         << ", " << _au << ", " << _avPool
+         << ", " << _upr << ", " << _nbOfBookings << ", " << _nav
+         << ", " << _gav << ", " << _acp << ", " << _etb
+         << ", " << _staffNbOfBookings << ", " << _wlNbOfBookings
+         << ", " << _groupNbOfBookings
+         << std::endl;
+
+    for (BucketStructList_T::const_iterator itBucket = _bucketList.begin();
+         itBucket != _bucketList.end(); itBucket++) {
+      const BucketStruct_T& lBucket = *itBucket;
+      ostr << lBucket.describe();
+    }
+    ostr << std::endl;
     return ostr.str();
   }
-
+  
   // //////////////////////////////////////////////////////////////////////
   void LegCabinStruct_T::fill (stdair::LegCabin& ioLegCabin,
                                const bool iAnalysisStatus) const {
     // Set the Capacity
-    ioLegCabin.setCapacity (_capacity, iAnalysisStatus);
+    ioLegCabin.setCapacity (_saleableCapacity, iAnalysisStatus);
   }
 
 }

@@ -42,7 +42,7 @@ namespace AIRINV {
     LegStruct_T();
   };
 
-  /** List of Leg strucutres. */
+  /** List of Leg structures. */
   typedef std::vector<LegStruct_T> LegStructList_T;
 
 }

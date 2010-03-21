@@ -7,9 +7,11 @@
 // STL
 #include <string>
 #include <vector>
-// STDAIR
+// StdAir
 #include <stdair/STDAIR_Types.hpp>
 #include <stdair/basic/StructAbstract.hpp>
+// AirInv
+#include <airinv/bom/BucketStruct.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -22,7 +24,21 @@ namespace AIRINV {
   struct LegCabinStruct_T : public stdair::StructAbstract {
     // Attributes
     stdair::CabinCode_T _cabinCode;
-    stdair::CabinCapacity_T _capacity;
+    stdair::CabinCapacity_T _saleableCapacity;
+    stdair::CapacityAdjustment_T _adjustment;
+    stdair::CapacityAdjustment_T _dcsRegrade;
+    stdair::AuthorizationLevel_T _au;
+    stdair::Availability_T _avPool;
+    stdair::UPR_T _upr;
+    stdair::NbOfBookings_T _nbOfBookings;
+    stdair::Availability_T _nav;
+    stdair::Availability_T _gav;
+    stdair::OverbookingRate_T _acp;
+    stdair::NbOfBookings_T _etb;
+    stdair::NbOfBookings_T _staffNbOfBookings;
+    stdair::NbOfBookings_T _wlNbOfBookings;
+    stdair::NbOfBookings_T _groupNbOfBookings;
+    BucketStructList_T _bucketList;
 
     /** Fill the LegCabin objects with the attributes of the
         LegCabinStruct. */

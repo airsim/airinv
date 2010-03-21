@@ -109,10 +109,11 @@ namespace AIRINV {
       // Set the (new) boarding point
       _flightDate._itLeg._boardingPoint = lBoardingPoint;
       
-      // As that's the beginning of a new leg, the list of cabins
-      // must be reset
+      // As that's the beginning of a new leg, the list of cabins and
+      // buckets must be reset
       _flightDate._itLeg._cabinList.clear();
-
+      _flightDate._itLegCabin._bucketList.clear();
+      
       // Add the airport code if it is not already stored in the airport lists
       _flightDate.addAirport (lBoardingPoint);
     }
@@ -207,8 +208,8 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeSaleableCapacity::operator() (double iReal) const { 
-      _flightDate._itLegCabin._capacity = iReal; 
-      //std::cout << "Capacity: " << iReal << std::endl;
+      _flightDate._itLegCabin._saleableCapacity = iReal; 
+      //std::cout << "Saleable capacity: " << iReal << std::endl;
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -218,8 +219,7 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeAU::operator() (double iReal) const {
-      // TODO: add _au to FlightDateStruct_T
-      // _flightDate._itLegCabin._au = iReal; 
+      _flightDate._itLegCabin._au = iReal; 
       //std::cout << "AU: " << iReal << std::endl;
     }
 
@@ -230,8 +230,7 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeUPR::operator() (double iReal) const {
-      // TODO: add _upr to FlightDateStruct_T
-      // _flightDate._itLegCabin._upr = iReal; 
+      _flightDate._itLegCabin._upr = iReal; 
       //std::cout << "UPR: " << iReal << std::endl;
     }
 
@@ -242,9 +241,8 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeBookingCounter::operator() (double iReal) const {
-      // TODO: add _bookingCounter to FlightDateStruct_T
-      // _flightDate._itLegCabin._bookingCounter = iReal; 
-      //std::cout << "Booking Counter: " << iReal << std::endl;
+      _flightDate._itLegCabin._nbOfBookings = iReal; 
+      //std::cout << "Nb of bookings: " << iReal << std::endl;
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -254,8 +252,7 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeNAV::operator() (double iReal) const {
-      // TODO: add _nav to FlightDateStruct_T
-      // _flightDate._itLegCabin._nav = iReal; 
+      _flightDate._itLegCabin._nav = iReal; 
       //std::cout << "NAV: " << iReal << std::endl;
     }
 
@@ -266,8 +263,7 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeGAV::operator() (double iReal) const {
-      // TODO: add _gav to FlightDateStruct_T
-      // _flightDate._itLegCabin._gav = iReal; 
+      _flightDate._itLegCabin._gav = iReal; 
       //std::cout << "GAV: " << iReal << std::endl;
     }
 
@@ -278,8 +274,7 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeACP::operator() (double iReal) const {
-      // TODO: add _acp to FlightDateStruct_T
-      // _flightDate._itLegCabin._acp = iReal; 
+      _flightDate._itLegCabin._acp = iReal; 
       //std::cout << "ACP: " << iReal << std::endl;
     }
 
@@ -290,16 +285,49 @@ namespace AIRINV {
     
     // //////////////////////////////////////////////////////////////////
     void storeETB::operator() (double iReal) const { 
-      // TODO: add _au to FlightDateStruct_T
-      // _flightDate._itLegCabin._etb = iReal; 
+      _flightDate._itLegCabin._etb = iReal; 
       //std::cout << "ETB: " << iReal << std::endl;
+    }
 
-      // The ETB is the last (according to the arrival order within
-      // the inventory input file) detail of the leg cabin. Hence,
-      // when an ETB is parsed, it means that the full cabin details
-      // have already been parsed as well: the cabin can thus be added
-      // to the leg.
-      _flightDate._itLeg._cabinList.push_back (_flightDate._itLegCabin);
+    // //////////////////////////////////////////////////////////////////
+    storeYieldUpperRange::storeYieldUpperRange(FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeYieldUpperRange::operator() (double iReal) const {
+      _flightDate._itBucket._yieldRangeUpperValue = iReal; 
+      //std::cout << "Yield Upper Range Value: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeBucketAvaibality::
+    storeBucketAvaibality (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeBucketAvaibality::operator() (double iReal) const {
+      _flightDate._itBucket._availability = iReal; 
+      //std::cout << "Availability: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeSeatIndex::storeSeatIndex (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeSeatIndex::operator() (double iReal) const {
+      _flightDate._itBucket._seatIndex = iReal; 
+      //std::cout << "Seat Index: " << iReal << std::endl;
+
+      // The Seat Index is the last (according to the arrival order
+      // within the inventory input file) detail of the bucket. Hence,
+      // when a Seat Index is parsed, it means that the full bucket
+      // details have already been parsed as well: the bucket can thus
+      // be added to the leg.
+      _flightDate._itLegCabin._bucketList.push_back (_flightDate._itBucket);
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -313,6 +341,10 @@ namespace AIRINV {
                                              iterator_t iStrEnd) const {
       stdair::AirportCode_T lBoardingPoint (iStr, iStrEnd);
       _flightDate._itSegment._boardingPoint = lBoardingPoint;
+
+      // When a segment is read, it means that the leg section is over.
+      // The parsed leg can therefore be added to the list.
+      _flightDate._itLeg._cabinList.push_back (_flightDate._itLegCabin);
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -366,7 +398,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     doEndFlightDate::doEndFlightDate (stdair::BomRoot& ioBomRoot,
-                              FlightDateStruct_T& ioFlightDate)
+                                      FlightDateStruct_T& ioFlightDate)
       : ParserSemanticAction (ioFlightDate), _bomRoot (ioBomRoot) {
     }
     
@@ -518,7 +550,7 @@ namespace AIRINV {
         | boost::spirit::classic::chseq_p("PSD")
         ;
       
-      leg = leg_key >> ';' >> leg_details >> +( ';' >> leg_cabin_details )
+      leg = leg_key >> ';' >> leg_details >> full_leg_cabin_details
         ;
 	 
       leg_key =
@@ -533,15 +565,12 @@ namespace AIRINV {
         >> ';' >> date[storeOffDate(self._flightDate)]
         >> ';' >> time[storeOffTime(self._flightDate)]
         ;
-        
-      time =
-        boost::spirit::classic::lexeme_d[
-                                (hours_p)[boost::spirit::classic::assign_a(self._flightDate._itHours)]
-                                >> (minutes_p)[boost::spirit::classic::assign_a(self._flightDate._itMinutes)]
-                                >> !((seconds_p)[boost::spirit::classic::assign_a(self._flightDate._itSeconds)])
-                                ]
-        ;
 
+      full_leg_cabin_details =
+        +( ';' >> leg_cabin_details )
+        >> bucket_list
+        ;
+        
       leg_cabin_details =
         (cabin_code_p)[storeLegCabinCode(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeSaleableCapacity(self._flightDate)]
@@ -554,6 +583,23 @@ namespace AIRINV {
         >> ',' >> (boost::spirit::classic::ureal_p)[storeETB(self._flightDate)]
         ;
         
+      time =
+        boost::spirit::classic::lexeme_d[
+                                (hours_p)[boost::spirit::classic::assign_a(self._flightDate._itHours)]
+                                >> (minutes_p)[boost::spirit::classic::assign_a(self._flightDate._itMinutes)]
+                                >> !((seconds_p)[boost::spirit::classic::assign_a(self._flightDate._itSeconds)])
+                                ]
+        ;
+      
+      bucket_list =
+        +( ',' >> bucket_details )
+        ;
+
+      bucket_details =
+        (boost::spirit::classic::ureal_p)[storeYieldUpperRange(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::real_p)[storeBucketAvaibality(self._flightDate)]
+        >> ':' >> (uint1_3_p)[storeSeatIndex(self._flightDate)];
+      
       segment_key =
         (airport_p)[storeSegmentBoardingPoint(self._flightDate)]
         >> ';'
@@ -585,8 +631,11 @@ namespace AIRINV {
       BOOST_SPIRIT_DEBUG_NODE (leg);
       BOOST_SPIRIT_DEBUG_NODE (leg_key);
       BOOST_SPIRIT_DEBUG_NODE (leg_details);
-      BOOST_SPIRIT_DEBUG_NODE (time);
+      BOOST_SPIRIT_DEBUG_NODE (full_leg_cabin_details);
       BOOST_SPIRIT_DEBUG_NODE (leg_cabin_details);
+      BOOST_SPIRIT_DEBUG_NODE (bucket_list);
+      BOOST_SPIRIT_DEBUG_NODE (bucket_details);
+      BOOST_SPIRIT_DEBUG_NODE (time);
       BOOST_SPIRIT_DEBUG_NODE (segment);
       BOOST_SPIRIT_DEBUG_NODE (segment_key);
       BOOST_SPIRIT_DEBUG_NODE (full_segment_cabin_details);
