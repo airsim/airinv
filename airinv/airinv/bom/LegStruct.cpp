@@ -3,9 +3,9 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
-#include <iostream>
+#include <sstream>
 // STDAIR
-#include <stdair/basic/BasConst_Period_BOM.hpp>
+#include <stdair/basic/BasConst_General.hpp>
 #include <stdair/bom/LegDate.hpp>
 // AIRINV
 #include <airinv/bom/LegStruct.hpp>
@@ -14,24 +14,17 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   LegStruct_T::LegStruct_T ()
-    : _boardingDateOffSet (stdair::DEFAULT_DATE_OFFSET),
-      _offDateOffSet (stdair::DEFAULT_DATE_OFFSET) {
+    : _boardingDate (stdair::DEFAULT_DATE), _offDate (stdair::DEFAULT_DATE) {
   }
     
   // //////////////////////////////////////////////////////////////////////
   const std::string LegStruct_T::describe() const {
     std::ostringstream ostr;
-    ostr << "    " << _boardingPoint << " / "
-         << boost::posix_time::to_simple_string(_boardingTime);
-    if (_boardingDateOffSet.days() != 0) {
-      ostr << " [" << _boardingDateOffSet.days() << "]";
-    }
-    ostr << " -- " << _offPoint << " / "
-         << boost::posix_time::to_simple_string(_offTime);
-    if (_offDateOffSet.days() != 0) {
-      ostr << " [" << _offDateOffSet.days() << "]";
-    }
-    ostr << " --> "
+    ostr << "    " << _boardingPoint << " / " << _boardingDate << " "
+         << boost::posix_time::to_simple_string(_boardingTime)
+         << " -- " << _offPoint << " / " << _offDate << " "
+         << boost::posix_time::to_simple_string(_offTime)
+         << " --> "
          << boost::posix_time::to_simple_string(_elapsed)
          << std::endl;
     for (LegCabinStructList_T::const_iterator itCabin = _cabinList.begin();
@@ -45,21 +38,18 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void LegStruct_T::fill (const stdair::Date_T& iRefDate,
-                          stdair::LegDate& ioLegDate) const {
+  void LegStruct_T::fill (stdair::LegDate& ioLegDate) const {
     // Set the Off Point
     ioLegDate.setOffPoint (_offPoint);
 
     // Set the Boarding Date
-    const boost::gregorian::date_duration lBoardingDateOffSet (_boardingDateOffSet);
-    ioLegDate.setBoardingDate (iRefDate+ lBoardingDateOffSet);
+    ioLegDate.setBoardingDate (_offDate);
 
     // Set the Boarding Time
     ioLegDate.setBoardingTime (_boardingTime);
       
     // Set the Off Date
-    const boost::gregorian::date_duration lOffDateOffSet (_offDateOffSet);
-    ioLegDate.setOffDate (iRefDate + lOffDateOffSet);
+    ioLegDate.setOffDate (_offDate);
 
     // Set the Off Time
     ioLegDate.setOffTime (_offTime);

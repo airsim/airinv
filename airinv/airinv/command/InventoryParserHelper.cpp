@@ -134,6 +134,17 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeBoardingDate::storeBoardingDate (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeBoardingDate::operator() (iterator_t iStr,
+                                        iterator_t iStrEnd) const {
+      _flightDate._itLeg._boardingDate = _flightDate.getDate();
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeBoardingTime::
     storeBoardingTime (FlightDateStruct_T& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
@@ -152,6 +163,16 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeOffDate::storeOffDate (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeOffDate::operator() (iterator_t iStr, iterator_t iStrEnd) const {
+      _flightDate._itLeg._offDate = _flightDate.getDate();
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeOffTime::
     storeOffTime (FlightDateStruct_T& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
@@ -164,12 +185,6 @@ namespace AIRINV {
         
       // Reset the number of seconds
       _flightDate._itSeconds = 0;
-
-      // As the boarding date off set is optional, it can be set only
-      // afterwards, based on the staging date off-set value
-      // (_flightDate._dateOffSet).
-      const stdair::DateOffSet_T lDateOffSet (_flightDate._dateOffSet);
-      _flightDate._itLeg._boardingDateOffSet = lDateOffSet;
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -185,21 +200,105 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeCapacity::
-    storeCapacity (FlightDateStruct_T& ioFlightDate)
+    storeSaleableCapacity::
+    storeSaleableCapacity (FlightDateStruct_T& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
     // //////////////////////////////////////////////////////////////////
-    void storeCapacity::operator() (double iReal) const { 
+    void storeSaleableCapacity::operator() (double iReal) const { 
       _flightDate._itLegCabin._capacity = iReal; 
       //std::cout << "Capacity: " << iReal << std::endl;
+    }
 
-      // The capacity is the last (according to the arrival order
-      // within the schedule input file) detail of the leg cabin. Hence,
-      // when a capacity is parsed, it means that the full cabin
-      // details have already been parsed as well: the cabin can
-      // thus be added to the leg.
+    // //////////////////////////////////////////////////////////////////
+    storeAU::storeAU (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeAU::operator() (double iReal) const {
+      // TODO: add _au to FlightDateStruct_T
+      // _flightDate._itLegCabin._au = iReal; 
+      //std::cout << "AU: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeUPR::storeUPR (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeUPR::operator() (double iReal) const {
+      // TODO: add _upr to FlightDateStruct_T
+      // _flightDate._itLegCabin._upr = iReal; 
+      //std::cout << "UPR: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeBookingCounter::storeBookingCounter (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeBookingCounter::operator() (double iReal) const {
+      // TODO: add _bookingCounter to FlightDateStruct_T
+      // _flightDate._itLegCabin._bookingCounter = iReal; 
+      //std::cout << "Booking Counter: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeNAV::storeNAV (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeNAV::operator() (double iReal) const {
+      // TODO: add _nav to FlightDateStruct_T
+      // _flightDate._itLegCabin._nav = iReal; 
+      //std::cout << "NAV: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeGAV::storeGAV (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeGAV::operator() (double iReal) const {
+      // TODO: add _gav to FlightDateStruct_T
+      // _flightDate._itLegCabin._gav = iReal; 
+      //std::cout << "GAV: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeACP::storeACP (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeACP::operator() (double iReal) const {
+      // TODO: add _acp to FlightDateStruct_T
+      // _flightDate._itLegCabin._acp = iReal; 
+      //std::cout << "ACP: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeETB::storeETB (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeETB::operator() (double iReal) const { 
+      // TODO: add _au to FlightDateStruct_T
+      // _flightDate._itLegCabin._etb = iReal; 
+      //std::cout << "ETB: " << iReal << std::endl;
+
+      // The ETB is the last (according to the arrival order within
+      // the inventory input file) detail of the leg cabin. Hence,
+      // when an ETB is parsed, it means that the full cabin details
+      // have already been parsed as well: the cabin can thus be added
+      // to the leg.
       _flightDate._itLeg._cabinList.push_back (_flightDate._itLegCabin);
     }
 
@@ -445,7 +544,14 @@ namespace AIRINV {
 
       leg_cabin_details =
         (cabin_code_p)[storeLegCabinCode(self._flightDate)]
-        >> ';' >> (boost::spirit::classic::ureal_p)[storeCapacity(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeSaleableCapacity(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeUPR(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeBookingCounter(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeNAV(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeGAV(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeACP(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::ureal_p)[storeETB(self._flightDate)]
         ;
         
       segment_key =

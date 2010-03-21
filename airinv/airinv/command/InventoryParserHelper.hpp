@@ -10,6 +10,7 @@
 #include <stdair/command/CmdAbstract.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
+//#define BOOST_SPIRIT_DEBUG
 #include <airinv/basic/BasParserTypes.hpp>
 #include <airinv/bom/FlightDateStruct.hpp>
 
@@ -129,10 +130,66 @@ namespace AIRINV {
       void operator() (char iChar) const;
     };
   
-    /** Store the parsed capacity. */
-    struct storeCapacity : public ParserSemanticAction {
+    /** Store the parsed saleable capacity. */
+    struct storeSaleableCapacity : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeCapacity (FlightDateStruct_T&);
+      storeSaleableCapacity (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+  
+    /** Store the parsed Authorisation Level (AU). */
+    struct storeAU : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeAU (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+  
+    /** Store the parsed Unsold Protected (UPR). */
+    struct storeUPR : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeUPR (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+  
+    /** Store the parsed booking counter. */
+    struct storeBookingCounter : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeBookingCounter (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+  
+    /** Store the parsed Net Availability (NAV). */
+    struct storeNAV : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNAV (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+  
+    /** Store the parsed Gross Availability (GAV). */
+    struct storeGAV : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeGAV (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+  
+    /** Store the parsed Average Cancellation Percentage (ACP). */
+    struct storeACP : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeACP (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+  
+    /** Store the parsed Expected To Board (ETB) number. */
+    struct storeETB : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeETB (FlightDateStruct_T&);
       /** Actor Function (functor). */
       void operator() (double iReal) const;
     };
