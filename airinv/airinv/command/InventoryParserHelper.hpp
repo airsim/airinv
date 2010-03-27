@@ -10,7 +10,7 @@
 #include <stdair/command/CmdAbstract.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-// #define BOOST_SPIRIT_DEBUG
+#define BOOST_SPIRIT_DEBUG
 #include <airinv/basic/BasParserTypes.hpp>
 #include <airinv/bom/FlightDateStruct.hpp>
 
@@ -241,7 +241,15 @@ namespace AIRINV {
       /** Actor Function (functor). */
       void operator() (char iChar) const;
     };
-  
+    
+    /** Store the parsed segment cabin number of bookings. */
+    struct storeSegmentCabinBookingCounter : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeSegmentCabinBookingCounter (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
     /** Store the parsed list of class codes. */
     struct storeClasses : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -290,11 +298,12 @@ namespace AIRINV {
         // Instantiation of rules
         boost::spirit::classic::rule<ScannerT> flight_date_list, flight_date,
           flight_date_end, flight_key, airline_code, flight_number,
-          flight_type_code, date, leg, leg_key, leg_details,
+          flight_type_code, date, leg_list, leg, leg_key, leg_details,
           full_leg_cabin_details, leg_cabin_details,
           bucket_list, bucket_details,
-          time, segment, segment_key, full_segment_cabin_details,
-          segment_cabin_details;
+          time, segment_list, segment, segment_key, full_segment_cabin_details,
+          segment_cabin_list, segment_cabin_key, segment_cabin_details,
+          class_list, class_key, class_details;
 
         /** Entry point of the parser. */
         boost::spirit::classic::rule<ScannerT> const& start() const;

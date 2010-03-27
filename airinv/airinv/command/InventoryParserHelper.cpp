@@ -338,7 +338,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     void storeSegmentBoardingPoint::operator() (iterator_t iStr,
-                                             iterator_t iStrEnd) const {
+                                                iterator_t iStrEnd) const {
       stdair::AirportCode_T lBoardingPoint (iStr, iStrEnd);
       _flightDate._itSegment._boardingPoint = lBoardingPoint;
 
@@ -369,6 +369,18 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
     void storeSegmentCabinCode::operator() (char iChar) const { 
       _flightDate._itSegmentCabin._cabinCode = iChar; 
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeSegmentCabinBookingCounter::
+    storeSegmentCabinBookingCounter (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeSegmentCabinBookingCounter::operator() (double iReal) const {
+      _flightDate._itSegmentCabin._nbOfBookings = iReal; 
+      //std::cout << "Nb of bookings: " << iReal << std::endl;
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -471,6 +483,9 @@ namespace AIRINV {
     /** Cabin code parser: chset_p("A-Z") */
     chset_t cabin_code_p ("A-Z");
 
+    /** Booking class code parser: chset_p("A-Z") */
+    chset_t class_code_p ("A-Z");
+
     /** Passenger type parser: chset_p("A-Z") */
     chset_t passenger_type_p ("A-Z");
 
@@ -505,8 +520,8 @@ namespace AIRINV {
         ;
       
       flight_date = flight_key
-        >> +( '/' >> leg )
-        >> +( '/' >> segment )
+        >> leg_list
+        >> segment_list
         >> flight_date_end[doEndFlightDate (self._bomRoot, self._flightDate)]
         ;
 
@@ -549,6 +564,10 @@ namespace AIRINV {
         | boost::spirit::classic::chseq_p("HID")
         | boost::spirit::classic::chseq_p("PSD")
         ;
+
+      leg_list =
+        +( '/' >> leg )
+        ;
       
       leg = leg_key >> ';' >> leg_details >> full_leg_cabin_details
         ;
@@ -567,8 +586,7 @@ namespace AIRINV {
         ;
 
       full_leg_cabin_details =
-        +( ';' >> leg_cabin_details )
-        >> bucket_list
+        +( ';' >> leg_cabin_details >> bucket_list )
         ;
         
       leg_cabin_details =
@@ -600,24 +618,72 @@ namespace AIRINV {
         >> ':' >> (boost::spirit::classic::real_p)[storeBucketAvaibality(self._flightDate)]
         >> ':' >> (uint1_3_p)[storeSeatIndex(self._flightDate)];
       
+      segment_list =
+        +( '/' >> segment )
+        ;
+      
+      segment = segment_key >> segment_cabin_list
+        ;
+
       segment_key =
         (airport_p)[storeSegmentBoardingPoint(self._flightDate)]
         >> ';'
         >> (airport_p)[storeSegmentOffPoint(self._flightDate)]
         ;
-	 
-      segment =
-        +(';' >> segment_key >> full_segment_cabin_details)
+
+      segment_cabin_list =
+        +( ';' >> segment_cabin_key >> ',' >> segment_cabin_details >> class_list )
         ;
 
-      full_segment_cabin_details =
-        +(';' >> segment_cabin_details)
-        ;
-
-      segment_cabin_details =
+      segment_cabin_key =
         (cabin_code_p)[storeSegmentCabinCode(self._flightDate)]
-        >> ';' >> (class_code_list_p)[storeClasses(self._flightDate)]
         ;
+      
+      segment_cabin_details =
+        (boost::spirit::classic::ureal_p)[storeSegmentCabinBookingCounter(self._flightDate)]
+        ;
+
+      class_list =
+        +( ',' >> class_key >> '|' >> class_details )
+        ;
+
+      class_key =
+        (class_code_p)[storeSegmentCabinCode(self._flightDate)]
+        ;
+      
+      class_details =
+        (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
+        ;
+  /*
+    stdair::ClassCode_T _classCode;
+    stdair::SubclassCode_T _subclassCode;
+    stdair::AuthorizationLevel_T _cumulatedProtection;
+    stdair::AuthorizationLevel_T _protection;
+    stdair::OverbookingRate_T _noShowPercentage;
+    stdair::OverbookingRate_T _overbookingPercentage;
+    stdair::NbOfBookings_T _nbOfBookings;
+    stdair::NbOfBookings_T _groupNbOfBookings;
+    stdair::NbOfBookings_T _groupPendingNbOfBookings;
+    stdair::NbOfBookings_T _staffNbOfBookings;
+    stdair::NbOfBookings_T _wlNbOfBookings;
+    stdair::NbOfBookings_T _etb;
+    stdair::Availability_T _netClassAvailability;
+    stdair::Availability_T _segmentAvailability;
+    stdair::Availability_T _netRevenueAvailability;
+   */
 
       // BOOST_SPIRIT_DEBUG_NODE (InventoryParser);
       BOOST_SPIRIT_DEBUG_NODE (flight_date_list);
@@ -628,6 +694,7 @@ namespace AIRINV {
       BOOST_SPIRIT_DEBUG_NODE (flight_number);
       BOOST_SPIRIT_DEBUG_NODE (flight_type_code);
       BOOST_SPIRIT_DEBUG_NODE (date);
+      BOOST_SPIRIT_DEBUG_NODE (leg_list);
       BOOST_SPIRIT_DEBUG_NODE (leg);
       BOOST_SPIRIT_DEBUG_NODE (leg_key);
       BOOST_SPIRIT_DEBUG_NODE (leg_details);
@@ -636,10 +703,16 @@ namespace AIRINV {
       BOOST_SPIRIT_DEBUG_NODE (bucket_list);
       BOOST_SPIRIT_DEBUG_NODE (bucket_details);
       BOOST_SPIRIT_DEBUG_NODE (time);
+      BOOST_SPIRIT_DEBUG_NODE (segment_list);
       BOOST_SPIRIT_DEBUG_NODE (segment);
       BOOST_SPIRIT_DEBUG_NODE (segment_key);
       BOOST_SPIRIT_DEBUG_NODE (full_segment_cabin_details);
+      BOOST_SPIRIT_DEBUG_NODE (segment_cabin_list);
+      BOOST_SPIRIT_DEBUG_NODE (segment_cabin_key);
       BOOST_SPIRIT_DEBUG_NODE (segment_cabin_details);
+      BOOST_SPIRIT_DEBUG_NODE (class_list);
+      BOOST_SPIRIT_DEBUG_NODE (class_key);
+      BOOST_SPIRIT_DEBUG_NODE (class_details);
     }
 
     // //////////////////////////////////////////////////////////////////

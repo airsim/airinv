@@ -26,6 +26,7 @@ namespace AIRINV {
     stdair::CabinCode_T _cabinCode;
     stdair::ClassList_String_T _classes;
     stdair::FamilyCode_T _itFamilyCode;
+    stdair::NbOfBookings_T _nbOfBookings;
     FareFamilyStructList_T _fareFamilies;
 
     /** Fill the SegmentCabin objects with the attributes of the

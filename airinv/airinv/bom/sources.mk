@@ -7,6 +7,7 @@ bom_h_sources = $(top_srcdir)/airinv/bom/BomAbstract.hpp \
 				$(top_srcdir)/airinv/bom/SegmentStruct.hpp \
 				$(top_srcdir)/airinv/bom/SegmentCabinStruct.hpp \
 				$(top_srcdir)/airinv/bom/FareFamilyStruct.hpp \
+				$(top_srcdir)/airinv/bom/BookingClassStruct.hpp \
 				$(top_srcdir)/airinv/bom/AirportList.hpp
 bom_cc_sources = $(top_srcdir)/airinv/bom/BomAbstract.cpp \
 				$(top_srcdir)/airinv/bom/Inventory.cpp \
@@ -16,4 +17,5 @@ bom_cc_sources = $(top_srcdir)/airinv/bom/BomAbstract.cpp \
 				$(top_srcdir)/airinv/bom/BucketStruct.cpp \
 				$(top_srcdir)/airinv/bom/SegmentStruct.cpp \
 				$(top_srcdir)/airinv/bom/SegmentCabinStruct.cpp \
-				$(top_srcdir)/airinv/bom/FareFamilyStruct.cpp
+				$(top_srcdir)/airinv/bom/FareFamilyStruct.cpp \
+				$(top_srcdir)/airinv/bom/BookingClassStruct.cpp
