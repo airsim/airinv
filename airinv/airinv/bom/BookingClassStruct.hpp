@@ -38,7 +38,10 @@ namespace AIRINV {
     stdair::Availability_T _netClassAvailability;
     stdair::Availability_T _segmentAvailability;
     stdair::Availability_T _netRevenueAvailability;
-    
+
+    /** Returns the concatenation of the class and subclass codes. */
+    stdair::ClassCode_T getFullSubclassCode() const;
+
     /** Fill the BookingClass objects with the attributes of the
         BookingClassStruct. */
     void fill (stdair::BookingClass&) const;

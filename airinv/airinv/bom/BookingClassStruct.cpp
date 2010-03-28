@@ -17,6 +17,13 @@ namespace AIRINV {
   }
   
   // //////////////////////////////////////////////////////////////////////
+  stdair::ClassCode_T BookingClassStruct_T::getFullSubclassCode() const {
+    std::ostringstream oStr;
+    oStr << _classCode << _subclassCode;
+    return oStr.str();
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
   const std::string BookingClassStruct_T::describe() const {
     std::ostringstream ostr;
     ostr << "            " << _classCode << _subclassCode

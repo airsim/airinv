@@ -384,8 +384,98 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeClasses::
-    storeClasses (FlightDateStruct_T& ioFlightDate)
+    storeClassCode::storeClassCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeClassCode::operator() (char iChar) const { 
+      _flightDate._itBookingClass._classCode = iChar; 
+      //std::cout << "Booking class code: " << iChar << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeSubclassCode::storeSubclassCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeSubclassCode::operator() (unsigned int iNumber) const { 
+      _flightDate._itBookingClass._subclassCode = iNumber; 
+      //std::cout << "Sub-class code: " << iNumber << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeParentClassCode::
+    storeParentClassCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeParentClassCode::operator() (char iChar) const { 
+      _flightDate._itClassCode = iChar; 
+      //std::cout << "Parent booking class code: " << iChar << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeParentSubclassCode::
+    storeParentSubclassCode (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeParentSubclassCode::operator() (unsigned int iNumber) const { 
+      _flightDate._itSubclassCode = iNumber; 
+      //std::cout << "Parent sub-class code: " << iNumber << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeCumulatedProtection::
+    storeCumulatedProtection (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeCumulatedProtection::operator() (double iReal) const {
+      _flightDate._itBookingClass._cumulatedProtection = iReal; 
+      //std::cout << "Cumulated protection: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeProtection::storeProtection (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeProtection::operator() (double iReal) const {
+      _flightDate._itBookingClass._protection = iReal; 
+      //std::cout << "Protection: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeNoShow::storeNoShow (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeNoShow::operator() (double iReal) const {
+      _flightDate._itBookingClass._noShowPercentage = iReal; 
+      //std::cout << "No-Show percentage: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeOverbooking::storeOverbooking (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeOverbooking::operator() (double iReal) const {
+      _flightDate._itBookingClass._overbookingPercentage = iReal; 
+      //std::cout << "Overbooking percentage: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeClasses::storeClasses (FlightDateStruct_T& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
 
@@ -402,7 +492,7 @@ namespace AIRINV {
       // can thus be added to the segment.
       if (_flightDate._areSegmentDefinitionsSpecific == true) {
         _flightDate.addSegmentCabin (_flightDate._itSegment,
-                                       _flightDate._itSegmentCabin);
+                                     _flightDate._itSegmentCabin);
       } else {
         _flightDate.addSegmentCabin (_flightDate._itSegmentCabin);
       }
@@ -529,8 +619,7 @@ namespace AIRINV {
         boost::spirit::classic::ch_p(';')
         ;
       
-      flight_key =
-        date[storeSnapshotDate(self._flightDate)]
+      flight_key = date[storeSnapshotDate(self._flightDate)]
         >> '/' >> airline_code
         >> '/' >> flight_number
         >> '/' >> date[storeFlightDate(self._flightDate)]
@@ -558,45 +647,39 @@ namespace AIRINV {
         ;
 
       flight_type_code =
-        boost::spirit::classic::chseq_p("INT")
-        | boost::spirit::classic::chseq_p("DOM")
-        | boost::spirit::classic::chseq_p("GRD")
-        | boost::spirit::classic::chseq_p("HID")
-        | boost::spirit::classic::chseq_p("PSD")
+        ( boost::spirit::classic::chseq_p("INT")
+          | boost::spirit::classic::chseq_p("DOM")
+          | boost::spirit::classic::chseq_p("GRD") )
+        >> !( '/' >> ( boost::spirit::classic::chseq_p("HID")
+                       | boost::spirit::classic::chseq_p("PSD") ) )
         ;
 
-      leg_list =
-        +( '/' >> leg )
+      leg_list = +( '/' >> leg )
         ;
       
       leg = leg_key >> ';' >> leg_details >> full_leg_cabin_details
         ;
 	 
-      leg_key =
-        (airport_p)[storeLegBoardingPoint(self._flightDate)]
-        >> ';'
-        >> (airport_p)[storeLegOffPoint(self._flightDate)]
+      leg_key = (airport_p)[storeLegBoardingPoint(self._flightDate)]
+        >> ';' >> (airport_p)[storeLegOffPoint(self._flightDate)]
         ;
 	 
-      leg_details =
-        date[storeBoardingDate(self._flightDate)]
+      leg_details = date[storeBoardingDate(self._flightDate)]
         >> ';' >> time[storeBoardingTime(self._flightDate)]
         >> ';' >> date[storeOffDate(self._flightDate)]
         >> ';' >> time[storeOffTime(self._flightDate)]
         ;
 
-      full_leg_cabin_details =
-        +( ';' >> leg_cabin_details >> bucket_list )
+      full_leg_cabin_details = +( ';' >> leg_cabin_details >> bucket_list )
         ;
         
-      leg_cabin_details =
-        (cabin_code_p)[storeLegCabinCode(self._flightDate)]
+      leg_cabin_details = (cabin_code_p)[storeLegCabinCode(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeSaleableCapacity(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeUPR(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeBookingCounter(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeNAV(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeGAV(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::real_p)[storeNAV(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::real_p)[storeGAV(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeACP(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeETB(self._flightDate)]
         ;
@@ -609,8 +692,7 @@ namespace AIRINV {
                                 ]
         ;
       
-      bucket_list =
-        +( ',' >> bucket_details )
+      bucket_list = +( ',' >> bucket_details )
         ;
 
       bucket_details =
@@ -618,17 +700,14 @@ namespace AIRINV {
         >> ':' >> (boost::spirit::classic::real_p)[storeBucketAvaibality(self._flightDate)]
         >> ':' >> (uint1_3_p)[storeSeatIndex(self._flightDate)];
       
-      segment_list =
-        +( '/' >> segment )
+      segment_list = +( '/' >> segment )
         ;
       
       segment = segment_key >> segment_cabin_list
         ;
 
-      segment_key =
-        (airport_p)[storeSegmentBoardingPoint(self._flightDate)]
-        >> ';'
-        >> (airport_p)[storeSegmentOffPoint(self._flightDate)]
+      segment_key = (airport_p)[storeSegmentBoardingPoint(self._flightDate)]
+        >> ';' >> (airport_p)[storeSegmentOffPoint(self._flightDate)]
         ;
 
       segment_cabin_list =
@@ -643,27 +722,34 @@ namespace AIRINV {
         (boost::spirit::classic::ureal_p)[storeSegmentCabinBookingCounter(self._flightDate)]
         ;
 
-      class_list =
-        +( ',' >> class_key >> '|' >> class_details )
+      class_list = +( ',' >> class_key >> '|' >> class_details )
         ;
 
-      class_key =
-        (class_code_p)[storeSegmentCabinCode(self._flightDate)]
+      class_key = (class_code_p)[storeClassCode(self._flightDate)]
         ;
-      
-      class_details =
-        (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+
+      parent_subclass_code =
+        (class_code_p)[storeParentClassCode(self._flightDate)]
+        >> (uint1_2_p)[storeParentSubclassCode(self._flightDate)]
+        ;
+
+      class_protection =
+        (boost::spirit::classic::ureal_p)[storeProtection(self._flightDate)]
+        ;
+        
+      class_details = (uint1_2_p)[storeSubclassCode(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeCumulatedProtection(self._flightDate)]
+        >> ':' >> !( parent_subclass_code )
+        >> ':' >> !( class_protection )
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeNoShow(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeOverbooking(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
         ;
@@ -712,6 +798,8 @@ namespace AIRINV {
       BOOST_SPIRIT_DEBUG_NODE (segment_cabin_details);
       BOOST_SPIRIT_DEBUG_NODE (class_list);
       BOOST_SPIRIT_DEBUG_NODE (class_key);
+      BOOST_SPIRIT_DEBUG_NODE (parent_subclass_code);
+      BOOST_SPIRIT_DEBUG_NODE (class_protection);
       BOOST_SPIRIT_DEBUG_NODE (class_details);
     }
 

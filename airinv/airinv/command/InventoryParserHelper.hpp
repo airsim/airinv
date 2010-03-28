@@ -10,7 +10,7 @@
 #include <stdair/command/CmdAbstract.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-#define BOOST_SPIRIT_DEBUG
+//#define BOOST_SPIRIT_DEBUG
 #include <airinv/basic/BasParserTypes.hpp>
 #include <airinv/bom/FlightDateStruct.hpp>
 
@@ -250,6 +250,70 @@ namespace AIRINV {
       void operator() (double iReal) const;
     };
 
+    /** Store the parsed booking class code. */
+    struct storeClassCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeClassCode (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (char iChar) const;
+    };
+    
+    /** Store the parsed sub-class code. */
+    struct storeSubclassCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeSubclassCode (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int iNumber) const;
+    };
+    
+    /** Store the parsed class code of the parent sub-class. */
+    struct storeParentClassCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeParentClassCode (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (char iChar) const;
+    };
+    
+    /** Store the parsed sub-class code of the parent sub-class. */
+    struct storeParentSubclassCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeParentSubclassCode (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int iNumber) const;
+    };
+    
+    /** Store the parsed cumulated protection (at booking class level). */
+    struct storeCumulatedProtection : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeCumulatedProtection (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed protection (at booking class level). */
+    struct storeProtection : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeProtection (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed No-Show percentage (at booking class level). */
+    struct storeNoShow : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNoShow (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed Overbooking percentage (at booking class level). */
+    struct storeOverbooking : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeOverbooking (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
     /** Store the parsed list of class codes. */
     struct storeClasses : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -303,7 +367,8 @@ namespace AIRINV {
           bucket_list, bucket_details,
           time, segment_list, segment, segment_key, full_segment_cabin_details,
           segment_cabin_list, segment_cabin_key, segment_cabin_details,
-          class_list, class_key, class_details;
+          class_list, class_key, parent_subclass_code, class_protection,
+          class_details;
 
         /** Entry point of the parser. */
         boost::spirit::classic::rule<ScannerT> const& start() const;

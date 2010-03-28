@@ -7,11 +7,12 @@
 // STL
 #include <string>
 #include <vector>
-// STDAIR
+// StdAir
 #include <stdair/STDAIR_Types.hpp>
 #include <stdair/basic/StructAbstract.hpp>
-// AIRINV
+// AirInv
 #include <airinv/bom/FareFamilyStruct.hpp>
+#include <airinv/bom/BookingClassStruct.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -28,7 +29,8 @@ namespace AIRINV {
     stdair::FamilyCode_T _itFamilyCode;
     stdair::NbOfBookings_T _nbOfBookings;
     FareFamilyStructList_T _fareFamilies;
-
+    BookingClassStructList_T _classList;
+    
     /** Fill the SegmentCabin objects with the attributes of the
         SegmentCabinStruct. */
     void fill (stdair::SegmentCabin&) const;

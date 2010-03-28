@@ -112,6 +112,9 @@ namespace AIRINV {
     bool _areSegmentDefinitionsSpecific;
     SegmentStruct_T _itSegment;
     SegmentCabinStruct_T _itSegmentCabin;
+    BookingClassStruct_T _itBookingClass;
+    stdair::ClassCode_T _itClassCode;
+    stdair::SubclassCode_T _itSubclassCode;
   };
 
 }
