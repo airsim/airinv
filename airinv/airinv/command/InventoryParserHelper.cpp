@@ -561,8 +561,8 @@ namespace AIRINV {
     /** Airport Parser: repeat_p(3)[chset_p("0-9A-Z")] */
     repeat_p_t airport_p (chset_t("0-9A-Z").derived(), 3, 3);
       
-    /** Hour Parser: limit_d(0u, 23u)[uint2_p] */
-    bounded1_2_p_t hours_p (uint1_2_p.derived(), 0u, 23u);
+    /** Hour Parser: limit_d(0u, 24u)[uint2_p] */
+    bounded1_2_p_t hours_p (uint1_2_p.derived(), 0u, 24u);
 
     /** Minute Parser: limit_d(0u, 59u)[uint2_p] */
     bounded2_p_t minutes_p (uint2_p.derived(), 0u, 59u);
@@ -670,12 +670,12 @@ namespace AIRINV {
         >> ';' >> time[storeOffTime(self._flightDate)]
         ;
 
-      full_leg_cabin_details = +( ';' >> leg_cabin_details >> bucket_list )
+      full_leg_cabin_details = +( ';' >> leg_cabin_details >> !bucket_list )
         ;
         
       leg_cabin_details = (cabin_code_p)[storeLegCabinCode(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeSaleableCapacity(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeUPR(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeBookingCounter(self._flightDate)]
         >> ',' >> (boost::spirit::classic::real_p)[storeNAV(self._flightDate)]
