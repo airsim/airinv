@@ -687,12 +687,12 @@ namespace AIRINV {
       leg_cabin_details = (cabin_code_p)[storeLegCabinCode(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeSaleableCapacity(self._flightDate)]
         >> ',' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeUPR(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeBookingCounter(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::real_p)[storeUPR(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::real_p)[storeBookingCounter(self._flightDate)]
         >> ',' >> (boost::spirit::classic::real_p)[storeNAV(self._flightDate)]
         >> ',' >> (boost::spirit::classic::real_p)[storeGAV(self._flightDate)]
         >> ',' >> (boost::spirit::classic::ureal_p)[storeACP(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeETB(self._flightDate)]
+        >> ',' >> (boost::spirit::classic::real_p)[storeETB(self._flightDate)]
         ;
         
       time =
