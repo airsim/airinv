@@ -453,6 +453,17 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeNego::storeNego (FlightDateStruct_T& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeNego::operator() (double iReal) const {
+      _flightDate._itBookingClass._nego = iReal; 
+      //std::cout << "Negotiated allotment: " << iReal << std::endl;
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeNoShow::storeNoShow (FlightDateStruct_T& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
@@ -737,6 +748,10 @@ namespace AIRINV {
         (boost::spirit::classic::ureal_p)[storeProtection(self._flightDate)]
         ;
         
+      class_nego =
+        (boost::spirit::classic::ureal_p)[storeNego(self._flightDate)]
+        ;
+        
       class_details = (uint1_2_p)[storeSubclassCode(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeCumulatedProtection(self._flightDate)]
         >> ':' >> !( parent_subclass_code )
@@ -749,6 +764,7 @@ namespace AIRINV {
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
+        >> !( ':' >> class_nego )
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
@@ -800,6 +816,7 @@ namespace AIRINV {
       BOOST_SPIRIT_DEBUG_NODE (class_key);
       BOOST_SPIRIT_DEBUG_NODE (parent_subclass_code);
       BOOST_SPIRIT_DEBUG_NODE (class_protection);
+      BOOST_SPIRIT_DEBUG_NODE (class_nego);
       BOOST_SPIRIT_DEBUG_NODE (class_details);
     }
 

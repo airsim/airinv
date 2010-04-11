@@ -27,6 +27,7 @@ namespace AIRINV {
     stdair::SubclassCode_T _subclassCode;
     stdair::AuthorizationLevel_T _cumulatedProtection;
     stdair::AuthorizationLevel_T _protection;
+    stdair::NbOfSeats_T _nego;
     stdair::OverbookingRate_T _noShowPercentage;
     stdair::OverbookingRate_T _overbookingPercentage;
     stdair::NbOfBookings_T _nbOfBookings;

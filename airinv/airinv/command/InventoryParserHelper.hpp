@@ -298,6 +298,14 @@ namespace AIRINV {
       void operator() (double iReal) const;
     };
 
+    /** Store the negotiated allotment (at booking class level). */
+    struct storeNego : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNego (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
     /** Store the parsed No-Show percentage (at booking class level). */
     struct storeNoShow : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -367,7 +375,7 @@ namespace AIRINV {
           bucket_list, bucket_details,
           time, segment_list, segment, segment_key, full_segment_cabin_details,
           segment_cabin_list, segment_cabin_key, segment_cabin_details,
-          class_list, class_key, parent_subclass_code, class_protection,
+          class_list, class_key, parent_subclass_code, class_protection, class_nego,
           class_details;
 
         /** Entry point of the parser. */

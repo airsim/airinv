@@ -28,6 +28,7 @@ namespace AIRINV {
     std::ostringstream ostr;
     ostr << "            " << _classCode << _subclassCode
          << " " << _cumulatedProtection << ":" << _protection
+         << " " << _nego
          << " " << _noShowPercentage << ":" << _overbookingPercentage
          << " " << _nbOfBookings << ":" << _groupNbOfBookings
          << ":" << _groupPendingNbOfBookings << ":" << _staffNbOfBookings
