@@ -10,7 +10,7 @@
 #include <stdair/command/CmdAbstract.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-#define BOOST_SPIRIT_DEBUG
+//#define BOOST_SPIRIT_DEBUG
 #include <airinv/basic/BasParserTypes.hpp>
 #include <airinv/bom/FlightDateStruct.hpp>
 
