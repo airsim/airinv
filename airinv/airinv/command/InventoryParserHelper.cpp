@@ -764,7 +764,7 @@ namespace AIRINV {
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::ureal_p)[storeAU(self._flightDate)]
-        >> !( ':' >> class_nego )
+        >> ':' >> !( class_nego )
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
         >> ':' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
