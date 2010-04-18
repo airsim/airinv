@@ -28,8 +28,7 @@ namespace AIRINV {
   private:
     /// //////////////// Constructors and destructors /////////////
     /** Main constructor. */
-    AIRINV_ServiceContext (const stdair::AirlineCode_T& iAirlineCode,
-                           stdair::Inventory& ioInventory);
+    AIRINV_ServiceContext (const stdair::AirlineCode_T&, stdair::Inventory&);
     /** Default constructor. (not to be used). */
     AIRINV_ServiceContext ();
     /** Default copy constructor (not to be used). */

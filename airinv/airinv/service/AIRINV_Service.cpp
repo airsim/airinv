@@ -131,10 +131,10 @@ namespace AIRINV {
   // //////////////////////////////////////////////////////////////////////
   void AIRINV_Service::
   initServiceContext (const stdair::AirlineCode_T& iAirlineCode,
-                      stdair::Inventory& ioIventory) {
+                      stdair::Inventory& ioInventory) {
     // Initialise the context
     AIRINV_ServiceContext& lAIRINV_ServiceContext = 
-      FacAirinvServiceContext::instance().create (iAirlineCode, ioIventory);
+      FacAirinvServiceContext::instance().create (iAirlineCode, ioInventory);
     _airinvServiceContext = &lAIRINV_ServiceContext;
   }
 

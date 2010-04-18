@@ -1,4 +1,4 @@
-## command sub-directory
+## service sub-directory
 include $(top_srcdir)/Makefile.common
 include $(srcdir)/sources.mk
 
@@ -9,3 +9,4 @@ libsvc_la_CXXFLAGS = $(BOOST_CFLAGS)
 
 #pkgincludedir = $(includedir)/@PACKAGE@/service
 #pkginclude_HEADERS = $(svc_h_sources)
+

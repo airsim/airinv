@@ -3,7 +3,6 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
-#include <iostream>
 #include <sstream>
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>

@@ -1,5 +1,5 @@
-#ifndef __AIRINV_CMD_INDEXBUILDER_HPP
-#define __AIRINV_CMD_INDEXBUILDER_HPP
+#ifndef __AIRINV_CMD_INVENTORYMANAGER_HPP
+#define __AIRINV_CMD_INVENTORYMANAGER_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -33,4 +33,4 @@ namespace AIRINV {
   };
 
 }
-#endif // __AIRINV_CMD_INDEXBUILDER_HPP
+#endif // __AIRINV_CMD_INVENTORYMANAGER_HPP

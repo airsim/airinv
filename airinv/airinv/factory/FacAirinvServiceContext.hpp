@@ -38,7 +38,7 @@ namespace AIRINV {
         <br>This new object is added to the list of instantiated objects.
         @return AIRINV_ServiceContext& The newly created object. */
     AIRINV_ServiceContext& create (const std::string& iTravelDatabaseName,
-                                   stdair::Inventory& ioIventory);
+                                   stdair::Inventory&);
 
     
   protected:
