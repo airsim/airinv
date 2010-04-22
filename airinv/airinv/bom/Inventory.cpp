@@ -16,8 +16,8 @@
 namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
-  Inventory::Inventory (const BomKey_T& iKey,
-                        BomStructure_T& ioInventoryStructure)
+  Inventory::Inventory (const Key_T& iKey,
+                        Structure_T& ioInventoryStructure)
     : stdair::Inventory (iKey, ioInventoryStructure) {
   }
   

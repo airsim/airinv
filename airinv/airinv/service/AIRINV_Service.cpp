@@ -13,7 +13,6 @@
 #include <stdair/bom/BomManager.hpp> // for display()
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/AirlineFeature.hpp>
-#include <stdair/bom/AirlineFeatureSet.hpp>
 #include <stdair/factory/FacBomContent.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
