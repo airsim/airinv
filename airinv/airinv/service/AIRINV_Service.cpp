@@ -195,27 +195,14 @@ namespace AIRINV {
       throw stdair::FileNotFoundException();
     }
 
-    // Retrieve the AirInv service context
+    // Retrieve the inventory object.
     assert (_airinvServiceContext != NULL);
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
-
-    // Retrieve the StdAir service context
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service =
-      lAIRINV_ServiceContext.getSTDAIR_ServicePtr();
-    assert (lSTDAIR_Service != NULL);
+    stdair::Inventory& lInventory = lAIRINV_ServiceContext.getInventory();
     
-    // Get the root of the BOM tree, on which all of the other BOM objects
-    // will be attached
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service->getBomRoot();
-
     // Initialise the airline inventory
-    InventoryParser::generateInventory (iInventoryInputFilename, lBomRoot);
+    InventoryParser::buildInventory (iInventoryInputFilename, lInventory);
 
-    // DEBUG
-    STDAIR_LOG_DEBUG ("Generated BomRoot:");
-    std::ostringstream oStream;
-    stdair::BomManager::display (oStream, lBomRoot);
-    STDAIR_LOG_DEBUG (oStream.str());
   }
   
   // //////////////////////////////////////////////////////////////////////

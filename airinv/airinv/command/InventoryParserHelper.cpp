@@ -6,7 +6,7 @@
 // StdAir
 #include <stdair/service/Logger.hpp>
 // Airinv
-#include <airinv/command/InventoryGenerator.hpp>
+#include <airinv/command/InventoryBuilder.hpp>
 #include <airinv/command/InventoryParserHelper.hpp>
 
 namespace AIRINV {
@@ -510,9 +510,9 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    doEndFlightDate::doEndFlightDate (stdair::BomRoot& ioBomRoot,
+    doEndFlightDate::doEndFlightDate (stdair::Inventory& ioInventory,
                                       FlightDateStruct_T& ioFlightDate)
-      : ParserSemanticAction (ioFlightDate), _bomRoot (ioBomRoot) {
+      : ParserSemanticAction (ioFlightDate), _inventory (ioInventory) {
     }
     
     // //////////////////////////////////////////////////////////////////
@@ -523,8 +523,8 @@ namespace AIRINV {
       // DEBUG: Display the result
       // STDAIR_LOG_DEBUG ("FlightDate: " << _flightDate.describe());
 
-      // Create the FlightDate BOM objects
-      InventoryGenerator::createFlightDate (_bomRoot, _flightDate);
+      // Build the FlightDate BOM objects
+      InventoryBuilder::buildFlightDate (_inventory, _flightDate);
     }
 
       
@@ -605,9 +605,9 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
 
     // //////////////////////////////////////////////////////////////////
-    InventoryParser::InventoryParser (stdair::BomRoot& ioBomRoot,
+    InventoryParser::InventoryParser (stdair::Inventory& ioInventory,
                                 FlightDateStruct_T& ioFlightDate) 
-      : _bomRoot (ioBomRoot), _flightDate (ioFlightDate) {
+      : _inventory (ioInventory), _flightDate (ioFlightDate) {
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -623,7 +623,7 @@ namespace AIRINV {
       flight_date = flight_key
         >> leg_list
         >> segment_list
-        >> flight_date_end[doEndFlightDate (self._bomRoot, self._flightDate)]
+        >> flight_date_end[doEndFlightDate (self._inventory, self._flightDate)]
         ;
 
       flight_date_end =
@@ -838,9 +838,9 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   InventoryFileParser::
-  InventoryFileParser (stdair::BomRoot& ioBomRoot,
+  InventoryFileParser (stdair::Inventory& ioInventory,
                     const std::string& iFilename)
-    : _filename (iFilename), _bomRoot (ioBomRoot) {
+    : _filename (iFilename), _inventory (ioInventory) {
     init();
   }
 
@@ -861,17 +861,17 @@ namespace AIRINV {
   }
     
   // //////////////////////////////////////////////////////////////////////
-  bool InventoryFileParser::generateInventory () {
+  bool InventoryFileParser::buildInventory () {
     bool oResult = false;
       
     STDAIR_LOG_DEBUG ("Parsing inventory input file: " << _filename);
 
     // Initialise the parser (grammar) with the helper/staging structure.
-    InventoryParserHelper::InventoryParser lInventoryParser (_bomRoot,
+    InventoryParserHelper::InventoryParser lInventoryParser (_inventory,
                                                              _flightDate);
       
     // Launch the parsing of the file and, thanks to the doEndFlightDate
-    // call-back structure, the building of the whole BomRoot BOM
+    // call-back structure, the building of the whole Inventory BOM
     // (i.e., including Inventory, FlightDate, LegDate, SegmentDate, etc.)
     boost::spirit::classic::parse_info<iterator_t> info =
       boost::spirit::classic::parse (_startIterator, _endIterator,

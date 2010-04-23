@@ -16,7 +16,7 @@
 
 // Forward declarations
 namespace stdair {
-  class BomRoot;
+  class Inventory;
 }
 
 namespace AIRINV {
@@ -333,11 +333,11 @@ namespace AIRINV {
     /** Mark the end of the inventory parsing. */
     struct doEndFlightDate : public ParserSemanticAction {
       /** Actor Constructor. */
-      doEndFlightDate (stdair::BomRoot&, FlightDateStruct_T&);
+      doEndFlightDate (stdair::Inventory&, FlightDateStruct_T&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
       /** Actor Specific Context. */
-      stdair::BomRoot& _bomRoot;
+      stdair::Inventory& _inventory;
     };
   
 
@@ -361,7 +361,7 @@ namespace AIRINV {
     struct InventoryParser : 
       public boost::spirit::classic::grammar<InventoryParser> {
 
-      InventoryParser (stdair::BomRoot&, FlightDateStruct_T&);
+      InventoryParser (stdair::Inventory&, FlightDateStruct_T&);
 
       template <typename ScannerT>
       struct definition {
@@ -383,7 +383,7 @@ namespace AIRINV {
       };
 
       // Parser Context
-      stdair::BomRoot& _bomRoot;
+      stdair::Inventory& _inventory;
       FlightDateStruct_T& _flightDate;
     };
 
@@ -403,11 +403,11 @@ namespace AIRINV {
   class InventoryFileParser : public stdair::CmdAbstract {
   public:
     /** Constructor. */
-    InventoryFileParser (stdair::BomRoot&,
+    InventoryFileParser (stdair::Inventory&,
                          const stdair::Filename_T& iInventoryInputFilename);
 
     /** Parse the inventory input file. */
-    bool generateInventory ();
+    bool buildInventory ();
       
   private:
     /** Initialise. */
@@ -425,7 +425,7 @@ namespace AIRINV {
     iterator_t _endIterator;
       
     /** Root of the BOM tree. */
-    stdair::BomRoot& _bomRoot;
+    stdair::Inventory& _inventory;
 
     /** FlightDate Structure. */
     FlightDateStruct_T _flightDate;

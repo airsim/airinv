@@ -5,9 +5,7 @@
 #include <cassert>
 #include <string>
 // StdAir
-#include <stdair/basic/DictionaryManager.hpp>
 #include <stdair/bom/Inventory.hpp>
-#include <stdair/bom/Network.hpp>
 // Airinv
 #include <airinv/command/InventoryParserHelper.hpp>
 #include <airinv/command/InventoryParser.hpp>
@@ -16,14 +14,14 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   void InventoryParser::
-  generateInventory (const stdair::Filename_T& iFilename,
-                  stdair::BomRoot& ioBomRoot) {
+  buildInventory (const stdair::Filename_T& iFilename,
+                  stdair::Inventory& ioInventory) {
     // Initialise the inventory file parser.
-    InventoryFileParser lInventoryParser (ioBomRoot, iFilename);
+    InventoryFileParser lInventoryParser (ioInventory, iFilename);
 
     // Parse the CSV-formatted inventory input file, and generate the
     // corresponding Inventory-related objects.
-    lInventoryParser.generateInventory ();
+    lInventoryParser.buildInventory ();
   }
 
 }
