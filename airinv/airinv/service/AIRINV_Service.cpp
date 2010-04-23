@@ -14,6 +14,7 @@
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/AirlineFeature.hpp>
 #include <stdair/factory/FacBomContent.hpp>
+#include <stdair/command/CmdBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
 // Airinv
@@ -47,11 +48,11 @@ namespace AIRINV {
     // which all of the other BOM objects of the airline inventory will be
     // attached
     assert (ioSTDAIR_Service_ptr != NULL);
-    stdair::Inventory& lInventory =
-      ioSTDAIR_Service_ptr->getInventory (iAirlineCode);
-
+    stdair::Inventory* lInventory_ptr =
+      ioSTDAIR_Service_ptr->getBomRoot().getInventory (iAirlineCode);
+    assert (lInventory_ptr != NULL);
     // Initialise the service context
-    initServiceContext (iAirlineCode, lInventory);
+    initServiceContext (iAirlineCode, *lInventory_ptr);
 
     // Retrieve the AirInv service context
     assert (_airinvServiceContext != NULL);
@@ -81,7 +82,8 @@ namespace AIRINV {
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
     stdair::Inventory& lInventory =
-      lSTDAIR_Service_ptr->createInventory (iAirlineCode);
+      stdair::CmdBomManager::createInventory (lSTDAIR_Service_ptr->getBomRoot(),
+                                              iAirlineCode);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lInventory);
@@ -109,7 +111,8 @@ namespace AIRINV {
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
     stdair::Inventory& lInventory =
-      lSTDAIR_Service_ptr->createInventory (iAirlineCode);
+      stdair::CmdBomManager::createInventory (lSTDAIR_Service_ptr->getBomRoot(),
+                                              iAirlineCode);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lInventory);

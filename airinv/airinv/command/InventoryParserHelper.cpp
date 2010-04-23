@@ -4,9 +4,9 @@
 // STL
 #include <cassert>
 // StdAir
-#include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
 // Airinv
+#include <airinv/command/InventoryGenerator.hpp>
 #include <airinv/command/InventoryParserHelper.hpp>
 
 namespace AIRINV {
@@ -524,7 +524,7 @@ namespace AIRINV {
       // STDAIR_LOG_DEBUG ("FlightDate: " << _flightDate.describe());
 
       // Create the FlightDate BOM objects
-      // InventoryGenerator::createInventory (_bomRoot, _flightDate);
+      InventoryGenerator::createFlightDate (_bomRoot, _flightDate);
     }
 
       
