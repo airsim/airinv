@@ -333,11 +333,13 @@ namespace AIRINV {
     /** Mark the end of the inventory parsing. */
     struct doEndFlightDate : public ParserSemanticAction {
       /** Actor Constructor. */
-      doEndFlightDate (stdair::Inventory&, FlightDateStruct_T&);
+      doEndFlightDate (stdair::Inventory&, FlightDateStruct_T&,
+                       unsigned int&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
       /** Actor Specific Context. */
       stdair::Inventory& _inventory;
+      unsigned int& _nbOfFlights;
     };
   
 
@@ -361,7 +363,7 @@ namespace AIRINV {
     struct InventoryParser : 
       public boost::spirit::classic::grammar<InventoryParser> {
 
-      InventoryParser (stdair::Inventory&, FlightDateStruct_T&);
+      InventoryParser (stdair::Inventory&, FlightDateStruct_T&, unsigned int&);
 
       template <typename ScannerT>
       struct definition {
@@ -385,6 +387,7 @@ namespace AIRINV {
       // Parser Context
       stdair::Inventory& _inventory;
       FlightDateStruct_T& _flightDate;
+      unsigned int& _nbOfFlights;
     };
 
   }
@@ -429,6 +432,9 @@ namespace AIRINV {
 
     /** FlightDate Structure. */
     FlightDateStruct_T _flightDate;
+    
+    /** Number of already parsed flight-dates. */
+    unsigned int _nbOfFlights;
   };
     
 }

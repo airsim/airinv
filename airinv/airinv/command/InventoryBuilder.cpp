@@ -41,7 +41,9 @@ namespace AIRINV {
     }
     assert (lFlightDate_ptr != NULL);
     
-    
+    // Update the flight-date with the information from the parser
+    // (flight-date struct).
+    // FlightDate::updateFlightDate (*lFlightDate_ptr, iFlightDateStruct);
   }
   
 }
