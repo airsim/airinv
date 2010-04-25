@@ -254,6 +254,7 @@ AC_CONFIG_FILES(
 	airinv/config/Makefile
 	airinv/core/Makefile
 	airinv/batches/Makefile
+	airinv/server/Makefile
 	extracppunit/Makefile
 	test/Makefile
 	test/samples/Makefile
