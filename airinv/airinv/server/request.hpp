@@ -1,33 +1,25 @@
-//
-// request.hpp
-// ~~~~~~~~~~~
-//
-// Copyright (c) 2003-2008 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
+#ifndef __AIRINV_SVR_REQUEST_HPP
+#define __AIRINV_SVR_REQUEST_HPP
 
-#ifndef HTTP_SERVER3_REQUEST_HPP
-#define HTTP_SERVER3_REQUEST_HPP
-
+// //////////////////////////////////////////////////////////////////////
+// Import section
+// //////////////////////////////////////////////////////////////////////
+// STL
 #include <string>
 #include <vector>
+// AirInv
 #include "header.hpp"
 
-namespace http {
+namespace AIRINV {
 
-  namespace server3 {
+  /** A request received from a client. */
+  struct request {
+    std::string method;
+    std::string uri;
+    int http_version_major;
+    int http_version_minor;
+    std::vector<header> headers;
+  };
 
-    /// A request received from a client.
-    struct request {
-      std::string method;
-      std::string uri;
-      int http_version_major;
-      int http_version_minor;
-      std::vector<header> headers;
-    };
-
-  } // namespace server3
-} // namespace http
-#endif // HTTP_SERVER3_REQUEST_HPP
+}
+#endif // __AIRINV_SVR_REQUEST_HPP

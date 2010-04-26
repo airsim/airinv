@@ -1,25 +1,19 @@
-//
-// reply.hpp
-// ~~~~~~~~~
-//
-// Copyright (c) 2003-2008 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
+#ifndef __AIRINV_SVR_REPLY_HPP
+#define __AIRINV_SVR_REPLY_HPP
 
-#ifndef HTTP_SERVER3_REPLY_HPP
-#define HTTP_SERVER3_REPLY_HPP
-
+// //////////////////////////////////////////////////////////////////////
+// Import section
+// //////////////////////////////////////////////////////////////////////
+// STL
 #include <string>
 #include <vector>
+// Boost
 #include <boost/asio.hpp>
-#include "header.hpp"
+// AirInv
+#include <airinv/server/header.hpp>
 
-namespace http {
+namespace AIRINV {
   
-  namespace server3 {
-
     /// A reply to be sent to a client.
     struct reply {
 
@@ -58,6 +52,5 @@ namespace http {
       static reply stock_reply(status_type status);
     };
 
-  } // namespace server3
-} // namespace http
-#endif // HTTP_SERVER3_REPLY_HPP
+}
+#endif // __AIRINV_SVR_REPLY_HPP

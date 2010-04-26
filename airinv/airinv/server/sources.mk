@@ -6,7 +6,7 @@ svr_h_sources = \
 	$(top_srcdir)/airinv/server/request.hpp \
 	$(top_srcdir)/airinv/server/request_handler.hpp \
 	$(top_srcdir)/airinv/server/request_parser.hpp \
-	$(top_srcdir)/airinv/server/server.hpp
+	$(top_srcdir)/airinv/server/AirInvServer.hpp
 svr_cc_sources = \
 	$(top_srcdir)/airinv/server/connection.cpp \
 	$(top_srcdir)/airinv/server/mime_types.cpp \
@@ -15,4 +15,4 @@ svr_cc_sources = \
 	$(top_srcdir)/airinv/server/request_parser.cpp \
 	$(top_srcdir)/airinv/server/win_main.cpp \
 	$(top_srcdir)/airinv/server/posix_main.cpp \
-	$(top_srcdir)/airinv/server/server.cpp
+	$(top_srcdir)/airinv/server/AirInvServer.cpp

@@ -14,7 +14,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
-#include "server.hpp"
+#include <airinv/server/AirInvServer.hpp>
 
 #if defined(_WIN32)
 
@@ -49,10 +49,10 @@ int main(int argc, char* argv[]) {
 
     // Initialise server.
     std::size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
-    http::server3::server s(argv[1], argv[2], argv[4], num_threads);
+    AIRINV::AirInvServer s (argv[1], argv[2], argv[4], num_threads);
 
     // Set console control handler to allow server to be stopped.
-    console_ctrl_function = boost::bind(&http::server3::server::stop, &s);
+    console_ctrl_function = boost::bind(&AIRINV::AirInvServer::stop, &s);
     SetConsoleCtrlHandler(console_ctrl_handler, TRUE);
 
     // Run the server until stopped.
