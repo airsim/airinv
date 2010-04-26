@@ -9,31 +9,31 @@
 // Boost
 #include <boost/lexical_cast.hpp>
 // AirInv
-#include <airinv/server/reply.hpp>
-#include <airinv/server/request.hpp>
-#include <airinv/server/request_handler.hpp>
+#include <airinv/server/Reply.hpp>
+#include <airinv/server/Request.hpp>
+#include <airinv/server/RequestHandler.hpp>
 
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  request_handler::request_handler (const stdair::AirlineCode_T& iAirlineCode)
-    : doc_root_ (iAirlineCode) {
+  RequestHandler::RequestHandler (const stdair::AirlineCode_T& iAirlineCode)
+    : _airlineCode (iAirlineCode) {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void request_handler::handle_request (const request& req, reply& rep) {
+  void RequestHandler::handleRequest (const Request& req, Reply& rep) {
     // Decode url to path.
     std::string request_path;
   
-    if (!url_decode(req.uri, request_path)) {
-      rep = reply::stock_reply(reply::bad_request);
+    if (!urlDecode (req.uri, request_path)) {
+      rep = Reply::stock_reply (Reply::bad_request);
       return;
     }
 
     // Request path must be absolute and not contain "..".
     if (request_path.empty() || request_path[0] != '/'
         || request_path.find("..") != std::string::npos) {
-      rep = reply::stock_reply(reply::bad_request);
+      rep = Reply::stock_reply (Reply::bad_request);
       return;
     }
 
@@ -52,28 +52,24 @@ namespace AIRINV {
     }
 
     // Open the file to send back.
-    std::string full_path = doc_root_ + request_path;
+    std::string full_path = _airlineCode + request_path;
     std::ifstream is (full_path.c_str(), std::ios::in | std::ios::binary);
   
     if (!is) {
-      rep = reply::stock_reply(reply::not_found);
+      rep = Reply::stock_reply (Reply::not_found);
       return;
     }
 
     // Fill out the reply to be sent to the client.
-    rep.status = reply::ok;
+    rep.status = Reply::ok;
     char buf[512];
-    while (is.read(buf, sizeof(buf)).gcount() > 0)
+    while (is.read (buf, sizeof(buf)).gcount() > 0) {
       rep.content.append(buf, is.gcount());
-    rep.headers.resize(2);
-    rep.headers[0].name = "Content-Length";
-    rep.headers[0].value = boost::lexical_cast<std::string>(rep.content.size());
-    rep.headers[1].name = "Content-Type";
-    rep.headers[1].value = "mime_types";
+    }
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool request_handler::url_decode(const std::string& in, std::string& out) {
+  bool RequestHandler::urlDecode (const std::string& in, std::string& out) {
     out.clear();
     out.reserve(in.size());
   

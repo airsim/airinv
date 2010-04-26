@@ -1,18 +1,16 @@
 svr_h_sources = \
 	$(top_srcdir)/airinv/server/header.hpp \
-	$(top_srcdir)/airinv/server/connection.hpp \
-	$(top_srcdir)/airinv/server/mime_types.hpp \
-	$(top_srcdir)/airinv/server/reply.hpp \
-	$(top_srcdir)/airinv/server/request.hpp \
-	$(top_srcdir)/airinv/server/request_handler.hpp \
-	$(top_srcdir)/airinv/server/request_parser.hpp \
+	$(top_srcdir)/airinv/server/Connection.hpp \
+	$(top_srcdir)/airinv/server/Reply.hpp \
+	$(top_srcdir)/airinv/server/Request.hpp \
+	$(top_srcdir)/airinv/server/RequestHandler.hpp \
+	$(top_srcdir)/airinv/server/RequestParser.hpp \
 	$(top_srcdir)/airinv/server/AirInvServer.hpp
 svr_cc_sources = \
-	$(top_srcdir)/airinv/server/connection.cpp \
-	$(top_srcdir)/airinv/server/mime_types.cpp \
-	$(top_srcdir)/airinv/server/reply.cpp \
-	$(top_srcdir)/airinv/server/request_handler.cpp \
-	$(top_srcdir)/airinv/server/request_parser.cpp \
+	$(top_srcdir)/airinv/server/Connection.cpp \
+	$(top_srcdir)/airinv/server/Reply.cpp \
+	$(top_srcdir)/airinv/server/RequestHandler.cpp \
+	$(top_srcdir)/airinv/server/RequestParser.cpp \
 	$(top_srcdir)/airinv/server/win_main.cpp \
 	$(top_srcdir)/airinv/server/posix_main.cpp \
 	$(top_srcdir)/airinv/server/AirInvServer.cpp

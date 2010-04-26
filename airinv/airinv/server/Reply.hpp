@@ -10,12 +10,11 @@
 // Boost
 #include <boost/asio.hpp>
 // AirInv
-#include <airinv/server/header.hpp>
 
 namespace AIRINV {
   
     /// A reply to be sent to a client.
-    struct reply {
+    struct Reply {
 
       /// The status of the reply.
       enum status_type {
@@ -37,9 +36,6 @@ namespace AIRINV {
         service_unavailable = 503
       } status;
 
-      /// The headers to be included in the reply.
-      std::vector<header> headers;
-
       /// The content to be sent in the reply.
       std::string content;
 
@@ -49,7 +45,7 @@ namespace AIRINV {
       std::vector<boost::asio::const_buffer> to_buffers();
 
       /// Get a stock reply.
-      static reply stock_reply(status_type status);
+      static Reply stock_reply (status_type status);
     };
 
 }

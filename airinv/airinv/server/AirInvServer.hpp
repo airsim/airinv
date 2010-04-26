@@ -13,16 +13,16 @@
 #include <boost/shared_ptr.hpp>
 // StdAir
 #include <stdair/STDAIR_Types.hpp>
-#include <stdair/bom/Inventory.hpp>
 // AirInv
-#include <airinv/server/connection.hpp>
-#include <airinv/server/request_handler.hpp>
+#include <airinv/server/Connection.hpp>
+#include <airinv/server/RequestHandler.hpp>
 
 namespace AIRINV {
 
   /** The top-level class of the AirInv server. */
   class AirInvServer : private boost::noncopyable {
   public:
+    // //////////// Constructors and Destructors /////////////////
     /** Constructor.
         <br>Construct the server to listen on the specified TCP address
         and port, and serve up files from the given directory. */
@@ -51,23 +51,23 @@ namespace AIRINV {
     
   private:
     // //////////// Attributes /////////////////
-    /// Handle completion of an asynchronous accept operation.
-    void handle_accept (const boost::system::error_code& e);
+    /** Handle completion of an asynchronous accept operation. */
+    void handleAccept (const boost::system::error_code& e);
 
-    /// The number of threads that will call io_service::run().
-    std::size_t thread_pool_size_;
+    /** The number of threads that will call io_service::run(). */
+    std::size_t _threadPoolSize;
 
-    /// The io_service used to perform asynchronous operations.
-    boost::asio::io_service io_service_;
+    /** The boost::asio::io_service used to perform asynchronous operations. */
+    boost::asio::io_service _ioService;
 
-    /// Acceptor used to listen for incoming connections.
-    boost::asio::ip::tcp::acceptor acceptor_;
+    /** Acceptor used to listen for incoming connections. */
+    boost::asio::ip::tcp::acceptor _acceptor;
 
-    /// The next connection to be accepted.
-    connection_ptr new_connection_;
+    /** The next connection to be accepted. */
+    ConnectionShrPtr_T _newConnection;
 
-    /// The handler for all incoming requests.
-    request_handler request_handler_;
+    /** The handler for all incoming requests. */
+    RequestHandler _requestHandler;
   };
 
 }

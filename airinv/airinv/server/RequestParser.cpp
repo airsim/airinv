@@ -4,23 +4,23 @@
 // STL
 #include <cassert>
 // AirInv
-#include <airinv/server/request_parser.hpp>
-#include <airinv/server/request.hpp>
+#include <airinv/server/RequestParser.hpp>
+#include <airinv/server/Request.hpp>
 
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  request_parser::request_parser()
+  RequestParser::RequestParser()
     : state_(method_start) {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void request_parser::reset() {
+  void RequestParser::reset() {
     state_ = method_start;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  boost::tribool request_parser::consume(request& req, char input) {
+  boost::tribool RequestParser::consume (Request& req, char input) {
 
     switch (state_) {
 
@@ -177,16 +177,10 @@ namespace AIRINV {
         state_ = expecting_newline_3;
         return boost::indeterminate;
       
-      } else if (!req.headers.empty() && (input == ' ' || input == '\t')) {
-        state_ = header_lws;
-        return boost::indeterminate;
-      
       } else if (!is_char(input) || is_ctl(input) || is_tspecial(input)) {
         return false;
       
       } else {
-        req.headers.push_back(header());
-        req.headers.back().name.push_back(input);
         state_ = header_name;
         return boost::indeterminate;
       }
@@ -204,7 +198,6 @@ namespace AIRINV {
       
       } else {
         state_ = header_value;
-        req.headers.back().value.push_back(input);
         return boost::indeterminate;
       }
     
@@ -217,7 +210,6 @@ namespace AIRINV {
         return false;
       
       } else {
-        req.headers.back().name.push_back(input);
         return boost::indeterminate;
       }
     
@@ -239,7 +231,6 @@ namespace AIRINV {
         return false;
       
       } else {
-        req.headers.back().value.push_back(input);
         return boost::indeterminate;
       }
     
@@ -261,17 +252,17 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool request_parser::is_char(int c) {
+  bool RequestParser::is_char(int c) {
     return c >= 0 && c <= 127;
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool request_parser::is_ctl(int c) {
+  bool RequestParser::is_ctl(int c) {
     return (c >= 0 && c <= 31) || (c == 127);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool request_parser::is_tspecial(int c) {
+  bool RequestParser::is_tspecial(int c) {
     switch (c) {
     case '(': case ')': case '<': case '>': case '@':
     case ',': case ';': case ':': case '\\': case '"':
@@ -284,7 +275,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  bool request_parser::is_digit(int c) {
+  bool RequestParser::is_digit(int c) {
     return c >= '0' && c <= '9';
   }
 
