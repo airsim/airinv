@@ -44,7 +44,7 @@ namespace AIRINV {
 
     // Fill out the reply to be sent to the client.
     ioReply._status = FlightRequestStatus::OK;
-    ioReply.content = "Ok, I have found your flight-date. Be patient until I give you more information about it";
+    ioReply.content = "Your are looking for: '" + ioRequest._flightDetails + "'. Ok, I have found your flight-date. Be patient until I give you more information about it";
     
     return hasBeenSuccessfull;
   }

@@ -67,7 +67,7 @@ int main (int argc, char* argv[]) {
                         boost::asio::transfer_all(), lError);
     
     // Read the reply from the server
-    boost::array<char, 128> lBuffer;
+    boost::array<char, 256> lBuffer;
 
     size_t lLength = lSocket.read_some (boost::asio::buffer(lBuffer), lError);
 
@@ -79,6 +79,7 @@ int main (int argc, char* argv[]) {
     // DEBUG
     std::cout << "Reply from the server: ";
     std::cout.write (lBuffer.data(), lLength);
+    std::cout << std::endl;
 
   } catch (std::exception& lException) {
     std::cerr << lException.what() << std::endl;
