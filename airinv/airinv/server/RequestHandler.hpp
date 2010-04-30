@@ -12,6 +12,12 @@
 #include <stdair/STDAIR_Types.hpp>
 // AirInv
 
+// Forward declarations
+namespace stdair {
+  struct InventoryKey_T;
+  struct FlightDateKey_T;
+}
+
 namespace AIRINV {
 
   // Forward declarations.
@@ -31,14 +37,9 @@ namespace AIRINV {
   public:
     // /////////// Business Support Methods ////////////////
     /** Handle a request and produce a reply. */
-    void handleRequest (const Request& req, Reply& rep);
+    bool handleRequest (Request&, Reply&) const;
 
-  private:
-    /** Perform URL-decoding on a string. Returns false if the encoding was
-        invalid. */
-    static bool urlDecode (const std::string& in, std::string& out);
-
-    
+   
   private:
     // //////////////// Attributes //////////////////
     /** The directory containing the files to be served. */

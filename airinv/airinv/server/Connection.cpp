@@ -37,23 +37,12 @@ namespace AIRINV {
   void Connection::handleRead (const boost::system::error_code& iErrorCode,
                                std::size_t bytes_transferred) {
     if (!iErrorCode) {
-      
-      boost::tribool result;
-      boost::tie (result, boost::tuples::ignore) =
-        _requestParser.parse (_request, _buffer.data(),
-                              _buffer.data() + bytes_transferred);
+      _request._flightDetails = _buffer.data();
+      const bool hasBeenSuccessfull = _requestHandler.handleRequest (_request,
+                                                                     _reply);
         
-      if (result) {
-        _requestHandler.handleRequest (_request, _reply);
+      if (hasBeenSuccessfull == true) {
         
-        boost::asio::async_write (_socket, _reply.to_buffers(),
-                                  _strand.wrap (boost::bind (&Connection::handleWrite,
-                                                             shared_from_this(),
-                                                             boost::asio::placeholders::error)));
-        
-      } else if (!result) {
-        
-        _reply = Reply::stock_reply (Reply::bad_request);
         boost::asio::async_write (_socket, _reply.to_buffers(),
                                   _strand.wrap (boost::bind (&Connection::handleWrite,
                                                              shared_from_this(),
@@ -61,11 +50,11 @@ namespace AIRINV {
         
       } else {
         
-        _socket.async_read_some (boost::asio::buffer (_buffer),
-                                 _strand.wrap (boost::bind (&Connection::handleRead,
-                                                            shared_from_this(),
-                                                            boost::asio::placeholders::error,
-                                                            boost::asio::placeholders::bytes_transferred)));
+        boost::asio::async_write (_socket, _reply.to_buffers(),
+                                  _strand.wrap (boost::bind (&Connection::handleWrite,
+                                                             shared_from_this(),
+                                                             boost::asio::placeholders::error)));
+        
       }
     }
 

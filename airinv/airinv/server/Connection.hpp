@@ -14,7 +14,6 @@
 // AirInv
 #include <airinv/server/Reply.hpp>
 #include <airinv/server/Request.hpp>
-#include <airinv/server/RequestParser.hpp>
 
 namespace AIRINV {
 
@@ -63,9 +62,6 @@ namespace AIRINV {
 
     /** The incoming request. */
     Request _request;
-
-    /** The parser for the incoming request. */
-    RequestParser _requestParser;
 
     /** The reply to be sent back to the client. */
     Reply _reply;

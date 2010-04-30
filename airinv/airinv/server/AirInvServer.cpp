@@ -76,9 +76,14 @@ namespace AIRINV {
     if (!iError) {
 
       assert (_newConnection != NULL);
-      
+
+      // The Connection object now takes in charge reading an incoming
+      // message from the socket, and writing back a message.
       _newConnection->start();
 
+      // The (Boost) shared pointer is resetted to a newly allocated Connection
+      // object. As the older Connection object is no longer pointed to, it is
+      // deleted by the shared pointer mechanism.
       _newConnection.reset (new Connection (_ioService, _requestHandler));
       
       _acceptor.async_accept (_newConnection->socket(),
