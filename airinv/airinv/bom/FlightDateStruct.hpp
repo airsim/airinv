@@ -12,6 +12,7 @@
 #include <stdair/bom/DoWStruct.hpp>
 // AirInv
 #include <airinv/basic/FlightTypeCode.hpp>
+#include <airinv/basic/FlightVisibilityCode.hpp>
 #include <airinv/bom/LegStruct.hpp>
 #include <airinv/bom/LegCabinStruct.hpp>
 #include <airinv/bom/BucketStruct.hpp>
@@ -81,16 +82,9 @@ namespace AIRINV {
     stdair::FlightNumber_T _flightNumber;
     stdair::Date_T _flightDate;
     FlightTypeCode _flightTypeCode;
+    FlightVisibilityCode _flightVisibilityCode;
     LegStructList_T _legList;
-    BucketStructList_T _bucketList;
     SegmentStructList_T _segmentList;
-
-    /** Staging Leg (resp. Cabin) structure, gathering the result of
-        the iteration on one leg (resp. cabin). */
-    bool _legAlreadyDefined;
-    LegStruct_T _itLeg;
-    LegCabinStruct_T _itLegCabin;
-    BucketStruct_T _itBucket;
 
     /** Staging Date. */
     unsigned int _itYear;
@@ -108,13 +102,18 @@ namespace AIRINV {
     AirportList_T _airportList;
     AirportOrderedList_T _airportOrderedList;
 
+    /** Staging Leg (resp. Cabin) structure, gathering the result of
+        the iteration on one leg (resp. cabin). */
+    bool _legAlreadyDefined;
+    LegStruct_T _itLeg;
+    LegCabinStruct_T _itLegCabin;
+    BucketStruct_T _itBucket;
+
     /** Staging Segment-related attributes. */
     bool _areSegmentDefinitionsSpecific;
     SegmentStruct_T _itSegment;
     SegmentCabinStruct_T _itSegmentCabin;
     BookingClassStruct_T _itBookingClass;
-    stdair::ClassCode_T _itClassCode;
-    stdair::SubclassCode_T _itSubclassCode;
   };
 
 }

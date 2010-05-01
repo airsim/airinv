@@ -8,59 +8,61 @@
 #include <stdair/service/Logger.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-#include <airinv/basic/FlightTypeCode.hpp>
+#include <airinv/basic/FlightVisibilityCode.hpp>
 
 namespace AIRINV {
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string FlightTypeCode::_labels[LAST_VALUE] =
-    { "Domestic", "International", "Ground Handling"};
+  const std::string FlightVisibilityCode::_labels[LAST_VALUE] =
+    { "Normal", "Hidden", "Pseudo"};
 
-  const std::string FlightTypeCode::_codeLabels[LAST_VALUE] =
-    { "DOM", "INT", "GRD" };
+  const std::string FlightVisibilityCode::_codeLabels[LAST_VALUE] =
+    { "NOR", "HID", "PSD" };
 
   
   // //////////////////////////////////////////////////////////////////////
-  FlightTypeCode::FlightTypeCode (const EN_FlightTypeCode& iFlightTypeCode)
-    : _code (iFlightTypeCode) {
+  FlightVisibilityCode::
+  FlightVisibilityCode (const EN_FlightVisibilityCode& iFlightVisibilityCode)
+    : _code (iFlightVisibilityCode) {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  FlightTypeCode::FlightTypeCode (const std::string& iCode) {
+  FlightVisibilityCode::FlightVisibilityCode (const std::string& iCode) {
     _code = LAST_VALUE;
     
-    if (iCode == "DOM") {
-      _code = DOMESTIC;
+    if (iCode == "NOR") {
+      _code = NORMAL;
 
-    } else if (iCode == "INT") {
-      _code = INTERNATIONAL;
+    } else if (iCode == "HID") {
+      _code = HIDDEN;
 
-    } else if (iCode == "GRD") {
-      _code = GROUND_HANDLING;
+    } else if (iCode == "PSD") {
+      _code = PSEUDO;
     }
 
     if (_code == LAST_VALUE) {
       const std::string& lLabels = describeLabels();
-      STDAIR_LOG_ERROR ("The flight type code '" << iCode
-                        << "' is not known. Known flight type codes: "
+      STDAIR_LOG_ERROR ("The flight visibility code '" << iCode
+                        << "' is not known. Known flight visibility codes: "
                         << lLabels);
       throw CodeConversionException();
     }
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string& FlightTypeCode::getLabel (const EN_FlightTypeCode& iCode) {
+  const std::string& FlightVisibilityCode::
+  getLabel (const EN_FlightVisibilityCode& iCode) {
     return _labels[iCode];
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string& FlightTypeCode::
-  getCodeLabel (const EN_FlightTypeCode& iCode) {
+  const std::string& FlightVisibilityCode::
+  getCodeLabel (const EN_FlightVisibilityCode& iCode) {
     return _codeLabels[iCode];
   }
 
   // //////////////////////////////////////////////////////////////////////
-  std::string FlightTypeCode::describeLabels() {
+  std::string FlightVisibilityCode::describeLabels() {
     std::ostringstream ostr;
     for (unsigned short idx = 0; idx != LAST_VALUE; ++idx) {
       if (idx != 0) {
@@ -72,12 +74,13 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  FlightTypeCode::EN_FlightTypeCode FlightTypeCode::getCode() const {
+  FlightVisibilityCode::EN_FlightVisibilityCode FlightVisibilityCode::
+  getCode() const {
     return _code;
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string FlightTypeCode::describe() const {
+  const std::string FlightVisibilityCode::describe() const {
     std::ostringstream ostr;
     ostr << _labels[_code];
     return ostr.str();

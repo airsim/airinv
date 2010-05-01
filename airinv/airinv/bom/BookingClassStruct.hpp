@@ -25,16 +25,18 @@ namespace AIRINV {
     // Attributes
     stdair::ClassCode_T _classCode;
     stdair::SubclassCode_T _subclassCode;
+    stdair::ClassCode_T _parentClassCode;
+    stdair::SubclassCode_T _parentSubclassCode;
     stdair::AuthorizationLevel_T _cumulatedProtection;
     stdair::AuthorizationLevel_T _protection;
     stdair::NbOfSeats_T _nego;
     stdair::OverbookingRate_T _noShowPercentage;
     stdair::OverbookingRate_T _overbookingPercentage;
     stdair::NbOfBookings_T _nbOfBookings;
-    stdair::NbOfBookings_T _groupNbOfBookings;
-    stdair::NbOfBookings_T _groupPendingNbOfBookings;
-    stdair::NbOfBookings_T _staffNbOfBookings;
-    stdair::NbOfBookings_T _wlNbOfBookings;
+    stdair::NbOfBookings_T _nbOfGroupBookings;
+    stdair::NbOfBookings_T _nbOfPendingGroupBookings;
+    stdair::NbOfBookings_T _nbOfStaffBookings;
+    stdair::NbOfBookings_T _nbOfWLBookings;
     stdair::NbOfBookings_T _etb;
     stdair::Availability_T _netClassAvailability;
     stdair::Availability_T _segmentAvailability;

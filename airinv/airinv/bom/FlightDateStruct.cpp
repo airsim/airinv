@@ -16,8 +16,9 @@ namespace AIRINV {
   // //////////////////////////////////////////////////////////////////////
   FlightDateStruct_T::FlightDateStruct_T ()
     : _flightDate (stdair::DEFAULT_DATE),
-      _flightTypeCode (FlightTypeCode::HIDDEN),
-      _legAlreadyDefined (false), _itSeconds (0) {
+      _flightTypeCode (FlightTypeCode::DOMESTIC),
+      _flightVisibilityCode (FlightVisibilityCode::NORMAL),
+      _itSeconds (0), _legAlreadyDefined (false) {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -36,7 +37,11 @@ namespace AIRINV {
   const std::string FlightDateStruct_T::describe() const {
     std::ostringstream ostr;
     ostr << _airlineCode << _flightNumber << ", " << _flightDate
-         << " (" << _flightTypeCode << ")" << std::endl;
+         << " (" << _flightTypeCode;
+    if (_flightVisibilityCode.getCode() != FlightVisibilityCode::NORMAL) {
+      ostr << "/" << _flightVisibilityCode;
+    }
+    ostr << ")" << std::endl;
       
     for (LegStructList_T::const_iterator itLeg = _legList.begin();
          itLeg != _legList.end(); ++itLeg) {

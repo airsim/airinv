@@ -74,6 +74,14 @@ namespace AIRINV {
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
 
+    /** Store the flight visibility code. */
+    struct storeFlightVisibilityCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeFlightVisibilityCode (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (iterator_t iStr, iterator_t iStrEnd) const;
+    };
+
     /** Store the parsed leg boarding point. */
     struct storeLegBoardingPoint : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -322,6 +330,78 @@ namespace AIRINV {
       void operator() (double iReal) const;
     };
 
+    /** Store the parsed number of bookings (at booking class level). */
+    struct storeNbOfBkgs : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNbOfBkgs (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed number of group bookings (at booking class level). */
+    struct storeNbOfGroupBkgs : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNbOfGroupBkgs (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed number of pending group bookings (at booking class level). */
+    struct storeNbOfPendingGroupBkgs : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNbOfPendingGroupBkgs (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed number of staff bookings (at booking class level). */
+    struct storeNbOfStaffBkgs : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNbOfStaffBkgs (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed number of wait-list bookings (at booking class level). */
+    struct storeNbOfWLBkgs : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeNbOfWLBkgs (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed expected to board number (at booking class level). */
+    struct storeClassETB : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeClassETB (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed number of net class availability (at booking class level). */
+    struct storeClassAvailability : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeClassAvailability (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed number of segment availability (at booking class level). */
+    struct storeSegmentAvailability : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeSegmentAvailability (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
+    /** Store the parsed number of net revenue availability (at booking class level). */
+    struct storeRevenueAvailability : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeRevenueAvailability (FlightDateStruct_T&);
+      /** Actor Function (functor). */
+      void operator() (double iReal) const;
+    };
+
     /** Store the parsed list of class codes. */
     struct storeClasses : public ParserSemanticAction {
       /** Actor Constructor. */
@@ -372,7 +452,8 @@ namespace AIRINV {
         // Instantiation of rules
         boost::spirit::classic::rule<ScannerT> flight_date_list, flight_date,
           flight_date_end, flight_key, airline_code, flight_number,
-          flight_type_code, date, leg_list, leg, leg_key, leg_details,
+          flight_type_code, flight_visibility_code,
+          date, leg_list, leg, leg_key, leg_details,
           full_leg_cabin_details, leg_cabin_details,
           bucket_list, bucket_details,
           time, segment_list, segment, segment_key, full_segment_cabin_details,

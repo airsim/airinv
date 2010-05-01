@@ -24,11 +24,13 @@ namespace AIRINV {
          << std::endl;
 
     for (BucketStructList_T::const_iterator itBucket = _bucketList.begin();
-         itBucket != _bucketList.end(); itBucket++) {
+         itBucket != _bucketList.end(); ++itBucket) {
       const BucketStruct_T& lBucket = *itBucket;
       ostr << lBucket.describe();
     }
-    ostr << std::endl;
+    if (_bucketList.empty() == false) {
+      ostr << std::endl;
+    }
     return ostr.str();
   }
   

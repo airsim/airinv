@@ -1,5 +1,5 @@
-#ifndef __AIRINV_BAS_FLIGHTTYPECODE_HPP
-#define __AIRINV_BAS_FLIGHTTYPECODE_HPP
+#ifndef __AIRINV_BAS_FLIGHTVISIBILITYCODE_HPP
+#define __AIRINV_BAS_FLIGHTVISIBILITYCODE_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -11,27 +11,27 @@
 
 namespace AIRINV {
 
-  /** Enumeration of flight type codes. */
-  struct FlightTypeCode : public stdair::StructAbstract {
+  /** Enumeration of flight visibility codes. */
+  struct FlightVisibilityCode : public stdair::StructAbstract {
   public:
     typedef enum { 
-      DOMESTIC = 0,
-      INTERNATIONAL,
-      GROUND_HANDLING,
+      NORMAL = 0,
+      HIDDEN,
+      PSEUDO,
       LAST_VALUE
-    } EN_FlightTypeCode;
+    } EN_FlightVisibilityCode;
 
     /** Get the label as a string. */
-    static const std::string& getLabel (const EN_FlightTypeCode&);
+    static const std::string& getLabel (const EN_FlightVisibilityCode&);
 
     /** Get the label as a single char. */
-    static const std::string& getCodeLabel (const EN_FlightTypeCode&);
+    static const std::string& getCodeLabel (const EN_FlightVisibilityCode&);
 
     /** List the labels. */
     static std::string describeLabels();
 
     /** Get the enumerated value. */
-    EN_FlightTypeCode getCode() const;
+    EN_FlightVisibilityCode getCode() const;
 
     /** Give a description of the structure (for display purposes). */
     const std::string describe() const;
@@ -39,9 +39,9 @@ namespace AIRINV {
     
   public:
     /** Constructor. */
-    FlightTypeCode (const EN_FlightTypeCode&);
+    FlightVisibilityCode (const EN_FlightVisibilityCode&);
     /** Constructor. */
-    FlightTypeCode (const std::string& iCode);
+    FlightVisibilityCode (const std::string& iCode);
 
     
   private:
@@ -53,9 +53,9 @@ namespace AIRINV {
 
   private:
     // //////// Attributes /////////
-    /** FlightType code. */
-    EN_FlightTypeCode _code;
+    /** FlightVisibility code. */
+    EN_FlightVisibilityCode _code;
   };
 
 }
-#endif // __AIRINV_BAS_FLIGHTTYPECODE_HPP
+#endif // __AIRINV_BAS_FLIGHTVISIBILITYCODE_HPP

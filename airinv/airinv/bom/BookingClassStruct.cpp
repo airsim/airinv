@@ -27,13 +27,14 @@ namespace AIRINV {
   const std::string BookingClassStruct_T::describe() const {
     std::ostringstream ostr;
     ostr << "            " << _classCode << _subclassCode
-         << " " << _cumulatedProtection << ":" << _protection
-         << " " << _nego
-         << " " << _noShowPercentage << ":" << _overbookingPercentage
-         << " " << _nbOfBookings << ":" << _groupNbOfBookings
-         << ":" << _groupPendingNbOfBookings << ":" << _staffNbOfBookings
-         << ":" << _wlNbOfBookings << ":" << _etb
-         << " " << _netClassAvailability  << ":" << _segmentAvailability
+         << " (" << _parentClassCode << _parentSubclassCode << ")"
+         << ", " << _cumulatedProtection << ":" << _protection
+         << ", " << _nego
+         << ", " << _noShowPercentage << ":" << _overbookingPercentage
+         << ", " << _nbOfBookings << ":" << _nbOfGroupBookings
+         << ":" << _nbOfPendingGroupBookings << ":" << _nbOfStaffBookings
+         << ":" << _nbOfWLBookings << ":" << _etb
+         << ", " << _netClassAvailability  << ":" << _segmentAvailability
          << ":" << _netRevenueAvailability
          << std::endl;
     return ostr.str();
