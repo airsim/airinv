@@ -8,7 +8,7 @@
 #include <stdair/service/Logger.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-#include <airinv/basic/FlightRequestStatus.hpp>
+#include <airinv/FlightRequestStatus.hpp>
 
 namespace AIRINV {
   

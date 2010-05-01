@@ -8,5 +8,5 @@ libbas_la_SOURCES= $(bas_h_sources) $(bas_cc_sources)
 libbas_la_CXXFLAGS =
 
 # Headers to be exported/installed
-pkgincludedir = $(includedir)/airinv/basic
-pkginclude_HEADERS = FlightRequestStatus.hpp
+#pkgincludedir = $(includedir)/airinv/basic
+#pkginclude_HEADERS = $(bas_h_sources)

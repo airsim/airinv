@@ -10,7 +10,7 @@
 // Boost
 #include <boost/asio.hpp>
 // AirInv
-#include <airinv/basic/FlightRequestStatus.hpp>
+#include <airinv/FlightRequestStatus.hpp>
 
 namespace AIRINV {
   
