@@ -23,8 +23,6 @@ namespace AIRINV {
 
       // Make the sale within the inventory.
       Inventory::sell (ioInventory, iTravelSolution, iPartySize);
-
-      // TODO: update the statistical attributes of the inventory.
       
     } catch (const std::exception& lStdError) {
       STDAIR_LOG_ERROR ("Error: " << lStdError.what());

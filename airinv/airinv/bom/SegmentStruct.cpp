@@ -34,12 +34,16 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   void SegmentStruct_T::fill (stdair::SegmentDate& ioSegmentDate) const {
-    // Note that some parameters (boarding date, boarding time, off
-    // date, off time, elapsed time) are set by
-    // SegmentDate::fillFromRouting() when the routing (with legs) is
-    // built. So, it is useless to set those parameters here.
-
-    // At that time, there are no other parameters.
+    // Set the Boarding Date
+    ioSegmentDate.setBoardingDate (_offDate);
+    // Set the Boarding Time
+    ioSegmentDate.setBoardingTime (_boardingTime);
+    // Set the Off Date
+    ioSegmentDate.setOffDate (_offDate);
+    // Set the Off Time
+    ioSegmentDate.setOffTime (_offTime);
+    // Set the Elapsed Time
+    ioSegmentDate.setElapsedTime (_elapsed);
   }
 
 }

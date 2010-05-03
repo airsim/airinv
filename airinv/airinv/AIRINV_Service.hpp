@@ -73,7 +73,7 @@ namespace AIRINV {
     /** Register a booking. */
     void sell (const stdair::TravelSolutionStruct&, const stdair::PartySize_T&);
 
-      private:
+  private:
     // /////// Construction and Destruction helper methods ///////
     /** Default constructor. It should not be used. */
     AIRINV_Service ();
