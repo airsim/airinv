@@ -42,7 +42,7 @@ namespace AIRINV {
 
     /** Fill the LegCabin objects with the attributes of the
         LegCabinStruct. */
-    void fill (stdair::LegCabin&, const bool) const;
+    void fill (stdair::LegCabin&) const;
       
     /** Give a description of the structure (for display purposes). */
     const std::string describe() const;

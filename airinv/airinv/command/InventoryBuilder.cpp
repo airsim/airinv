@@ -36,8 +36,8 @@ namespace AIRINV {
     if (lFlightDate_ptr == NULL) {
       // Instantiate a fligh-date object for the given key (flight number and
     // flight date)
-    lFlightDate_ptr = &stdair::CmdBomManager::createFlightDate (ioInventory,
-                                                                lFlightDateKey);
+    lFlightDate_ptr = 
+      &stdair::CmdBomManager::createFlightDate (ioInventory, lFlightDateKey);
     }
     assert (lFlightDate_ptr != NULL);
     

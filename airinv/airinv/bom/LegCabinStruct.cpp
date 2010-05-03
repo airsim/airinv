@@ -35,10 +35,9 @@ namespace AIRINV {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void LegCabinStruct_T::fill (stdair::LegCabin& ioLegCabin,
-                               const bool iAnalysisStatus) const {
+  void LegCabinStruct_T::fill (stdair::LegCabin& ioLegCabin) const {
     // Set the Capacity
-    ioLegCabin.setCapacity (_saleableCapacity, iAnalysisStatus);
+    ioLegCabin.setCapacities (_saleableCapacity);
   }
 
 }

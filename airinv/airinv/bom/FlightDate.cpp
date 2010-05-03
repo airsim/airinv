@@ -1,0 +1,24 @@
+// //////////////////////////////////////////////////////////////////////
+// Import section
+// //////////////////////////////////////////////////////////////////////
+// STL
+#include <cassert>
+// STDAIR
+#include <stdair/bom/BomSource.hpp>
+// AIRINV
+#include <airinv/bom/FlightDate.hpp>
+#include <airinv/bom/SegmentDate.hpp>
+
+namespace AIRINV {
+
+  // ////////////////////////////////////////////////////////////////////
+  FlightDate::FlightDate (const Key_T& iKey,
+                          Structure_T& ioFlightDateStructure)
+    : stdair::FlightDate (iKey, ioFlightDateStructure) {
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  FlightDate::~FlightDate () {
+  }
+
+}

@@ -66,17 +66,14 @@ namespace AIRINV {
         @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
         @param AirlineCode_T& Code of the owner airline. */
     AIRINV_Service (stdair::STDAIR_ServicePtr_T, const stdair::AirlineCode_T&);
-
     /** Destructor. */
     ~AIRINV_Service();
-
     
     // /////////// Business Methods /////////////
     /** Register a booking. */
     void sell (const stdair::TravelSolutionStruct&, const stdair::PartySize_T&);
 
-    
-  private:
+      private:
     // /////// Construction and Destruction helper methods ///////
     /** Default constructor. It should not be used. */
     AIRINV_Service ();
@@ -123,7 +120,6 @@ namespace AIRINV {
 
     /** Finalise. */
     void finalise ();
-
     
   private:
     // ///////// Service Context /////////

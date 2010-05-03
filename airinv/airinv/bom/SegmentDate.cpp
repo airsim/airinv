@@ -1,0 +1,24 @@
+// //////////////////////////////////////////////////////////////////////
+// Import section
+// //////////////////////////////////////////////////////////////////////
+// STL
+#include <cassert>
+// STDAIR
+#include <stdair/basic/BasConst_General.hpp>
+#include <stdair/bom/BomSource.hpp>
+// AIRINV
+#include <airinv/bom/SegmentDate.hpp>
+
+namespace AIRINV {
+
+  // ////////////////////////////////////////////////////////////////////
+  SegmentDate::SegmentDate (const Key_T& iKey,
+                            Structure_T& ioSegmentDateStructure)
+    : stdair::SegmentDate (iKey, ioSegmentDateStructure) {
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  SegmentDate::~SegmentDate () {
+  }
+
+}
