@@ -29,32 +29,7 @@ namespace AIRINV {
   void Inventory::sell (stdair::Inventory& ioInventory,
                         const stdair::TravelSolutionStruct& iTravelSolution,
                         const stdair::PartySize_T& iPartySize) {
-    const stdair::AirlineCode_T& lAirlineCode = ioInventory.getAirlineCode();
-
-    // Browse the booking class list and make the reservation for the
-    // booking classes which belong to the given airline.
-    const stdair::BookingClassSTLList_T& lBookingClassList =
-      iTravelSolution.getBookingClassList();
-
-    for (stdair::BookingClassSTLList_T::const_iterator itBookingClass =
-           lBookingClassList.begin();
-         itBookingClass != lBookingClassList.end(); ++itBookingClass) {
-      stdair::BookingClass* lBookingClass_ptr = *itBookingClass;
-      assert (lBookingClass_ptr != NULL);
-
-      const stdair::AirlineCode_T& lCurrentAirlineCode =
-        lBookingClass_ptr->getAirlineCode ();
-
-      if (lAirlineCode == lCurrentAirlineCode) {
-        STDAIR_LOG_DEBUG ("\n**********************************************"
-                          << "**********************************************\n"
-                          << "Make a reservation of " << iPartySize
-                          << " seats for the following class: "
-                          << lBookingClass_ptr->describeKey()
-                          << "\n**********************************************"
-                          << "**********************************************");
-      }
-    }
+    
   }
 
   // ////////////////////////////////////////////////////////////////////
