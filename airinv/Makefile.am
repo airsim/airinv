@@ -1,4 +1,4 @@
-## top directory
+## airinv top directory
 include $(top_srcdir)/Makefile.common
 
 ACLOCAL_AMFLAGS = -I config
@@ -21,10 +21,11 @@ endif
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure \
 			config-h.in sic/stamp-h.in autogen.sh bootstrap
 
-EXTRA_DIST = @PACKAGE@.spec @PACKAGE@.m4 @PACKAGE@.pc Makefile.common 
+#EXTRA_DIST = @PACKAGE@.spec @PACKAGE@.m4 @PACKAGE@.pc Makefile.common 
+EXTRA_DIST =
 
 # Build in these directories:
-SUBDIRS = stdair @PACKAGE@ extracppunit $(TEST_DIR)
+SUBDIRS = stdair @PACKAGE@ man $(HTML_DOC_DIR) extracppunit $(TEST_DIR)
 
 
 # Configuration helpers

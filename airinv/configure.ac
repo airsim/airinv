@@ -266,6 +266,15 @@ AC_CONFIG_FILES(
 	airinv/core/Makefile
 	airinv/batches/Makefile
 	airinv/server/Makefile
+	man/Makefile
+	doc/Makefile
+	doc/images/Makefile
+	doc/tutorial/Makefile
+	doc/tutorial/src/Makefile
+	doc/local/Makefile
+	doc/local/index.doc
+	doc/doxygen_html.cfg
+	doc/sourceforge/howto_release_airinv.html
 	extracppunit/Makefile
 	test/Makefile
 	test/samples/Makefile
