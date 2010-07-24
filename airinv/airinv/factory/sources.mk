@@ -1,9 +1,9 @@
-fac_h_sources = \
+airinv_fac_h_sources = \
 		$(top_srcdir)/airinv/factory/FacBomAbstract.hpp \
 		$(top_srcdir)/airinv/factory/FacServiceAbstract.hpp \
 		$(top_srcdir)/airinv/factory/FacSupervisor.hpp \
 		$(top_srcdir)/airinv/factory/FacAirinvServiceContext.hpp
-fac_cc_sources = \
+airinv_fac_cc_sources = \
 		$(top_srcdir)/airinv/factory/FacBomAbstract.cpp \
 		$(top_srcdir)/airinv/factory/FacServiceAbstract.cpp \
 		$(top_srcdir)/airinv/factory/FacSupervisor.cpp \

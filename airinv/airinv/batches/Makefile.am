@@ -10,7 +10,7 @@ MAINTAINERCLEANFILES = Makefile.in
 bin_PROGRAMS = airinv readInventory
 
 #
-airinv_SOURCES = airinv.cpp
+airinv_SOURCES = $(airinv_batches_h_sources) $(airinv_batches_cc_sources)
 airinv_CXXFLAGS = $(BOOST_CFLAGS)
 airinv_LDADD =
 airinv_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LIB) \

@@ -1,12 +1,13 @@
-## bom sub-directory
+## airinv/bom sub-directory
 include $(top_srcdir)/Makefile.common
 include $(srcdir)/sources.mk
 
-noinst_LTLIBRARIES= libbom.la
+#
+noinst_LTLIBRARIES = libairinvbom.la
 
-libbom_la_SOURCES= $(bom_h_sources) $(bom_cc_sources) 
-libbom_la_CXXFLAGS =
-libbom_la_LDFLAGS =
+libairinvbom_la_SOURCES = $(airinv_bom_h_sources) $(airinv_bom_cc_sources) 
+libairinvbom_la_CXXFLAGS =
+libairinvbom_la_LDFLAGS =
 
 #pkgincludedir = $(includedir)/@PACKAGE@/bom
-#pkginclude_HEADERS = $(bom_h_sources)
+#pkginclude_HEADERS = $(airinv_bom_h_sources)

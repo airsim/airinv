@@ -1,12 +1,13 @@
-## basic sub-directory
+## airinv/basic sub-directory
 include $(top_srcdir)/Makefile.common
 include $(srcdir)/sources.mk
 
-noinst_LTLIBRARIES= libbas.la
+#
+noinst_LTLIBRARIES = libairinvbas.la
 
-libbas_la_SOURCES= $(bas_h_sources) $(bas_cc_sources) 
-libbas_la_CXXFLAGS =
+libairinvbas_la_SOURCES = $(airinv_bas_h_sources) $(airinv_bas_cc_sources) 
+libairinvbas_la_CXXFLAGS =
 
 # Headers to be exported/installed
 #pkgincludedir = $(includedir)/airinv/basic
-#pkginclude_HEADERS = $(bas_h_sources)
+#pkginclude_HEADERS = $(airinv_bas_h_sources)
