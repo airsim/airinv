@@ -10,10 +10,6 @@ AM_INIT_AUTOMAKE
 AM_PATH_CPPUNIT(1.10)
 AM_CONDITIONAL([HAVE_CPPUNIT], [test "x$CPPUNIT_LIBS" != x])
 
-# RPM release number
-RPM_RELEASE="1"
-AC_SUBST(RPM_RELEASE)
-
 # Shared library versioning
 GENERIC_LIBRARY_VERSION="99:99:99"
 #                        | | |
@@ -244,7 +240,6 @@ AC_CONFIG_FILES(
 	Makefile
 	airinv-config
 	airinv.pc
-	airinv.spec
 	airinv.m4
 	stdair/Makefile
 	stdair/basic/Makefile
@@ -272,9 +267,7 @@ AC_CONFIG_FILES(
 	doc/tutorial/Makefile
 	doc/tutorial/src/Makefile
 	doc/local/Makefile
-	doc/local/index.doc
 	doc/doxygen_html.cfg
-	doc/sourceforge/howto_release_airinv.html
 	extracppunit/Makefile
 	test/Makefile
 	test/samples/Makefile

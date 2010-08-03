@@ -25,7 +25,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure \
 EXTRA_DIST =
 
 # Build in these directories:
-SUBDIRS = stdair @PACKAGE@ man $(HTML_DOC_DIR) extracppunit $(TEST_DIR)
+SUBDIRS = stdair airinv man $(HTML_DOC_DIR) extracppunit $(TEST_DIR)
 
 
 # Configuration helpers
@@ -44,41 +44,41 @@ uninstall-local:
 dist-html:
 	$(MAKE) -C doc dist-html
 
-dist-tex:
-	$(MAKE) -C doc dist-tex
+dist-pdf:
+	$(MAKE) -C doc dist-pdf
 
 dist-gui:
 	$(MAKE) -C gui dist-gui
 
 
-snapshot: snapshot-src snapshot-html snapshot-tex snapshot-gui
+snapshot: snapshot-src snapshot-html snapshot-pdf snapshot-gui
 
 
 snapshot-src:
         $(MAKE) dist distdir=@PACKAGE_TARNAME@-`date +"%Y%m%d"`
 
 snapshot-html:
-	$(MAKE) -C doc dist-html html_tarname=@PACKAGE_TARNAME@-html-doc-`date +"%Y%m%d"`
+	$(MAKE) -C doc dist-html html_tarname=@PACKAGE_TARNAME@-doc-`date +"%Y%m%d"`
 
-snapshot-tex:
-	$(MAKE) -C doc dist-tex tex_tarname=@PACKAGE_TARNAME@-tex-`date +"%Y%m%d"`
+snapshot-pdf:
+	$(MAKE) -C doc dist-pdf pdf_tarname=@PACKAGE_TARNAME@-pdf-`date +"%Y%m%d"`
 
 snapshot-gui:
 	$(MAKE) -C gui dist-gui
 
-upload: upload-src upload-html upload-tex upload-gui
+upload: upload-src upload-html upload-pdf upload-gui
 
 upload-src: dist
 	@UPLOAD_COMMAND@ @PACKAGE_TARNAME@-@VERSION@.tar.gz \
 	@PACKAGE_TARNAME@-@VERSION@.tar.bz2
 
 upload-html: dist-html
-	@UPLOAD_COMMAND@ @PACKAGE_TARNAME@-html-doc-@VERSION@.tar.gz \
-	@PACKAGE_TARNAME@-html-doc-@VERSION@.tar.bz2
+	@UPLOAD_COMMAND@ @PACKAGE_TARNAME@-doc-@VERSION@.tar.gz \
+	@PACKAGE_TARNAME@-doc-@VERSION@.tar.bz2
 
-upload-tex: dist-tex
-	@UPLOAD_COMMAND@ @PACKAGE_TARNAME@-tex-@VERSION@.tar.gz \
-	@PACKAGE_TARNAME@-tex-@VERSION@.tar.bz2
+upload-pdf: dist-pdf
+	@UPLOAD_COMMAND@ @PACKAGE_TARNAME@-pdf-@VERSION@.tar.gz \
+	@PACKAGE_TARNAME@-pdf-@VERSION@.tar.bz2
 
 upload-gui: dist-gui
 	@UPLOAD_COMMAND@ @PACKAGE_TARNAME@-gui-@VERSION@.tar.gz \

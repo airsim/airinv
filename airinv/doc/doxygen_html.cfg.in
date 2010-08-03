@@ -126,10 +126,10 @@ STRIP_FROM_PATH        = @top_srcdir@/
 STRIP_FROM_INC_PATH    = @top_srcdir@/
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter
-# (but less readable) file names. This can be useful is your file systems
+# (but less readable) file names. This can be useful if your file systems
 # doesn't support long names like on DOS, Mac, or CD-ROM.
 
-SHORT_NAMES            = YES
+SHORT_NAMES            = NO
 
 # If the JAVADOC_AUTOBRIEF tag is set to YES then Doxygen
 # will interpret the first line (until the first dot) of a JavaDoc-style
@@ -137,7 +137,7 @@ SHORT_NAMES            = YES
 # comments will behave just like regular Qt-style comments
 # (thus requiring an explicit @brief command for a brief description.)
 
-JAVADOC_AUTOBRIEF      = YES
+JAVADOC_AUTOBRIEF      = NO
 
 # If the QT_AUTOBRIEF tag is set to YES then Doxygen will
 # interpret the first line (until the first dot) of a Qt-style
@@ -357,7 +357,7 @@ HIDE_FRIEND_COMPOUNDS  = NO
 # If set to NO (the default) these blocks will be appended to the
 # function's detailed documentation block.
 
-HIDE_IN_BODY_DOCS      = NO
+HIDE_IN_BODY_DOCS      = YES
 
 # The INTERNAL_DOCS tag determines if documentation
 # that is typed after a \internal command is included. If the tag is set
@@ -574,11 +574,10 @@ WARN_LOGFILE           = doxygen_html.log
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = @top_srcdir@/stdair \
-                         @top_srcdir@/airinv \
+INPUT                  = @top_srcdir@/@PACKAGE@ \
                          @top_srcdir@/doc/local \
-                         @top_builddir@/doc/local \
-                         @top_srcdir@/doc/tutorial
+                         @top_srcdir@/doc/tutorial \
+						 @top_srcdir@/test/@PACKAGE@
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -655,7 +654,7 @@ EXAMPLE_PATTERNS       = *.hpp \
 # commands irrespective of the value of the RECURSIVE tag.
 # Possible values are YES and NO. If left blank NO is used.
 
-EXAMPLE_RECURSIVE      = NO
+EXAMPLE_RECURSIVE      = YES
 
 # The IMAGE_PATH tag can be used to specify one or more files or
 # directories that contain image that are included in the documentation (see
@@ -1349,18 +1348,18 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = "doxygen_stdair.tag = http://www.stdair.org"
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       = doxygen_html.tag
+GENERATE_TAGFILE       = html/doxygen_@PACKAGE@.tag
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed
 # in the class index. If set to NO only the inherited external classes
 # will be listed.
 
-ALLEXTERNALS           = NO
+ALLEXTERNALS           = YES
 
 # If the EXTERNAL_GROUPS tag is set to YES all external groups will be listed
 # in the modules index. If set to NO, only the current project's groups will
@@ -1399,7 +1398,7 @@ MSCGEN_PATH            =
 # inheritance and usage relations if the target is undocumented
 # or is not a class.
 
-HIDE_UNDOC_RELATIONS   = YES
+HIDE_UNDOC_RELATIONS   = NO
 
 # If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is
 # available from the path. This tool is part of Graphviz, a graph visualization
