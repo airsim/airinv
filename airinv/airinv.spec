@@ -1,9 +1,9 @@
 #
-%define mydocs __tmp_docdir
+%global mydocs __tmp_docdir
 #
-Name:           @PACKAGE@
-Version:        @VERSION@
-Release:        @RPM_RELEASE@%{?dist}
+Name:           airinv
+Version:        99.99.99
+Release:        1%{?dist}
 
 Summary:        C++ library providing a clean API for parsing travel-focused requests
 
@@ -64,14 +64,14 @@ development documentation for %{name}. If you would like to develop
 programs using %{name}, you will need to install %{name}-devel.
 
 %package doc
-Summary:        HTML documentation for the @PACKAGE_NAME@ library
+Summary:        HTML documentation for the AIRINV library
 Group:          Documentation
 BuildArch:      noarch
 BuildRequires:  doxygen, texlive-latex, texlive-dvips, ghostscript
 
 %description doc
-This package contains the documentation in the HTML format of the @PACKAGE_NAME@
-library. The documentation is the same as at the @PACKAGE_NAME@ web page.
+This package contains the documentation in the HTML format of the AIRINV
+library. The documentation is the same as at the AIRINV web page.
 
 
 %prep
@@ -139,9 +139,6 @@ fi
 
 
 %changelog
-* Sun Mar 29 2009 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.3.0-1
-- Now relies on the new SOCI RPM
-
-* Sun Mar 22 2009 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.2.0-1
-- RPM release for Fedora 10
+* Tue Aug  3 2010 Denis Arnaud <denis.arnaud_fedora@m4x.org> 99.99.99-1
+- Upstream integration
 
