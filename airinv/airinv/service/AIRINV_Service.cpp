@@ -211,7 +211,8 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::sell (const stdair::TravelSolutionStruct& iTravelSolution,
+  bool AIRINV_Service::sell (const std::string& iSegmentDateKey,
+                             const stdair::ClassCode_T& iClassCode,
                              const stdair::PartySize_T& iPartySize) {
     
     if (_airinvServiceContext == NULL) {
@@ -229,17 +230,21 @@ namespace AIRINV {
       // Delegate the booking to the dedicated command
       stdair::BasChronometer lSellChronometer;
       lSellChronometer.start();
-      InventoryManager::sell (lInventory, iTravelSolution, iPartySize);
+      bool saleControl = InventoryManager::sell (lInventory, iSegmentDateKey,
+                                                 iClassCode, iPartySize);
       const double lSellMeasure = lSellChronometer.elapsed();
       
       // DEBUG
       STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
                         << lAIRINV_ServiceContext.display());
 
+      return saleControl;
     } catch (const std::exception& error) {
       STDAIR_LOG_ERROR ("Exception: "  << error.what());
       throw BookingException();
     }
+
+    return false;
   }
   
 }

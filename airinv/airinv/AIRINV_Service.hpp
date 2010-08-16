@@ -71,7 +71,8 @@ namespace AIRINV {
     
     // /////////// Business Methods /////////////
     /** Register a booking. */
-    void sell (const stdair::TravelSolutionStruct&, const stdair::PartySize_T&);
+    bool sell (const std::string&, const stdair::ClassCode_T&,
+               const stdair::PartySize_T&);
 
   private:
     // /////// Construction and Destruction helper methods ///////

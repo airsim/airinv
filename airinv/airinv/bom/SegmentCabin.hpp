@@ -22,6 +22,12 @@ namespace AIRINV {
     /** Definition allowing to retrieve the associated BOM structure type. */
     typedef stdair::SegmentCabinStructure_T Structure_T;
 
+  public:
+    // ////////// Business Methods /////////
+    /** Update the segment-cabin with the reservation. */
+    static void updateFromReservation (stdair::SegmentCabin&,
+                                      const stdair::PartySize_T&);
+
   private:
     /** Constructors are private so as to force the usage of the Factory
         layer. */

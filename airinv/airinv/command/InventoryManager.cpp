@@ -14,15 +14,15 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  void InventoryManager::
-  sell (stdair::Inventory& ioInventory,
-        const stdair::TravelSolutionStruct& iTravelSolution, 
+  bool InventoryManager::
+  sell (stdair::Inventory& ioInventory, const std::string& iSegmentDateKey,
+        const stdair::ClassCode_T& iClassCode,
         const stdair::PartySize_T& iPartySize) {
 
     try {
-
       // Make the sale within the inventory.
-      Inventory::sell (ioInventory, iTravelSolution, iPartySize);
+      return Inventory::sell (ioInventory, iSegmentDateKey,
+                              iClassCode, iPartySize);
       
     } catch (const std::exception& lStdError) {
       STDAIR_LOG_ERROR ("Error: " << lStdError.what());

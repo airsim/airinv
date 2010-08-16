@@ -24,6 +24,10 @@ namespace AIRINV {
 
   public:
     // ////////// Business Methods /////////
+    /** Update the availability pool of all the segment-cabins after a
+        reservation. */
+    static void updateAvailablityPool (const stdair::FlightDate&,
+                                       const stdair::CabinCode_T&);
     
   private:
     /** Constructors are private so as to force the usage of the Factory

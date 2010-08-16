@@ -37,9 +37,10 @@ namespace AIRINV {
   public:
     // ////////// Business Methods /////////
     /** Make a sale with the given travel solution. */
-    static void sell (stdair::Inventory&, const stdair::TravelSolutionStruct&,
-                      const stdair::PartySize_T&);
-    void sell (const stdair::TravelSolutionStruct&, const stdair::PartySize_T&);
+    static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
+                      const stdair::ClassCode_T&, const stdair::PartySize_T&);
+    bool sell (const std::string& iSegmentDateKey,
+               const stdair::ClassCode_T&, const stdair::PartySize_T&);
     
   private:
     /** Constructors are private so as to force the usage of the Factory

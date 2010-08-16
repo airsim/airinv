@@ -21,8 +21,8 @@ namespace AIRINV {
   private:
 
     /** Register a booking (segment sell). */
-    static void sell (stdair::Inventory&, const stdair::TravelSolutionStruct&,
-                      const stdair::PartySize_T&);
+    static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
+                      const stdair::ClassCode_T&, const stdair::PartySize_T&);
 
   private:
     /** Constructors. */
