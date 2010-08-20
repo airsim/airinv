@@ -8,7 +8,7 @@
 #include <stdair/bom/Inventory.hpp>
 // AirInv
 #include <airinv/AIRINV_Types.hpp>
-#include <airinv/bom/Inventory.hpp>
+#include <airinv/bom/InventoryHelper.hpp>
 #include <airinv/command/InventoryManager.hpp>
 
 namespace AIRINV {
@@ -21,8 +21,8 @@ namespace AIRINV {
 
     try {
       // Make the sale within the inventory.
-      return Inventory::sell (ioInventory, iSegmentDateKey,
-                              iClassCode, iPartySize);
+      return InventoryHelper::sell (ioInventory, iSegmentDateKey,
+                                    iClassCode, iPartySize);
       
     } catch (const std::exception& lStdError) {
       STDAIR_LOG_ERROR ("Error: " << lStdError.what());

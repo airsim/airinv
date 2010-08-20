@@ -10,11 +10,11 @@
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/basic/BasFileMgr.hpp>
-#include <stdair/bom/BomManager.hpp> // for display()
+#include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomRoot.hpp>
+#include <stdair/bom/Inventory.hpp>
 #include <stdair/bom/AirlineFeature.hpp>
-#include <stdair/factory/FacBomContent.hpp>
-#include <stdair/command/CmdBomManager.hpp>
+#include <stdair/factory/FacBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
 // Airinv
@@ -48,11 +48,11 @@ namespace AIRINV {
     // which all of the other BOM objects of the airline inventory will be
     // attached
     assert (ioSTDAIR_Service_ptr != NULL);
-    stdair::Inventory* lInventory_ptr =
-      ioSTDAIR_Service_ptr->getBomRoot().getInventory (iAirlineCode);
-    assert (lInventory_ptr != NULL);
+    const stdair::BomRoot& lBomRoot = ioSTDAIR_Service_ptr->getBomRoot();
+    stdair::Inventory& lInventory =
+      stdair::BomManager::getChild<stdair::Inventory> (lBomRoot, iAirlineCode);
     // Initialise the service context
-    initServiceContext (iAirlineCode, *lInventory_ptr);
+    initServiceContext (iAirlineCode, lInventory);
 
     // Retrieve the AirInv service context
     assert (_airinvServiceContext != NULL);
@@ -81,10 +81,13 @@ namespace AIRINV {
     // which all of the other BOM objects of the airline inventory will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
+    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::InventoryKey lKey (iAirlineCode);
     stdair::Inventory& lInventory =
-      stdair::CmdBomManager::createInventory (lSTDAIR_Service_ptr->getBomRoot(),
-                                              iAirlineCode);
-
+      stdair::FacBomManager::create<stdair::Inventory> (lKey);
+    stdair::FacBomManager::addToListAndMap (lBomRoot, lInventory);
+    stdair::FacBomManager::linkWithParent (lBomRoot, lInventory);
+    
     // Initialise the service context
     initServiceContext (iAirlineCode, lInventory);
 
@@ -110,9 +113,12 @@ namespace AIRINV {
     // which all of the other BOM objects of the airline inventory will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
+    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::InventoryKey lKey (iAirlineCode);
     stdair::Inventory& lInventory =
-      stdair::CmdBomManager::createInventory (lSTDAIR_Service_ptr->getBomRoot(),
-                                              iAirlineCode);
+      stdair::FacBomManager::create<stdair::Inventory> (lKey);
+    stdair::FacBomManager::addToListAndMap (lBomRoot, lInventory);
+    stdair::FacBomManager::linkWithParent (lBomRoot, lInventory);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lInventory);

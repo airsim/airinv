@@ -40,32 +40,32 @@ namespace AIRINV {
   private:
     /** Build the flight-date objects corresponding to the given
         FlightDateStruct_T, and add them to the given nventory. */
-    static void buildFlightDate (const stdair::Inventory&,
+    static void buildFlightDate (stdair::Inventory&,
                                  const FlightDateStruct_T&);
 
     /** Build the leg-date objects corresponding to the given
         LegDateStruct_T, and add them to the given flight-date. */
-    static void buildLegDate (const stdair::FlightDate&,
+    static void buildLegDate (stdair::FlightDate&,
                               const LegStruct_T&);
     
     /** Build the leg-cabin objects corresponding to the given
         LegCabinStruct_T, and add them to the given leg-date. */
-    static void buildLegCabin (const stdair::LegDate&,
+    static void buildLegCabin (stdair::LegDate&,
                                const LegCabinStruct_T&);
 
     /** Build the segment-date objects corresponding to the given
         SegmentDateStruct_T, and add them to the given flight-date. */
-    static void buildSegmentDate (const stdair::FlightDate&,
+    static void buildSegmentDate (stdair::FlightDate&,
                                   const SegmentStruct_T&);
 
     /** Build the segment-cabin objects corresponding to the given
         SegmentCabinStruct_T, and add them to the given segment-date. */
-    static void buildSegmentCabin (const stdair::SegmentDate&,
+    static void buildSegmentCabin (stdair::SegmentDate&,
                                    const SegmentCabinStruct_T&);
 
     /** Build the booking class objects corresponding to the given
         BookingClassStruct_T, and add them to the given segment-cabin. */
-    static void buildBookingClass (const stdair::SegmentCabin&,
+    static void buildBookingClass (stdair::SegmentCabin&,
                                    const BookingClassStruct_T&);
 
   };
