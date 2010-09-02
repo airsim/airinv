@@ -9,54 +9,34 @@ Summary:        C++ library providing a clean API for parsing travel-focused req
 
 Group:          System Environment/Libraries 
 License:        LGPLv2
-URL:            http://%{name}.sourceforge.net
-Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+URL:            http://sourceforge.net/projects/%{name}/
+Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
+%{?el5:BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)}
 
-BuildRequires:  gsl-devel >= 1.8
-BuildRequires:  boost-devel >= 1.34
-BuildRequires:  mysql-devel >= 5.0
-BuildRequires:  mysql++-devel >= 3.0
-BuildRequires:  cppunit-devel >= 1.10
-BuildRequires:  xapian-core-devel >= 1.0
-BuildRequires:  soci-devel >= 3.0
-#Requires:       
+BuildRequires:  boost-devel
+BuildRequires:  soci-mysql-devel
+# When the extracc package will be approved, uncomment the following line
+# (see https://bugzilla.redhat.com/show_bug.cgi?id=616881 for more details)
+#BuildRequires:  extracc-devel
+#BuildRequires:  stdair-devel
+BuildRequires:  cppunit-devel
 
 %description
-That project aims at providing a clean API, and the corresponding C++
-implementation, for parsing travel-focused requests (e.g., "washington
-dc beijing monday a/r +aa -ua 1 week 2 adults 1 dog").
+%{name} is a C++ library of airline inventory management classes and
+functions, mainly targeting simulation purposes.
 
-The C++ library uses Xapian (http://www.xapian.org) for the
-Information Retrieval part, on freely available travel-related data
-(e.g., country names and codes, city names and codes, airline names
-and codes, etc.).
+%{name} makes an extensive use of existing open-source libraries for
+increased functionality, speed and accuracy. In particular the
+Boost (C++ Standard Extensions: http://www.boost.org) library is used.
 
-The C++ library exposes a simple, clean and object-oriented, API. For
-instance, the static Parse() method takes, as input, a string
-containing the travel request, and yields, as output, the list of the
-recognised terms as well as their corresponding types. As an example,
-the travel request "washington dc beijing monday a/r +aa -ua 1 week 2
-adults 1 dog" would give the following list:
-  * Origin airport: Washington, DC, USA
-  * Destination airport: Beijing, China
-  * Date of travel: next Monday
-  * Date of return: 1 week after next Monday
-  * Preferred airline: American Airlines; 
-      non-preferred airline: United Airlines
-  * Number of travellers: 2 adults and a dog
-
-The output can then be used by other systems, for instance to book the
-corresponding travel or to visualise it on a map and calendar and to
-share it with others.
+Install the %{name} package if you need a library for Airline
+Inventory Management C++ fundaments, mainly for simulation purpose.
 
 %package        devel
 Summary:        Header files, libraries and development documentation for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
 Requires:       pkgconfig
-Requires(post): info
-Requires(preun): info
 
 %description    devel
 This package contains the header files, static libraries and
@@ -64,22 +44,24 @@ development documentation for %{name}. If you would like to develop
 programs using %{name}, you will need to install %{name}-devel.
 
 %package doc
-Summary:        HTML documentation for the AIRINV library
+Summary:        HTML documentation for the %{name} library
 Group:          Documentation
-BuildArch:      noarch
-BuildRequires:  doxygen, texlive-latex, texlive-dvips, ghostscript
+%{?fedora:BuildArch:      noarch}
+BuildRequires:  tex(latex)
+BuildRequires:  doxygen, ghostscript
 
 %description doc
-This package contains the documentation in the HTML format of the AIRINV
-library. The documentation is the same as at the AIRINV web page.
+This package contains the documentation in the HTML format of the %{name}
+library. The documentation is the same as at the %{name} web page.
 
 
 %prep
 %setup -q
-# find ./doc -type f -perm 755 -exec chmod 644 {} \;
-# Fix some permissions and formats
+# The INSTALL package is not relevant for RPM package users
+# (e.g., see https://bugzilla.redhat.com/show_bug.cgi?id=489233#c4)
 rm -f INSTALL
-chmod -x ABOUT-NLS AUTHORS ChangeLog COPYING NEWS README
+# Fix some permissions and formats
+chmod -x AUTHORS ChangeLog COPYING NEWS README
 find . -type f -name '*.[hc]pp' -exec chmod 644 {} \;
 
 
@@ -88,57 +70,57 @@ find . -type f -name '*.[hc]pp' -exec chmod 644 {} \;
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-%find_lang %{name}
-# remove unpackaged files from the buildroot
-rm -f $RPM_BUILD_ROOT%{_includedir}/%{name}/config.h
-rm -f $RPM_BUILD_ROOT%{_infodir}/dir
+# On Fedora, the BuildRoot is automatically cleaned. Which is not the case for
+# RedHat. See: https://fedoraproject.org/wiki/Packaging/Guidelines#BuildRoot_tag
+%{?rhel:rm -rf $RPM_BUILD_ROOT}
+
+make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
+
+# Remove unpackaged files from the buildroot
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib%{name}.la
-# chmod 644 doc/html/installdox doc/html/*.png doc/html/*.ico
-rm -rf %{mydocs} && mkdir -p %{mydocs}
+# When the extracc package will be approved, the following line has to be removed
+rm -f $RPM_BUILD_ROOT%{_libdir}/libextracppunit.la
+
+mkdir -p %{mydocs}
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html %{mydocs}
 
+%if 0%{?rhel}
 %clean
 rm -rf $RPM_BUILD_ROOT
+%endif
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
-%post devel
-/sbin/install-info %{_infodir}/%{name}-ref.info.* %{_infodir}/dir || :
 
-%preun devel 
-if [ "$1" = 0 ]; then
-   /sbin/install-info --delete %{_infodir}/%{name}-ref.info.* %{_infodir}/dir || :
-fi
-
-%files -f %{name}.lang
+%files
 %defattr(-,root,root,-)
 %doc AUTHORS ChangeLog COPYING NEWS README
-%{_bindir}/%{name}_indexer
-%{_bindir}/%{name}_searcher
+%{_bindir}/%{name}
 %{_libdir}/lib*.so.*
-%{_mandir}/man3/%{name}.3.*
+%{_mandir}/man1/%{name}.1.*
 
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}
+# When the extracc package will be approved, the following line has to be removed
+%{_includedir}/extracppunit
 %{_bindir}/%{name}-config
 %{_libdir}/lib%{name}.so
+# When the extracc package will be approved, the following line has to be removed
+%{_libdir}/libextracppunit.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_datadir}/aclocal/%{name}.m4
-%{_infodir}/%{name}-ref.info.*
 %{_mandir}/man1/%{name}-config.1.*
+%{_mandir}/man3/%{name}-library.3.*
 
 %files doc
 %defattr(-,root,root,-)
 %doc %{mydocs}/html
-%doc AUTHORS ChangeLog COPYING NEWS README
+%doc COPYING
 
 
 %changelog
-* Tue Aug  3 2010 Denis Arnaud <denis.arnaud_fedora@m4x.org> 99.99.99-1
-- Upstream integration
-
+* Fri Sep 03 2010 Christophe Lacombe <clacombe@amadeus.com> 99.99.99-1
+- First package
