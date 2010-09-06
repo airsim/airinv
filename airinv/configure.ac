@@ -343,10 +343,10 @@ External libraries:
     o EXTRACC_CFLAGS .. : ${EXTRACC_CFLAGS}
     o EXTRACC_LIBS .... : ${EXTRACC_LIBS}
 
-  - STDAIR ............ :
-    o EXTRACC_VERSION . : ${STDAIR_VERSION}
-    o EXTRACC_CFLAGS .. : ${STDAIR_CFLAGS}
-    o EXTRACC_LIBS .... : ${STDAIR_LIBS}
+  - StdAir ............ :
+    o STDAIR_VERSION .. : ${STDAIR_VERSION}
+    o STDAIR_CFLAGS ... : ${STDAIR_CFLAGS}
+    o STDAIR_LIBS ..... : ${STDAIR_LIBS}
 
   - CPPUNIT ........... :
     o CPPUNIT_VERSION . : ${CPPUNIT_VERSION}
