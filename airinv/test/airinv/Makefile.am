@@ -14,9 +14,10 @@ TESTS = $(check_PROGRAMS)
 XFAIL_TESTS = #
 
 InventoryTestSuite_SOURCES = InventoryTestSuite.hpp InventoryTestSuite.cpp
-InventoryTestSuite_CXXFLAGS= $(CPPUNIT_CFLAGS) $(BOOST_CFLAGS) $(EXTRACC_CFLAGS)
+InventoryTestSuite_CXXFLAGS = $(CPPUNIT_CFLAGS) $(BOOST_CFLAGS) \
+	$(EXTRACC_CFLAGS) $(STDAIR_CFLAGS)
 InventoryTestSuite_LDADD =
 InventoryTestSuite_LDFLAGS = \
-		$(BOOST_LIBS) $(CPPUNIT_LIBS) $(EXTRACC_LIBS) $(STDAIR_LIBS) $(EXTRACC_LIBS) \
-		$(top_builddir)/airinv/core/libairinv.la
+	$(BOOST_LIBS) $(CPPUNIT_LIBS) $(EXTRACC_LIBS) $(STDAIR_LIBS) \
+	$(top_builddir)/airinv/core/libairinv.la
 
