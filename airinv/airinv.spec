@@ -14,12 +14,12 @@ Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.
 %{?el5:BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)}
 
 BuildRequires:  boost-devel
+BuildRequires:  openmpi-devel
 BuildRequires:  soci-mysql-devel
-# When the extracc package will be approved, uncomment the following line
+# When the extracc package will part of stdair, remove the following line
 # (see https://bugzilla.redhat.com/show_bug.cgi?id=616881 for more details)
-#BuildRequires:  extracc-devel
-#BuildRequires:  stdair-devel
-BuildRequires:  cppunit-devel
+BuildRequires:  extracc-devel
+BuildRequires:  stdair-devel
 
 %description
 %{name} is a C++ library of airline inventory management classes and
@@ -104,12 +104,8 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/%{name}
-# When the extracc package will be approved, the following line has to be removed
-%{_includedir}/extracppunit
 %{_bindir}/%{name}-config
 %{_libdir}/lib%{name}.so
-# When the extracc package will be approved, the following line has to be removed
-%{_libdir}/libextracppunit.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_datadir}/aclocal/%{name}.m4
 %{_mandir}/man1/%{name}-config.1.*

@@ -4,7 +4,7 @@ include $(top_srcdir)/Makefile.common
 MAINTAINERCLEANFILES = Makefile.in
 
 ##
-SUBDIRS = samples stdair airinv
+SUBDIRS = samples airinv
 
 EXTRA_DIST =
 
