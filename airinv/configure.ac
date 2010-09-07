@@ -106,14 +106,6 @@ AC_SUBST(EXTRACC_VERSION)
 AC_SUBST(EXTRACC_CFLAGS)
 AC_SUBST(EXTRACC_LIBS)
 
-# -----------------------------------------------------------------------------
-# Support for StdAir: http://stdair.org
-# -----------------------------------------------------------------------------
-AM_PATH_STDAIR
-AC_SUBST(STDAIR_VERSION)
-AC_SUBST(STDAIR_CFLAGS)
-AC_SUBST(STDAIR_LIBS)
-
 # -----------------------------------------------------------
 # Python: http://www.python.org
 # -----------------------------------------------------------
@@ -172,6 +164,13 @@ AC_SUBST(SOCI_VERSION)
 AC_SUBST(SOCI_CFLAGS)
 AC_SUBST(SOCI_LIBS)
 
+# -----------------------------------------------------------------------------
+# Support for StdAir (): http://sf.net/projects/stdair
+# -----------------------------------------------------------------------------
+AM_PATH_STDAIR
+AC_SUBST(STDAIR_VERSION)
+AC_SUBST(STDAIR_CFLAGS)
+AC_SUBST(STDAIR_LIBS)
 
 # -------------------------------------------------------------------
 # Support for documentation
@@ -338,15 +337,15 @@ External libraries:
     o SOCI_CFLAGS ..... : ${SOCI_CFLAGS}
     o SOCI_LIBS ....... : ${SOCI_LIBS}
 
-  - ExtraCC ........... :
-    o EXTRACC_VERSION . : ${EXTRACC_VERSION}
-    o EXTRACC_CFLAGS .. : ${EXTRACC_CFLAGS}
-    o EXTRACC_LIBS .... : ${EXTRACC_LIBS}
-
   - StdAir ............ :
     o STDAIR_VERSION .. : ${STDAIR_VERSION}
     o STDAIR_CFLAGS ... : ${STDAIR_CFLAGS}
     o STDAIR_LIBS ..... : ${STDAIR_LIBS}
+
+  - ExtraCC ........... :
+    o EXTRACC_VERSION . : ${EXTRACC_VERSION}
+    o EXTRACC_CFLAGS .. : ${EXTRACC_CFLAGS}
+    o EXTRACC_LIBS .... : ${EXTRACC_LIBS}
 
   - CPPUNIT ........... :
     o CPPUNIT_VERSION . : ${CPPUNIT_VERSION}
