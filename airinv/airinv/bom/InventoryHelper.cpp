@@ -24,29 +24,30 @@ namespace AIRINV {
     const int lSize = iSegmentDateKey.size();
     // Retrieve the corresponding flight-date.
     std::string lFlightDateKey;
-    lFlightDateKey.append (iSegmentDateKey, 3, lSize - 9);
+    STDAIR_LOG_DEBUG (iSegmentDateKey);
+    lFlightDateKey.append (iSegmentDateKey, 4, lSize - 13);
     const stdair::FlightDate& lFlightDate =
-      stdair::BomManager::getChild<stdair::FlightDate> (ioInventory,
-                                                        lFlightDateKey);
+      stdair::BomManager::getObject<stdair::FlightDate> (ioInventory,
+                                                         lFlightDateKey);
 
     // Retrieve the corresponding segment-date.
     std::string lSegmentDateKey;
     lSegmentDateKey.append (iSegmentDateKey, lSize - 7, 7);
     const stdair::SegmentDate& lSegmentDate =
-      stdair::BomManager::getChild<stdair::SegmentDate> (lFlightDateKey,
-                                                         lSegmentDateKey);
+      stdair::BomManager::getObject<stdair::SegmentDate> (lFlightDate,
+                                                          lSegmentDateKey);
 
     // Browse the segment-cabins and make the sale with the
     // corresponding booking class.
-    stdair::SegmentCabinList_T& lSegmentCabinList =
+    const stdair::SegmentCabinList_T& lSegmentCabinList =
       stdair::BomManager::getList<stdair::SegmentCabin> (lSegmentDate);
-    for (stdair::SegmentCabinList_T::iterator itCabin =lSegmentCabinList.begin();
+    for (stdair::SegmentCabinList_T::const_iterator itCabin =
+           lSegmentCabinList.begin();
          itCabin != lSegmentCabinList.end(); ++itCabin) {
       stdair::SegmentCabin* lSegmentCabin_ptr = *itCabin;
       assert (lSegmentCabin_ptr != NULL);
-      stdair::BookingClass* lBookingClass_ptr =
-        stdair::BomManager::getChildPtr<stdair::BookingClass>(*lSegmentCabin_ptr,
-                                                              iClassCode);
+      stdair::BookingClass* lBookingClass_ptr = stdair::BomManager::
+        getObjectPtr<stdair::BookingClass> (*lSegmentCabin_ptr, iClassCode);
       if (lBookingClass_ptr) {
         // Register the sale in the class.
         lBookingClass_ptr->sell (iPartySize);

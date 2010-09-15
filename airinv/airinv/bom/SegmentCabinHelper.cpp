@@ -22,9 +22,10 @@ namespace AIRINV {
     ioSegmentCabin.updateFromReservation (iNbOfBookings);
 
     // Update the commited space of the member leg-cabins.
-    stdair::LegCabinList_T& lLegCabinList =
+    const stdair::LegCabinList_T& lLegCabinList =
       stdair::BomManager::getList<stdair::LegCabin> (ioSegmentCabin);
-    for (stdair::LegCabinList_T::iterator itLegCabin = lLegCabinList.begin();
+    for (stdair::LegCabinList_T::const_iterator itLegCabin =
+           lLegCabinList.begin();
          itLegCabin != lLegCabinList.end(); ++itLegCabin) {
       stdair::LegCabin* lLegCabin_ptr = *itLegCabin;
       assert (lLegCabin_ptr != NULL);

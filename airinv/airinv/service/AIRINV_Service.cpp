@@ -50,7 +50,7 @@ namespace AIRINV {
     assert (ioSTDAIR_Service_ptr != NULL);
     const stdair::BomRoot& lBomRoot = ioSTDAIR_Service_ptr->getBomRoot();
     stdair::Inventory& lInventory =
-      stdair::BomManager::getChild<stdair::Inventory> (lBomRoot, iAirlineCode);
+      stdair::BomManager::getObject<stdair::Inventory> (lBomRoot, iAirlineCode);
     // Initialise the service context
     initServiceContext (iAirlineCode, lInventory);
 
@@ -81,12 +81,12 @@ namespace AIRINV {
     // which all of the other BOM objects of the airline inventory will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
     stdair::InventoryKey lKey (iAirlineCode);
     stdair::Inventory& lInventory =
-      stdair::FacBomManager::create<stdair::Inventory> (lKey);
-    stdair::FacBomManager::addToListAndMap (lBomRoot, lInventory);
-    stdair::FacBomManager::linkWithParent (lBomRoot, lInventory);
+      stdair::FacBom<stdair::Inventory>::instance().create (lKey);
+    stdair::FacBomManager::instance().addToListAndMap (lBomRoot, lInventory);
+    stdair::FacBomManager::instance().linkWithParent (lBomRoot, lInventory);
     
     // Initialise the service context
     initServiceContext (iAirlineCode, lInventory);
@@ -113,12 +113,12 @@ namespace AIRINV {
     // which all of the other BOM objects of the airline inventory will be
     // attached
     assert (lSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
     stdair::InventoryKey lKey (iAirlineCode);
     stdair::Inventory& lInventory =
-      stdair::FacBomManager::create<stdair::Inventory> (lKey);
-    stdair::FacBomManager::addToListAndMap (lBomRoot, lInventory);
-    stdair::FacBomManager::linkWithParent (lBomRoot, lInventory);
+      stdair::FacBom<stdair::Inventory>::instance().create (lKey);
+    stdair::FacBomManager::instance().addToListAndMap (lBomRoot, lInventory);
+    stdair::FacBomManager::instance().linkWithParent (lBomRoot, lInventory);
 
     // Initialise the service context
     initServiceContext (iAirlineCode, lInventory);

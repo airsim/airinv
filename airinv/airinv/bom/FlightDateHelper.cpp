@@ -26,8 +26,8 @@ namespace AIRINV {
       const stdair::SegmentDate* lSegmentDate_ptr = *itSegmentDate;
       assert (lSegmentDate_ptr != NULL);
       stdair::SegmentCabin& lSegmentCabin =
-        stdair::BomManager::getChild<stdair::SegmentCabin> (*lSegmentDate_ptr,
-                                                            iCabinCode);
+        stdair::BomManager::getObject<stdair::SegmentCabin> (*lSegmentDate_ptr,
+                                                             iCabinCode);
 
       // Update the availability pool of the segment-cabin to the minimal
       // availability pool of the member leg-cabins.
