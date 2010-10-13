@@ -19,6 +19,10 @@ namespace AIRINV {
   class InventoryHelper {
   public:
     // ////////// Business Methods /////////
+    /** Fill the attributes derived from the routing legs (e.g., board
+        and off dates). */
+    static void fillFromRouting (const stdair::Inventory&);
+    
     /** Make a sale with the given travel solution. */
     static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
                       const stdair::ClassCode_T&, const stdair::PartySize_T&);

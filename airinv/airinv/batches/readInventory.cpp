@@ -196,8 +196,8 @@ int main (int argc, char* argv[]) {
 
     // Initialise the Airinv service object
     const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode,
-                                          lInputFilename);
+    // AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode,
+    //                                       lInputFilename);
 
     // Close the Log outputFile
     logOutputFile.close();

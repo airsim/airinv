@@ -28,12 +28,9 @@ namespace AIRINV {
   private:
     /// //////////////// Constructors and destructors /////////////
     /** Main constructor. */
-    AIRINV_ServiceContext (const stdair::AirlineCode_T&, stdair::Inventory&);
-    /** Default constructor. (not to be used). */
     AIRINV_ServiceContext ();
     /** Default copy constructor (not to be used). */
     AIRINV_ServiceContext (const AIRINV_ServiceContext&);
-
     /** Destructor. */
     ~AIRINV_ServiceContext();
 
@@ -44,15 +41,11 @@ namespace AIRINV {
     stdair::STDAIR_ServicePtr_T getSTDAIR_ServicePtr () const {
       return _stdairService;
     }
-    
-    /** Get the airline code. */
-    const stdair::AirlineCode_T& getAirlineCode () const {
-      return _airlineCode;
-    }
 
-    /** Get the airline inventory. */
-    stdair::Inventory& getInventory () {
-      return _inventory;
+    /** Get the STDAIR service handler. */
+    stdair::STDAIR_Service& getSTDAIR_Service () const {
+      assert (_stdairService != NULL);
+      return *_stdairService;
     }
     
     // ///////////////// Setters ///////////////////
@@ -60,12 +53,6 @@ namespace AIRINV {
     void setSTDAIR_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr) {
       _stdairService = ioSTDAIR_ServicePtr;
     }
-    
-    /** Set the airline code. */
-    void setAirlineCode (const stdair::AirlineCode_T& iAirlineCode) {
-      _airlineCode = iAirlineCode;
-    }
-
 
   private:
     // //////////////////// Display Methods /////////////////////
@@ -80,15 +67,6 @@ namespace AIRINV {
     // /////////////// Children ///////////////
     /** Standard Airline (StdAir) Service Handler. */
     stdair::STDAIR_ServicePtr_T _stdairService;
-
-    
-  private:
-    // //////////// Attributes //////////////////
-    /** Airline code. */
-    stdair::AirlineCode_T _airlineCode;
-
-    /** Airline inventory object. */
-    stdair::Inventory& _inventory;
   };
 
 }

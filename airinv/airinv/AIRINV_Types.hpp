@@ -10,6 +10,8 @@
 #include <map>
 // Boost
 #include <boost/shared_ptr.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace AIRINV {
 
@@ -74,6 +76,18 @@ namespace AIRINV {
       airline inventories. */
   typedef std::map<const stdair::AirlineCode_T,
                    AIRINV_ServicePtr_T> AIRINV_ServicePtr_Map_T;
+
+  /** Define the Duration (e.g., elapsed in-flight time). */
+  typedef boost::posix_time::time_duration Duration_T;
+
+  /** Define the Date (e.g., flight-date departure date). */
+  typedef boost::gregorian::date Date_T;
+
+  /** Define the Date Offset (e.g., -1 ). */
+  typedef boost::gregorian::date_duration DateOffset_T;
+
+  /** Define the Period (e.g., period during which flights depart). */
+  typedef boost::gregorian::date_period DatePeriod_T;
 }
 #endif // __AIRINV_AIRINV_TYPES_HPP
 

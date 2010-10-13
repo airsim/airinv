@@ -12,7 +12,7 @@
 
 // Forward declarations.
 namespace stdair {
-  class Inventory;
+  class BomRoot;
 }
 
 namespace AIRINV {
@@ -26,7 +26,7 @@ namespace AIRINV {
         @param const stdair::Filename_T& The file-name of the CSV-formatted
                inventory input file.
         @param stdair::BomRoot& Root of the BOM tree. */
-    static void buildInventory (const stdair::Filename_T&, stdair::Inventory&);
+    static void buildInventory (const stdair::Filename_T&, stdair::BomRoot&);
   };
 }
 #endif // __AIRINV_CMD_INVENTORYPARSER_HPP

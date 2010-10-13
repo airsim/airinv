@@ -38,6 +38,23 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
+  void LegStruct_T::fill (const stdair::Date_T& iRefDate,
+                          stdair::LegDate& ioLegDate) const {
+    // Set the Off Point
+    ioLegDate.setOffPoint (_offPoint);
+    // Set the Boarding Date
+    ioLegDate.setBoardingDate (iRefDate + _boardingDateOffset);
+    // Set the Boarding Time
+    ioLegDate.setBoardingTime (_boardingTime);
+    // Set the Off Date
+    ioLegDate.setOffDate (iRefDate + _offDateOffset);
+    // Set the Off Time
+    ioLegDate.setOffTime (_offTime);
+    // Set the Elapsed Time
+    ioLegDate.setElapsedTime (_elapsed);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
   void LegStruct_T::fill (stdair::LegDate& ioLegDate) const {
     // Set the Off Point
     ioLegDate.setOffPoint (_offPoint);

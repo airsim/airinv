@@ -11,6 +11,7 @@
 
 // Forward declarations
 namespace stdair {
+  class BomRoot;
   class Inventory;
   class FlightDate;
   class LegDate;
@@ -38,6 +39,11 @@ namespace AIRINV {
     friend struct InventoryParserHelper::doEndFlightDate;
 
   private:
+    /** Build the inventory object corresponding to the given
+        FlightDateStruct_T, and add them to the given bom root. */
+    static void buildInventory (stdair::BomRoot&,
+                                const FlightDateStruct_T&);
+    
     /** Build the flight-date objects corresponding to the given
         FlightDateStruct_T, and add them to the given nventory. */
     static void buildFlightDate (stdair::Inventory&,

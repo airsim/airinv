@@ -1,5 +1,5 @@
-#ifndef __AIRINV_FAC_FACAIRINVSERVICECONTEXT_HPP
-#define __AIRINV_FAC_FACAIRINVSERVICECONTEXT_HPP
+#ifndef __AIRINV_FAC_FACAIRINVMASTERSERVICECONTEXT_HPP
+#define __AIRINV_FAC_FACAIRINVMASTERSERVICECONTEXT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -17,39 +17,39 @@ namespace stdair {
 namespace AIRINV {
 
   /** Forward declarations. */
-  class AIRINV_ServiceContext;
+  class AIRINV_Master_ServiceContext;
 
   /** Factory for Bucket. */
-  class FacAirinvServiceContext : public FacServiceAbstract {
+  class FacAirinvMasterServiceContext : public FacServiceAbstract {
   public:
 
     /** Provide the unique instance.
         <br> The singleton is instantiated when first used
-        @return FacAirinvServiceContext& */
-    static FacAirinvServiceContext& instance();
+        @return FacAirinvMasterServiceContext& */
+    static FacAirinvMasterServiceContext& instance();
 
     /** Destructor.
         <br> The Destruction put the _instance to NULL
         in order to be clean for the next
-        FacAirinvServiceContext::instance() */
-    ~FacAirinvServiceContext();
+        FacAirinvMasterServiceContext::instance() */
+    ~FacAirinvMasterServiceContext();
 
-    /** Create a new AIRINV_ServiceContext object.
+    /** Create a new AIRINV_Master_ServiceContext object.
         <br>This new object is added to the list of instantiated objects.
-        @return AIRINV_ServiceContext& The newly created object. */
-    AIRINV_ServiceContext& create ();
+        @return AIRINV_Master_ServiceContext& The newly created object. */
+    AIRINV_Master_ServiceContext& create ();
 
     
   protected:
     /** Default Constructor.
         <br>This constructor is protected in order to ensure the singleton
         pattern.*/
-    FacAirinvServiceContext () {}
+    FacAirinvMasterServiceContext () {}
 
   private:
     /** The unique instance.*/
-    static FacAirinvServiceContext* _instance;
+    static FacAirinvMasterServiceContext* _instance;
   };
 
 }
-#endif // __AIRINV_FAC_FACAIRINVSERVICECONTEXT_HPP
+#endif // __AIRINV_FAC_FACAIRINVMASTERSERVICECONTEXT_HPP

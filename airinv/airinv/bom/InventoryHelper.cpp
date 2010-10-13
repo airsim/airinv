@@ -13,9 +13,25 @@
 #include <stdair/service/Logger.hpp>
 // AIRINV
 #include <airinv/bom/InventoryHelper.hpp>
+#include <airinv/bom/FlightDateHelper.hpp>
 #include <airinv/bom/SegmentCabinHelper.hpp>
 
 namespace AIRINV {
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryHelper::fillFromRouting (const stdair::Inventory& iInventory) {
+    const stdair::FlightDateList_T& lFlightDateList =
+      stdair::BomManager::getList<stdair::FlightDate> (iInventory);
+
+    // Browse the list of flight-dates and update each flight-date.
+    for (stdair::FlightDateList_T::const_iterator itFlightDate =
+           lFlightDateList.begin();
+         itFlightDate != lFlightDateList.end(); ++itFlightDate) {
+      const stdair::FlightDate* lCurrentFlightDate_ptr = *itFlightDate;
+      assert (lCurrentFlightDate_ptr != NULL);
+      FlightDateHelper::fillFromRouting (*lCurrentFlightDate_ptr);
+    }
+  }
+
   // ////////////////////////////////////////////////////////////////////
   bool InventoryHelper::sell (stdair::Inventory& ioInventory, 
                               const std::string& iSegmentDateKey,

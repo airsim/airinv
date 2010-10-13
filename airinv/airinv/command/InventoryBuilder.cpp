@@ -11,6 +11,7 @@
 #include <stdair/basic/BasConst_Yield.hpp>
 #include <stdair/basic/BasConst_Inventory.hpp>
 #include <stdair/bom/BomManager.hpp>
+#include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
 #include <stdair/bom/FlightDate.hpp>
 #include <stdair/bom/SegmentDate.hpp>
@@ -25,6 +26,30 @@
 #include <airinv/command/InventoryBuilder.hpp>
 
 namespace AIRINV {
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryBuilder::
+  buildInventory (stdair::BomRoot& ioBomRoot,
+                  const FlightDateStruct_T& iFlightDateStruct) {
+    const stdair::AirlineCode_T& lAirlineCode = iFlightDateStruct._airlineCode;
+ 
+    // Instantiate an inventory object (if not exist)
+    // for the given key (airline code)
+    stdair::Inventory* lInventory_ptr = stdair::BomManager::
+      getObjectPtr<stdair::Inventory> (ioBomRoot, lAirlineCode);
+    if (lInventory_ptr == NULL) {
+      stdair::InventoryKey lKey (lAirlineCode);
+      lInventory_ptr =
+        &stdair::FacBom<stdair::Inventory>::instance().create (lKey);
+      stdair::FacBomManager::
+        instance().addToListAndMap (ioBomRoot, *lInventory_ptr);
+      stdair::FacBomManager::
+        instance().linkWithParent (ioBomRoot, *lInventory_ptr);
+    }
+    assert (lInventory_ptr != NULL);
+
+    // Build the flight-date within the inventory.
+    buildFlightDate (*lInventory_ptr, iFlightDateStruct);
+  }
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::

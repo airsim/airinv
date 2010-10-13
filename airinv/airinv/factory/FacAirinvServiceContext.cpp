@@ -30,13 +30,10 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_ServiceContext& FacAirinvServiceContext::
-  create (const std::string& iTravelDatabaseName,
-          stdair::Inventory& ioInventory) {
+  AIRINV_ServiceContext& FacAirinvServiceContext::create () {
     AIRINV_ServiceContext* aAIRINV_ServiceContext_ptr = NULL;
 
-    aAIRINV_ServiceContext_ptr =
-      new AIRINV_ServiceContext (iTravelDatabaseName, ioInventory);
+    aAIRINV_ServiceContext_ptr = new AIRINV_ServiceContext ();
     assert (aAIRINV_ServiceContext_ptr != NULL);
 
     // The new object is added to the Bom pool

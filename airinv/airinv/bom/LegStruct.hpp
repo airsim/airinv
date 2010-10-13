@@ -24,13 +24,22 @@ namespace AIRINV {
   struct LegStruct_T : public stdair::StructAbstract {
     // Attributes
     stdair::AirportCode_T _boardingPoint;
+    stdair::DateOffset_T _boardingDateOffset;
     stdair::Date_T _boardingDate;
     stdair::Duration_T _boardingTime;
     stdair::AirportCode_T _offPoint;
+    stdair::DateOffset_T _offDateOffset;
     stdair::Date_T _offDate;
     stdair::Duration_T _offTime;
     stdair::Duration_T _elapsed;
     LegCabinStructList_T _cabinList;
+
+    /** Fill the LegDate objects with the attributes of the LegStruct.
+        <br>The given reference date corresponds to the date of the
+        FlightDate. Indeed, each Leg gets date off-sets, when compared
+        to that (reference) flight-date, both for the boarding date
+        and for the off date. */
+    void fill (const stdair::Date_T& iRefDate, stdair::LegDate&) const;
 
     /** Fill the LegDate objects with the attributes of the LegStruct. */
     void fill (stdair::LegDate&) const;
