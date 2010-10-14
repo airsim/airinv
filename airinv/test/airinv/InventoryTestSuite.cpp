@@ -10,7 +10,7 @@
 #include <stdair/bom/TravelSolutionStruct.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-#include <airinv/AIRINV_Service.hpp>
+#include <airinv/AIRINV_Master_Service.hpp>
 // Airinv Test Suite
 #include <test/airinv/InventoryTestSuite.hpp>
 
@@ -22,9 +22,6 @@
 void InventoryTestSuite::simpleInventoryHelper() {
 
   try {
-    
-    // Airline code
-    const std::string lAirlineCode ("SV");
     
     // Number of passengers in the travelling group
     // const stdair::PartySize_T lPartySize = 5;
@@ -46,8 +43,7 @@ void InventoryTestSuite::simpleInventoryHelper() {
     
     // Initialise the list of classes/buckets
     const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    AIRINV::AIRINV_Service airinvService (lLogParams, lAirlineCode,
-                                          lInputFilename);
+    AIRINV::AIRINV_Master_Service airinvService (lLogParams, lInputFilename);
 
     // Make a booking
     // airinvService.sell (lTravelSolution, lPartySize);

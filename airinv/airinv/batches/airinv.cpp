@@ -18,9 +18,6 @@ int main (int argc, char* argv[]) {
 
   try {
     
-    // Airline code
-    const std::string lAirlineCode ("SV");
-    
     // Number of passengers in the travelling group
     // const stdair::PartySize_T lPartySize = 5;
 
@@ -28,7 +25,7 @@ int main (int argc, char* argv[]) {
     // stdair::TravelSolutionStruct lTravelSolution;
     
     // Input file name
-    stdair::Filename_T lInputFilename ("../../test/samples/schedule01.csv");
+    stdair::Filename_T lInputFilename ("../../test/samples/invdump01.csv");
 
     // Output log File
     stdair::Filename_T lLogFilename ("airinv.log");
