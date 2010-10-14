@@ -13,11 +13,11 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  BucketStruct_T::BucketStruct_T () {
+  BucketStruct::BucketStruct () {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const std::string BucketStruct_T::describe() const {
+  const std::string BucketStruct::describe() const {
     std::ostringstream ostr;
     ostr << "            " << _yieldRangeUpperValue << ":" << _availability
          << ":" << _nbOfSeats  << ":" << _seatIndex
@@ -26,7 +26,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void BucketStruct_T::fill (stdair::Bucket& ioBucket) const {
+  void BucketStruct::fill (stdair::Bucket& ioBucket) const {
     // Set the Yield Range Upper Value
     // ioBucket.setYieldRangeValue (_yieldRangeUpperValue);
 

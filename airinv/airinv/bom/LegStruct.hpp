@@ -21,7 +21,7 @@ namespace stdair {
 namespace AIRINV {
 
   /** Utility Structure for the parsing of Leg structures. */
-  struct LegStruct_T : public stdair::StructAbstract {
+  struct LegStruct : public stdair::StructAbstract {
     // Attributes
     stdair::AirportCode_T _boardingPoint;
     stdair::DateOffset_T _boardingDateOffset;
@@ -48,11 +48,11 @@ namespace AIRINV {
     const std::string describe() const;
 
     /** Default Constructor. */
-    LegStruct_T();
+    LegStruct();
   };
 
   /** List of Leg structures. */
-  typedef std::vector<LegStruct_T> LegStructList_T;
+  typedef std::vector<LegStruct> LegStructList_T;
 
 }
 #endif // __AIRINV_BOM_LEGSTRUCT_HPP

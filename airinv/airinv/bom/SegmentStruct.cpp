@@ -11,7 +11,7 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  const std::string SegmentStruct_T::describe() const {
+  const std::string SegmentStruct::describe() const {
     std::ostringstream ostr;
 
     ostr << "    " << _boardingPoint << " / "
@@ -24,7 +24,7 @@ namespace AIRINV {
     
     for (SegmentCabinStructList_T::const_iterator itCabin =
            _cabinList.begin(); itCabin != _cabinList.end(); itCabin++) {
-      const SegmentCabinStruct_T& lCabin = *itCabin;
+      const SegmentCabinStruct& lCabin = *itCabin;
       ostr << lCabin.describe();
     }
     ostr << std::endl;
@@ -33,7 +33,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void SegmentStruct_T::fill (stdair::SegmentDate& ioSegmentDate) const {
+  void SegmentStruct::fill (stdair::SegmentDate& ioSegmentDate) const {
     // Set the Boarding Date
     ioSegmentDate.setBoardingDate (_offDate);
     // Set the Boarding Time

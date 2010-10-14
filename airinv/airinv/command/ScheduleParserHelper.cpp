@@ -19,13 +19,13 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
 
     ParserSemanticAction::
-    ParserSemanticAction (FlightPeriodStruct_T& ioFlightPeriod)
+    ParserSemanticAction (FlightPeriodStruct& ioFlightPeriod)
       : _flightPeriod (ioFlightPeriod) {
     }      
 
     // //////////////////////////////////////////////////////////////////
     storeAirlineCode::
-    storeAirlineCode (FlightPeriodStruct_T& ioFlightPeriod)
+    storeAirlineCode (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -42,7 +42,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeFlightNumber::
-    storeFlightNumber (FlightPeriodStruct_T& ioFlightPeriod)
+    storeFlightNumber (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -53,7 +53,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeDateRangeStart::
-    storeDateRangeStart (FlightPeriodStruct_T& ioFlightPeriod)
+    storeDateRangeStart (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -68,7 +68,7 @@ namespace AIRINV {
       
     // //////////////////////////////////////////////////////////////////
     storeDateRangeEnd::
-    storeDateRangeEnd (FlightPeriodStruct_T& ioFlightPeriod)
+    storeDateRangeEnd (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -90,7 +90,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeDow::storeDow (FlightPeriodStruct_T& ioFlightPeriod)
+    storeDow::storeDow (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -102,7 +102,7 @@ namespace AIRINV {
       
     // //////////////////////////////////////////////////////////////////
     storeLegBoardingPoint::
-    storeLegBoardingPoint (FlightPeriodStruct_T& ioFlightPeriod)
+    storeLegBoardingPoint (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -131,7 +131,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeLegOffPoint::
-    storeLegOffPoint (FlightPeriodStruct_T& ioFlightPeriod)
+    storeLegOffPoint (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -147,7 +147,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeBoardingTime::
-    storeBoardingTime (FlightPeriodStruct_T& ioFlightPeriod)
+    storeBoardingTime (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -165,7 +165,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeOffTime::
-    storeOffTime (FlightPeriodStruct_T& ioFlightPeriod)
+    storeOffTime (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -186,7 +186,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeElapsedTime::
-    storeElapsedTime (FlightPeriodStruct_T& ioFlightPeriod)
+    storeElapsedTime (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -207,7 +207,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeLegCabinCode::
-    storeLegCabinCode (FlightPeriodStruct_T& ioFlightPeriod)
+    storeLegCabinCode (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -219,7 +219,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeCapacity::
-    storeCapacity (FlightPeriodStruct_T& ioFlightPeriod)
+    storeCapacity (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -238,7 +238,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeSegmentSpecificity::
-    storeSegmentSpecificity (FlightPeriodStruct_T& ioFlightPeriod)
+    storeSegmentSpecificity (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -264,7 +264,7 @@ namespace AIRINV {
       
     // //////////////////////////////////////////////////////////////////
     storeSegmentBoardingPoint::
-    storeSegmentBoardingPoint (FlightPeriodStruct_T& ioFlightPeriod)
+    storeSegmentBoardingPoint (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -277,7 +277,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeSegmentOffPoint::
-    storeSegmentOffPoint (FlightPeriodStruct_T& ioFlightPeriod)
+    storeSegmentOffPoint (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -290,7 +290,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeSegmentCabinCode::
-    storeSegmentCabinCode (FlightPeriodStruct_T& ioFlightPeriod)
+    storeSegmentCabinCode (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -301,7 +301,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeClasses::
-    storeClasses (FlightPeriodStruct_T& ioFlightPeriod)
+    storeClasses (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -326,7 +326,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeFamilyCode::
-    storeFamilyCode (FlightPeriodStruct_T& ioFlightPeriod)
+    storeFamilyCode (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
     
@@ -339,7 +339,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeFClasses::
-    storeFClasses (FlightPeriodStruct_T& ioFlightPeriod)
+    storeFClasses (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
     }
 
@@ -347,7 +347,7 @@ namespace AIRINV {
     void storeFClasses::operator() (iterator_t iStr,
                                     iterator_t iStrEnd) const {
       std::string lClasses (iStr, iStrEnd);
-      FareFamilyStruct_T lFareFamily(_flightPeriod._itSegmentCabin._itFamilyCode,
+      FareFamilyStruct lFareFamily(_flightPeriod._itSegmentCabin._itFamilyCode,
                                      lClasses);
 
       // The list of classes is the last (according to the arrival order
@@ -368,7 +368,7 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
     doEndFlight::
     doEndFlight (stdair::BomRoot& ioBomRoot,
-                 FlightPeriodStruct_T& ioFlightPeriod)
+                 FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod),
         _bomRoot (ioBomRoot) {
     }
@@ -458,7 +458,7 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
     FlightPeriodParser::
     FlightPeriodParser (stdair::BomRoot& ioBomRoot,
-                        FlightPeriodStruct_T& ioFlightPeriod) 
+                        FlightPeriodStruct& ioFlightPeriod) 
       : _bomRoot (ioBomRoot),
         _flightPeriod (ioFlightPeriod) {
     }

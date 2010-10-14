@@ -29,7 +29,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildInventory (stdair::BomRoot& ioBomRoot,
-                  const FlightDateStruct_T& iFlightDateStruct) {
+                  const FlightDateStruct& iFlightDateStruct) {
     const stdair::AirlineCode_T& lAirlineCode = iFlightDateStruct._airlineCode;
  
     // Instantiate an inventory object (if not exist)
@@ -54,7 +54,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildFlightDate (stdair::Inventory& ioInventory,
-                   const FlightDateStruct_T& iFlightDateStruct) {
+                   const FlightDateStruct& iFlightDateStruct) {
     // Create the FlightDateKey
     const stdair::FlightDateKey lFlightDateKey (iFlightDateStruct._flightNumber,
                                                 iFlightDateStruct._flightDate);
@@ -83,7 +83,7 @@ namespace AIRINV {
     for (LegStructList_T::const_iterator itLegDate =
            iFlightDateStruct._legList.begin();
          itLegDate != iFlightDateStruct._legList.end(); ++itLegDate) {
-      const LegStruct_T& lCurrentLegDateStruct = *itLegDate;
+      const LegStruct& lCurrentLegDateStruct = *itLegDate;
       buildLegDate (*lFlightDate_ptr, lCurrentLegDateStruct);
     }
 
@@ -91,7 +91,7 @@ namespace AIRINV {
            iFlightDateStruct._segmentList.begin();
          itSegmentDate != iFlightDateStruct._segmentList.end();
          ++itSegmentDate) {
-      const SegmentStruct_T& lCurrentSegmentDateStruct = *itSegmentDate;
+      const SegmentStruct& lCurrentSegmentDateStruct = *itSegmentDate;
       buildSegmentDate (*lFlightDate_ptr, lCurrentSegmentDateStruct);
     }
   }
@@ -99,7 +99,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildLegDate (stdair::FlightDate& ioFlightDate,
-                const LegStruct_T& iLegDateStruct) {
+                const LegStruct& iLegDateStruct) {
     // Check that the leg-date object is not already existing. If a
     // leg-date object with the same key has already been created,
     // then just update it, ifnot, create a leg-date and update it.
@@ -124,7 +124,7 @@ namespace AIRINV {
     for (LegCabinStructList_T::const_iterator itLegCabin =
            iLegDateStruct._cabinList.begin();
          itLegCabin != iLegDateStruct._cabinList.end(); ++itLegCabin) {
-      const LegCabinStruct_T& lCurrentLegCabinStruct = *itLegCabin;
+      const LegCabinStruct& lCurrentLegCabinStruct = *itLegCabin;
       buildLegCabin (*lLegDate_ptr, lCurrentLegCabinStruct);
     }
   }
@@ -132,7 +132,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildLegCabin (stdair::LegDate& ioLegDate,
-                 const LegCabinStruct_T& iLegCabinStruct) {
+                 const LegCabinStruct& iLegCabinStruct) {
     // Check that the leg-cabin object is not already existing. If a
     // leg-cabin object with the same key has already been created,
     // then just update it, ifnot, create a leg-cabin and update it.
@@ -157,7 +157,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildSegmentDate (stdair::FlightDate& ioFlightDate,
-                    const SegmentStruct_T& iSegmentDateStruct) {
+                    const SegmentStruct& iSegmentDateStruct) {
     // Check that the segment-date object is not already existing. If a
     // segment-date object with the same key has already been created,
     // then just update it, ifnot, create a segment-date and update it.
@@ -187,7 +187,7 @@ namespace AIRINV {
            iSegmentDateStruct._cabinList.begin();
          itSegmentCabin != iSegmentDateStruct._cabinList.end(); 
          ++itSegmentCabin) {
-      const SegmentCabinStruct_T& lCurrentSegmentCabinStruct = *itSegmentCabin;
+      const SegmentCabinStruct& lCurrentSegmentCabinStruct = *itSegmentCabin;
       buildSegmentCabin (*lSegmentDate_ptr, lCurrentSegmentCabinStruct);
     }
   }
@@ -195,7 +195,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildSegmentCabin (stdair::SegmentDate& ioSegmentDate,
-                     const SegmentCabinStruct_T& iSegmentCabinStruct) {
+                     const SegmentCabinStruct& iSegmentCabinStruct) {
     // Check that the segment-cabin object is not already existing. If a
     // segment-cabin object with the same key has already been created,
     // then just update it, ifnot, create a segment-cabin and update it.
@@ -223,7 +223,7 @@ namespace AIRINV {
            iSegmentCabinStruct._classList.begin();
          itBookingClass != iSegmentCabinStruct._classList.end(); 
          ++itBookingClass) {
-      const BookingClassStruct_T& lCurrentBookingClassStruct = *itBookingClass;
+      const BookingClassStruct& lCurrentBookingClassStruct = *itBookingClass;
       buildBookingClass (*lSegmentCabin_ptr, lCurrentBookingClassStruct);
     }
   }
@@ -231,7 +231,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildBookingClass (stdair::SegmentCabin& ioSegmentCabin,
-                     const BookingClassStruct_T& iBookingClassStruct){
+                     const BookingClassStruct& iBookingClassStruct){
     // Check that the booking class object is not already existing. If a
     // booking-class object with the same key has already been created,
     // then just upcabin it, ifnot, create a booking-class and upcabin it.

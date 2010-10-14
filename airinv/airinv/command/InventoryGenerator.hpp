@@ -23,11 +23,11 @@ namespace stdair {
 namespace AIRINV {
 
   // Forward declarations
-  struct FlightPeriodStruct_T;
-  struct LegStruct_T;
-  struct SegmentStruct_T;
-  struct LegCabinStruct_T;
-  struct SegmentCabinStruct_T;
+  struct FlightPeriodStruct;
+  struct LegStruct;
+  struct SegmentStruct;
+  struct LegCabinStruct;
+  struct SegmentCabinStruct;
   namespace ScheduleParserHelper {
     struct doEndFlight;
   }
@@ -46,28 +46,28 @@ namespace AIRINV {
     /** Generate the flight-date objects corresponding to the given
         Flight-Period, and add them to the given BomRoot. */
     static void createFlightDate (stdair::BomRoot&,
-                                  const FlightPeriodStruct_T&);
+                                  const FlightPeriodStruct&);
 
     /** Generate a flight-date. */
     static stdair::FlightDate& createFlightDate (stdair::Inventory&,
                                                  const stdair::Date_T&,
-                                                 const FlightPeriodStruct_T&);
+                                                 const FlightPeriodStruct&);
       
     /** Generate a leg-date. */
     static stdair::LegDate& createLegDate (stdair::FlightDate&,
                                            const stdair::Date_T&,
-                                           const LegStruct_T&);
+                                           const LegStruct&);
 
     /** Generate a leg-cabin. */
-    static void createLegCabin (stdair::LegDate&, const LegCabinStruct_T&);
+    static void createLegCabin (stdair::LegDate&, const LegCabinStruct&);
       
     /** Generate a segment-date. */
     static void createSegmentDate (stdair::FlightDate&, 
-                                   const SegmentStruct_T&);
+                                   const SegmentStruct&);
       
     /** Generate a segment-cabin. */
     static void createSegmentCabin (stdair::SegmentDate&,
-                                    const SegmentCabinStruct_T&);
+                                    const SegmentCabinStruct&);
       
     /** Generate a booking class. */
     static void createClass (stdair::SegmentCabin&, 

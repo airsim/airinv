@@ -29,15 +29,15 @@ namespace AIRINV {
     /** Generic Semantic Action (Actor / Functor) for the Schedule Parser. */
     struct ParserSemanticAction {
       /** Actor Constructor. */
-      ParserSemanticAction (FlightPeriodStruct_T&);
+      ParserSemanticAction (FlightPeriodStruct&);
       /** Actor Context. */
-      FlightPeriodStruct_T& _flightPeriod;
+      FlightPeriodStruct& _flightPeriod;
     };
       
     /** Store the parsed airline code. */
     struct storeAirlineCode : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeAirlineCode (FlightPeriodStruct_T&);
+      storeAirlineCode (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -45,7 +45,7 @@ namespace AIRINV {
     /** Store the parsed flight number. */
     struct storeFlightNumber : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeFlightNumber (FlightPeriodStruct_T&);
+      storeFlightNumber (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (unsigned int iNumber) const;
     };
@@ -53,7 +53,7 @@ namespace AIRINV {
     /** Store the start of the date range. */
     struct storeDateRangeStart : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeDateRangeStart (FlightPeriodStruct_T&);
+      storeDateRangeStart (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -61,7 +61,7 @@ namespace AIRINV {
     /** Store the end of the date range. */
     struct storeDateRangeEnd : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeDateRangeEnd (FlightPeriodStruct_T&);
+      storeDateRangeEnd (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -69,7 +69,7 @@ namespace AIRINV {
     /** Store the DOW (day of the Week). */
     struct storeDow : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeDow (FlightPeriodStruct_T&);
+      storeDow (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -77,7 +77,7 @@ namespace AIRINV {
     /** Store the parsed leg boarding point. */
     struct storeLegBoardingPoint : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeLegBoardingPoint (FlightPeriodStruct_T&);
+      storeLegBoardingPoint (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -85,7 +85,7 @@ namespace AIRINV {
     /** Store the parsed leg off point. */
     struct storeLegOffPoint : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeLegOffPoint (FlightPeriodStruct_T&);
+      storeLegOffPoint (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -93,7 +93,7 @@ namespace AIRINV {
     /** Store the boarding time. */
     struct storeBoardingTime : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeBoardingTime (FlightPeriodStruct_T&);
+      storeBoardingTime (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -101,7 +101,7 @@ namespace AIRINV {
     /** Store the off time. */
     struct storeOffTime : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeOffTime (FlightPeriodStruct_T&);
+      storeOffTime (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -109,7 +109,7 @@ namespace AIRINV {
     /** Store the elapsed time. */
     struct storeElapsedTime : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeElapsedTime (FlightPeriodStruct_T&);
+      storeElapsedTime (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -117,7 +117,7 @@ namespace AIRINV {
     /** Store the parsed leg cabin code. */
     struct storeLegCabinCode : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeLegCabinCode (FlightPeriodStruct_T&);
+      storeLegCabinCode (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (char iChar) const;
     };
@@ -125,7 +125,7 @@ namespace AIRINV {
     /** Store the parsed capacity. */
     struct storeCapacity : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeCapacity (FlightPeriodStruct_T&);
+      storeCapacity (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (double iReal) const;
     };
@@ -136,7 +136,7 @@ namespace AIRINV {
         all the segments. */
     struct storeSegmentSpecificity : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeSegmentSpecificity (FlightPeriodStruct_T&);
+      storeSegmentSpecificity (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (char iChar) const;
     };
@@ -144,7 +144,7 @@ namespace AIRINV {
     /** Store the parsed segment boarding point. */
     struct storeSegmentBoardingPoint : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeSegmentBoardingPoint (FlightPeriodStruct_T&);
+      storeSegmentBoardingPoint (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -152,7 +152,7 @@ namespace AIRINV {
     /** Store the parsed segment off point. */
     struct storeSegmentOffPoint : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeSegmentOffPoint (FlightPeriodStruct_T&);
+      storeSegmentOffPoint (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -160,7 +160,7 @@ namespace AIRINV {
     /** Store the parsed segment cabin code. */
     struct storeSegmentCabinCode : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeSegmentCabinCode (FlightPeriodStruct_T&);
+      storeSegmentCabinCode (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (char iChar) const;
     };
@@ -168,7 +168,7 @@ namespace AIRINV {
     /** Store the parsed list of class codes. */
     struct storeClasses : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeClasses (FlightPeriodStruct_T&);
+      storeClasses (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -176,7 +176,7 @@ namespace AIRINV {
     /** Store the parsed family code. */
     struct storeFamilyCode : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeFamilyCode (FlightPeriodStruct_T&);
+      storeFamilyCode (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (int iCode) const;
     };
@@ -184,7 +184,7 @@ namespace AIRINV {
     /** Store the parsed list of class codes (for families). */
     struct storeFClasses : public ParserSemanticAction {
       /** Actor Constructor. */
-      storeFClasses (FlightPeriodStruct_T&);
+      storeFClasses (FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
     };
@@ -192,7 +192,7 @@ namespace AIRINV {
     /** Mark the end of the flight-period parsing. */
     struct doEndFlight : public ParserSemanticAction {
       /** Actor Constructor. */
-      doEndFlight (stdair::BomRoot&, FlightPeriodStruct_T&);
+      doEndFlight (stdair::BomRoot&, FlightPeriodStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
       /** Actor Specific Context. */
@@ -250,7 +250,7 @@ namespace AIRINV {
     struct FlightPeriodParser : 
       public boost::spirit::classic::grammar<FlightPeriodParser> {
 
-      FlightPeriodParser (stdair::BomRoot&, FlightPeriodStruct_T&);
+      FlightPeriodParser (stdair::BomRoot&, FlightPeriodStruct&);
 
       template <typename ScannerT>
       struct definition {
@@ -271,7 +271,7 @@ namespace AIRINV {
 
       // Parser Context
       stdair::BomRoot& _bomRoot;
-      FlightPeriodStruct_T& _flightPeriod;
+      FlightPeriodStruct& _flightPeriod;
     };
 
   }
@@ -317,7 +317,7 @@ namespace AIRINV {
     stdair::BomRoot& _bomRoot;
 
     /** Flight-Period Structure. */
-    FlightPeriodStruct_T _flightPeriod;
+    FlightPeriodStruct _flightPeriod;
   };
     
 }

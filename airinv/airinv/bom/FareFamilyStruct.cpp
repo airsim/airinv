@@ -10,15 +10,15 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  FareFamilyStruct_T::
-  FareFamilyStruct_T (const stdair::FamilyCode_T& iFamilyCode,
+  FareFamilyStruct::
+  FareFamilyStruct (const stdair::FamilyCode_T& iFamilyCode,
                       const stdair::ClassList_String_T& iClasses)
     : _familyCode (iFamilyCode),
       _classes (iClasses) {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const std::string FareFamilyStruct_T::describe() const {
+  const std::string FareFamilyStruct::describe() const {
     std::ostringstream ostr;
     ostr << "        " << _familyCode << " " << _classes << ", ";
     return ostr.str();

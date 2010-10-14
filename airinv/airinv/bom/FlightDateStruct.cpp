@@ -14,7 +14,7 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  FlightDateStruct_T::FlightDateStruct_T ()
+  FlightDateStruct::FlightDateStruct ()
     : _flightDate (stdair::DEFAULT_DATE),
       _flightTypeCode (FlightTypeCode::DOMESTIC),
       _flightVisibilityCode (FlightVisibilityCode::NORMAL),
@@ -22,19 +22,19 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  stdair::Date_T FlightDateStruct_T::getDate() const {
+  stdair::Date_T FlightDateStruct::getDate() const {
     return stdair::Date_T (_itYear + 2000, _itMonth, _itDay);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  stdair::Duration_T FlightDateStruct_T::getTime() const {
+  stdair::Duration_T FlightDateStruct::getTime() const {
     return boost::posix_time::hours (_itHours)
       + boost::posix_time::minutes (_itMinutes)
       + boost::posix_time::seconds (_itSeconds);
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string FlightDateStruct_T::describe() const {
+  const std::string FlightDateStruct::describe() const {
     std::ostringstream ostr;
     ostr << _airlineCode << _flightNumber << ", " << _flightDate
          << " (" << _flightTypeCode;
@@ -45,13 +45,13 @@ namespace AIRINV {
       
     for (LegStructList_T::const_iterator itLeg = _legList.begin();
          itLeg != _legList.end(); ++itLeg) {
-      const LegStruct_T& lLeg = *itLeg;
+      const LegStruct& lLeg = *itLeg;
       ostr << lLeg.describe();
     }
 
     for (SegmentStructList_T::const_iterator itSegment = _segmentList.begin();
          itSegment != _segmentList.end(); ++itSegment) {
-      const SegmentStruct_T& lSegment = *itSegment;
+      const SegmentStruct& lSegment = *itSegment;
       ostr << lSegment.describe();
     }
 
@@ -64,7 +64,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct_T::addAirport (const stdair::AirportCode_T& iAirport) {
+  void FlightDateStruct::addAirport (const stdair::AirportCode_T& iAirport) {
     AirportList_T::const_iterator itAirport = _airportList.find (iAirport);
     if (itAirport == _airportList.end()) {
       // Add the airport code to the airport set
@@ -80,7 +80,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct_T::buildSegments () {
+  void FlightDateStruct::buildSegments () {
     // The list of airports encompasses all the airports on which
     // the flight takes off or lands. Moreover, that list is
     // time-ordered: the first airport is the initial departure of
@@ -98,7 +98,7 @@ namespace AIRINV {
          itAirport_i != _airportOrderedList.end()-1; ++itAirport_i) {
       for (AirportOrderedList_T::const_iterator itAirport_j = itAirport_i + 1;
            itAirport_j != _airportOrderedList.end(); ++itAirport_j) {
-        SegmentStruct_T lSegmentStruct;
+        SegmentStruct lSegmentStruct;
         lSegmentStruct._boardingPoint = *itAirport_i;
         lSegmentStruct._offPoint = *itAirport_j;
           
@@ -112,14 +112,14 @@ namespace AIRINV {
   }
       
   // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct_T::
-  addSegmentCabin (const SegmentStruct_T& iSegment,
-                   const SegmentCabinStruct_T& iCabin) {
+  void FlightDateStruct::
+  addSegmentCabin (const SegmentStruct& iSegment,
+                   const SegmentCabinStruct& iCabin) {
     // Retrieve the Segment structure corresponding to the (boarding, off) point
     // pair.
     SegmentStructList_T::iterator itSegment = _segmentList.begin();
     for ( ; itSegment != _segmentList.end(); ++itSegment) {
-      const SegmentStruct_T& lSegment = *itSegment;
+      const SegmentStruct& lSegment = *itSegment;
 
       const stdair::AirportCode_T& lBoardingPoint = iSegment._boardingPoint;
       const stdair::AirportCode_T& lOffPoint = iSegment._offPoint;
@@ -141,34 +141,34 @@ namespace AIRINV {
 
     // Add the Cabin structure to the Segment Cabin structure.
     assert (itSegment != _segmentList.end());
-    SegmentStruct_T& lSegment = *itSegment;
+    SegmentStruct& lSegment = *itSegment;
     lSegment._cabinList.push_back (iCabin);
   }
     
   // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct_T::
-  addSegmentCabin (const SegmentCabinStruct_T& iCabin) {
+  void FlightDateStruct::
+  addSegmentCabin (const SegmentCabinStruct& iCabin) {
     // Iterate on all the Segment structures (as they get the same cabin
     // definitions)
       
     for (SegmentStructList_T::iterator itSegment = _segmentList.begin();
          itSegment != _segmentList.end(); ++itSegment) {
-      SegmentStruct_T& lSegment = *itSegment;
+      SegmentStruct& lSegment = *itSegment;
 
       lSegment._cabinList.push_back (iCabin);
     }
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct_T::
-  addFareFamily (const SegmentStruct_T& iSegment,
-                 const SegmentCabinStruct_T& iCabin,
-                 const FareFamilyStruct_T& iFareFamily) {
+  void FlightDateStruct::
+  addFareFamily (const SegmentStruct& iSegment,
+                 const SegmentCabinStruct& iCabin,
+                 const FareFamilyStruct& iFareFamily) {
     // Retrieve the Segment structure corresponding to the (boarding, off) point
     // pair.
     SegmentStructList_T::iterator itSegment = _segmentList.begin();
     for ( ; itSegment != _segmentList.end(); ++itSegment) {
-      const SegmentStruct_T& lSegment = *itSegment;
+      const SegmentStruct& lSegment = *itSegment;
 
       const stdair::AirportCode_T& lBoardingPoint = iSegment._boardingPoint;
       const stdair::AirportCode_T& lOffPoint = iSegment._offPoint;
@@ -190,12 +190,12 @@ namespace AIRINV {
 
     // Add the Cabin structure to the Segment Cabin structure.
     assert (itSegment != _segmentList.end());
-    SegmentStruct_T& lSegment = *itSegment;
+    SegmentStruct& lSegment = *itSegment;
 
     // Retrieve the Segment cabin structure given the cabin code
     SegmentCabinStructList_T::iterator itCabin = lSegment._cabinList.begin();
     for ( ; itCabin != lSegment._cabinList.end(); ++itCabin) {
-      const SegmentCabinStruct_T& lCabin = *itCabin;
+      const SegmentCabinStruct& lCabin = *itCabin;
 
       const stdair::CabinCode_T& lCabinCode = lCabin._cabinCode;
       if (iCabin._cabinCode == lCabinCode) {
@@ -212,25 +212,25 @@ namespace AIRINV {
     }
     // Add the Cabin structure to the Segment Cabin structure.
     assert (itCabin != lSegment._cabinList.end());
-    SegmentCabinStruct_T& lCabin = *itCabin;
+    SegmentCabinStruct& lCabin = *itCabin;
     lCabin._fareFamilies.push_back(iFareFamily);
   }
     
   // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct_T::
-  addFareFamily (const SegmentCabinStruct_T& iCabin,
-                 const FareFamilyStruct_T& iFareFamily) {
+  void FlightDateStruct::
+  addFareFamily (const SegmentCabinStruct& iCabin,
+                 const FareFamilyStruct& iFareFamily) {
     // Iterate on all the Segment structures (as they get the same cabin
     // definitions)
       
     for (SegmentStructList_T::iterator itSegment = _segmentList.begin();
          itSegment != _segmentList.end(); ++itSegment) {
-      SegmentStruct_T& lSegment = *itSegment;
+      SegmentStruct& lSegment = *itSegment;
 
       // Retrieve the Segment cabin structure given the cabin code
       SegmentCabinStructList_T::iterator itCabin = lSegment._cabinList.begin();
       for ( ; itCabin != lSegment._cabinList.end(); ++itCabin) {
-        const SegmentCabinStruct_T& lCabin = *itCabin;
+        const SegmentCabinStruct& lCabin = *itCabin;
 
         const stdair::CabinCode_T& lCabinCode = lCabin._cabinCode;
         if (iCabin._cabinCode == lCabinCode) {
@@ -247,7 +247,7 @@ namespace AIRINV {
       }
       // Add the Cabin structure to the Segment Cabin structure.
       assert (itCabin != lSegment._cabinList.end());
-      SegmentCabinStruct_T& lCabin = *itCabin;
+      SegmentCabinStruct& lCabin = *itCabin;
       lCabin._fareFamilies.push_back(iFareFamily);
     }
   }

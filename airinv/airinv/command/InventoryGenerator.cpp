@@ -29,7 +29,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
   createFlightDate (stdair::BomRoot& ioBomRoot,
-                    const FlightPeriodStruct_T& iFlightPeriod) {
+                    const FlightPeriodStruct& iFlightPeriod) {
     const stdair::AirlineCode_T& lAirlineCode = iFlightPeriod._airlineCode;
  
     // Instantiate an inventory object (if not exist)
@@ -61,7 +61,7 @@ namespace AIRINV {
       // The FlightPeriod structure stores which Days (-Of-the-Week) are
       // active within the week. For each day (Mon., Tue., etc.), a boolean
       // states whether the Flight is active for that day.
-      const stdair::DoWStruct_T& lDoWList = iFlightPeriod._dow;
+      const stdair::DoWStruct& lDoWList = iFlightPeriod._dow;
       const bool isDoWActive = lDoWList.getStandardDayOfWeek (currentDoW);
 
       if (isDoWActive == true) {
@@ -81,7 +81,7 @@ namespace AIRINV {
   stdair::FlightDate& InventoryGenerator::
   createFlightDate (stdair::Inventory& ioInventory,
                     const stdair::Date_T& iFlightDate,
-                    const FlightPeriodStruct_T& iFlightPeriod) {
+                    const FlightPeriodStruct& iFlightPeriod) {
     // Create the FlightDateKey
     const stdair::FlightNumber_T& lFlightNumber = iFlightPeriod._flightNumber;
     stdair::FlightDateKey lFlightDateKey (lFlightNumber, iFlightDate);
@@ -111,7 +111,7 @@ namespace AIRINV {
     const LegStructList_T& lLegList = iFlightPeriod._legList;
     for (LegStructList_T::const_iterator itLeg = lLegList.begin();
          itLeg != lLegList.end(); ++itLeg) {
-      const LegStruct_T& lLeg = *itLeg;
+      const LegStruct& lLeg = *itLeg;
 
       // Create the leg-branch of the flight-date BOM
       stdair::LegDate& lLegDate =
@@ -142,7 +142,7 @@ namespace AIRINV {
     const SegmentStructList_T& lSegmentList = iFlightPeriod._segmentList;
     for (SegmentStructList_T::const_iterator itSegment = lSegmentList.begin();
          itSegment != lSegmentList.end(); ++itSegment) {
-      const SegmentStruct_T& lSegment = *itSegment;
+      const SegmentStruct& lSegment = *itSegment;
 
       createSegmentDate (*lFlightDate_ptr, lSegment);
     }
@@ -155,7 +155,7 @@ namespace AIRINV {
   stdair::LegDate& InventoryGenerator::
   createLegDate (stdair::FlightDate& ioFlightDate,
                  const stdair::Date_T& iReferenceDate,
-                 const LegStruct_T& iLeg) {
+                 const LegStruct& iLeg) {
     // Create the leg-date corresponding to the boarding point.
     stdair::LegDateKey lKey (iLeg._boardingPoint);
     stdair::LegDate& lLegDate =
@@ -170,7 +170,7 @@ namespace AIRINV {
     const LegCabinStructList_T& lCabinList = iLeg._cabinList;
     for (LegCabinStructList_T::const_iterator itCabin = lCabinList.begin();
          itCabin != lCabinList.end(); ++itCabin) {
-      const LegCabinStruct_T& lCabin = *itCabin;
+      const LegCabinStruct& lCabin = *itCabin;
 
       // Create the leg-cabin-branch of the leg-date 
       createLegCabin (lLegDate, lCabin);
@@ -182,7 +182,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
   createLegCabin (stdair::LegDate& ioLegDate,
-                  const LegCabinStruct_T& iCabin) {
+                  const LegCabinStruct& iCabin) {
     // Instantiate an leg-cabin object with the corresponding cabin code
     stdair::LegCabinKey lKey (iCabin._cabinCode);
     stdair::LegCabin& lLegCabin =
@@ -197,7 +197,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
   createSegmentDate (stdair::FlightDate& ioFlightDate,
-                     const SegmentStruct_T& iSegment) {
+                     const SegmentStruct& iSegment) {
     // Set the segment-date primary key
     const stdair::AirportCode_T& lBoardingPoint = iSegment._boardingPoint;
     const stdair::AirportCode_T& lOffPoint = iSegment._offPoint;
@@ -217,7 +217,7 @@ namespace AIRINV {
     const SegmentCabinStructList_T& lCabinList = iSegment._cabinList;
     for (SegmentCabinStructList_T::const_iterator itCabin =
            lCabinList.begin(); itCabin != lCabinList.end(); ++itCabin) {
-      const SegmentCabinStruct_T& lCabin = *itCabin;
+      const SegmentCabinStruct& lCabin = *itCabin;
 
       // Create the segment-cabin-branch of the segment-date BOM
       createSegmentCabin (lSegmentDate, lCabin);
@@ -227,7 +227,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
   createSegmentCabin (stdair::SegmentDate& ioSegmentDate,
-                      const SegmentCabinStruct_T& iCabin) {
+                      const SegmentCabinStruct& iCabin) {
     // Instantiate an segment-cabin object with the corresponding cabin code
     stdair::SegmentCabinKey lKey (iCabin._cabinCode);
     stdair::SegmentCabin& lSegmentCabin =
