@@ -52,9 +52,17 @@ namespace AIRINV {
       return _stdairService;
     }
 
+    /** Get the STDAIR service handler. */
+    stdair::STDAIR_Service& getSTDAIR_Service () const {
+      assert (_stdairService != NULL);
+      return *_stdairService;
+    }
+    
     /** Get a reference on the AIRINV service handler which corresponds to
         the given airline code. */
-    AIRINV_ServicePtr_T getAIRINV_Service () const { return _airinvService; }
+    AIRINV_ServicePtr_T getAIRINV_Service () const {
+      return _airinvService;
+    }
     
     // ///////////////// Setters ///////////////////
     /** Set the pointer on the STDAIR service handler. */

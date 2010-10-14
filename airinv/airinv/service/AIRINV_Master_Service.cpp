@@ -252,7 +252,9 @@ namespace AIRINV {
       throw NonInitialisedServiceException();
     }
     assert (_airinvMasterServiceContext != NULL);
-    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext = *_airinvMasterServiceContext;
+
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;
 
     try {
       
