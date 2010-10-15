@@ -169,6 +169,13 @@ AC_SUBST(SOCI_VERSION)
 AC_SUBST(SOCI_CFLAGS)
 AC_SUBST(SOCI_LIBS)
 
+# -----------------------------------------------------------------------------
+# Support for StdAir (): http://sf.net/projects/stdair
+# -----------------------------------------------------------------------------
+AM_PATH_STDAIR
+AC_SUBST(STDAIR_VERSION)
+AC_SUBST(STDAIR_CFLAGS)
+AC_SUBST(STDAIR_LIBS)
 
 # -------------------------------------------------------------------
 # Support for documentation
@@ -242,16 +249,6 @@ AC_CONFIG_FILES(
 	airinv-config
 	airinv.pc
 	airinv.m4
-	stdair/Makefile
-	stdair/basic/Makefile
-	stdair/bom/Makefile
-	stdair/dbadaptor/Makefile
-	stdair/factory/Makefile
-	stdair/command/Makefile
-	stdair/config/Makefile
-	stdair/service/Makefile
-	stdair/core/Makefile
-	stdair/batches/Makefile
 	airinv/Makefile
 	airinv/basic/Makefile
 	airinv/bom/Makefile
@@ -346,6 +343,11 @@ External libraries:
     o SOCI_VERSION .... : ${SOCI_VERSION}
     o SOCI_CFLAGS ..... : ${SOCI_CFLAGS}
     o SOCI_LIBS ....... : ${SOCI_LIBS}
+
+  - StdAir ............ :
+    o STDAIR_VERSION .. : ${STDAIR_VERSION}
+    o STDAIR_CFLAGS ... : ${STDAIR_CFLAGS}
+    o STDAIR_LIBS ..... : ${STDAIR_LIBS}
 
   - ExtraCC ........... :
     o EXTRACC_VERSION . : ${EXTRACC_VERSION}
