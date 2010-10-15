@@ -2,7 +2,7 @@
 %global mydocs __tmp_docdir
 #
 Name:           airinv
-Version:        99.99.99
+Version:        0.2.0
 Release:        1%{?dist}
 
 Summary:        C++ library providing a clean API for parsing travel-focused requests
@@ -118,7 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Sep 03 2010 Christophe Lacombe <clacombe@amadeus.com> 99.99.99-1
+* Fri Oct 15 2010 Christophe Lacombe <clacombe@amadeus.com> 0.2.0-1
 - Upstream integration
 
 * Fri Sep 03 2010 Christophe Lacombe <clacombe@amadeus.com> 0.1.0-1
