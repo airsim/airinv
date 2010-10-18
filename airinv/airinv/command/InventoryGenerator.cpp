@@ -14,6 +14,7 @@
 #include <stdair/bom/FlightDate.hpp>
 #include <stdair/bom/SegmentDate.hpp>
 #include <stdair/bom/SegmentCabin.hpp>
+#include <stdair/bom/FareFamily.hpp>
 #include <stdair/bom/BookingClass.hpp>
 #include <stdair/bom/LegDate.hpp>
 #include <stdair/bom/LegCabin.hpp>
@@ -207,7 +208,7 @@ namespace AIRINV {
       stdair::FacBom<stdair::SegmentDate>::instance().create (lSegmentDateKey);
     stdair::FacBomManager::
       instance().addToListAndMap (ioFlightDate, lSegmentDate);
-    stdair::FacBomManager::
+     stdair::FacBomManager::
       instance().linkWithParent (ioFlightDate, lSegmentDate);
     
     // Set the segment-date attributes
@@ -248,10 +249,28 @@ namespace AIRINV {
       std::ostringstream ostr;
       ostr << *itClass;
       const stdair::ClassCode_T lClassCode (ostr.str());
-
+      
       // Create the booking class branch of the segment-cabin BOM
       createClass (lSegmentCabin, lClassCode);
     }
+
+    // Create the list of fare families if they exist
+    if (iCabin._fareFamilies.size() > 0) {
+      for (FareFamilyStructList_T::const_iterator itFareFamily =
+             iCabin._fareFamilies.begin();
+           itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
+         const FareFamilyStruct& lFareFamilyStruct = *itFareFamily;
+         stdair::FareFamilyKey FFlKey (lFareFamilyStruct._familyCode);
+         stdair::FareFamily& lFareFamily =
+           stdair::FacBom<stdair::FareFamily>::instance().create (FFlKey);
+         stdair::FacBomManager::
+           instance().addToListAndMap (lSegmentCabin, lFareFamily);
+         stdair::FacBomManager::
+           instance().linkWithParent (lSegmentCabin, lFareFamily);
+         // DEBUG
+         STDAIR_LOG_DEBUG ("Fare family: " << lFareFamily.describeKey());
+      }
+    } 
   }
     
   // ////////////////////////////////////////////////////////////////////

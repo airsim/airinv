@@ -26,6 +26,8 @@ int main (int argc, char* argv[]) {
     
     // Input file name
     stdair::Filename_T lInputFilename ("../../test/samples/invdump01.csv");
+    stdair::Filename_T lScheduleInputFilename ("../../test/samples/schedule01.csv");
+    stdair::Filename_T lODInputFilename ("../../test/samples/ond01.csv");
 
     // Output log File
     stdair::Filename_T lLogFilename ("airinv.log");
@@ -38,8 +40,9 @@ int main (int argc, char* argv[]) {
     
     // Initialise the list of classes/buckets
     const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-    AIRINV::AIRINV_Master_Service airinvService (lLogParams, lInputFilename);
-
+    // AIRINV::AIRINV_Master_Service airinvService (lLogParams, lInputFilename);
+    AIRINV::AIRINV_Master_Service airinvService (lLogParams, lScheduleInputFilename,
+                                                 lODInputFilename);
     // Make a booking
     // airinvService.sell (lTravelSolution, lPartySize);
     
