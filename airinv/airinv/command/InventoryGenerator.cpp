@@ -50,7 +50,7 @@ namespace AIRINV {
     
     // Generate all the dates corresponding to the period
     // and create the corresponding flight-dates.
-    const DatePeriod_T lDateRange = iFlightPeriod._dateRange;
+    const stdair::DatePeriod_T lDateRange = iFlightPeriod._dateRange;
 
     for (boost::gregorian::day_iterator itDate = lDateRange.begin();
          itDate != lDateRange.end(); ++itDate) {

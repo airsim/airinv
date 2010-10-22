@@ -82,8 +82,9 @@ namespace AIRINV {
       _flightPeriod._dateRangeEnd = _flightPeriod.getDate() + oneDay;
 
       // Transform the date pair (i.e., the date range) into a date period
-      _flightPeriod._dateRange = DatePeriod_T (_flightPeriod._dateRangeStart,
-                                               _flightPeriod._dateRangeEnd);
+      _flightPeriod._dateRange =
+        stdair::DatePeriod_T (_flightPeriod._dateRangeStart,
+                              _flightPeriod._dateRangeEnd);
         
       // Reset the number of seconds
       _flightPeriod._itSeconds = 0;
@@ -180,7 +181,7 @@ namespace AIRINV {
       // As the boarding date off set is optional, it can be set only
       // afterwards, based on the staging date off-set value
       // (_flightPeriod._dateOffset).
-      const DateOffset_T lDateOffset (_flightPeriod._dateOffset);
+      const stdair::DateOffset_T lDateOffset (_flightPeriod._dateOffset);
       _flightPeriod._itLeg._boardingDateOffset = lDateOffset;
     }
 
@@ -201,7 +202,7 @@ namespace AIRINV {
       // As the boarding date off set is optional, it can be set only
       // afterwards, based on the staging date off-set value
       // (_flightPeriod._dateOffset).
-      const DateOffset_T lDateOffset (_flightPeriod._dateOffset);
+      const stdair::DateOffset_T lDateOffset (_flightPeriod._dateOffset);
       _flightPeriod._itLeg._offDateOffset = lDateOffset;
     }
 
