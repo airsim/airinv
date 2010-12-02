@@ -94,7 +94,10 @@ namespace AIRINV {
     stdair::FlightDate* lFlightDate_ptr = stdair::BomManager::
       getObjectPtr<stdair::FlightDate> (ioInventory, lFlightDateKey.toString());
     if (lFlightDate_ptr != NULL) {
-      throw stdair::ObjectCreationgDuplicationException ();
+      std::ostringstream oMessage;
+      oMessage << ioInventory.describeKey() << ", "
+               << lFlightDate_ptr->describeKey();
+      throw stdair::ObjectCreationgDuplicationException (oMessage.str());
     }
 
     // Instantiate a fligh-date object with the given key (flight number and

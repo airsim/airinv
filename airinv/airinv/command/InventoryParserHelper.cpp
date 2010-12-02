@@ -1062,9 +1062,9 @@ namespace AIRINV {
 
     // Check the filename exists and can be open
     if (!_startIterator) {
-      STDAIR_LOG_ERROR ("The file " << _filename << " can not be open.");
-
-      throw stdair::FileNotFoundException();
+      std::ostringstream oMessage;
+      oMessage << "The file " << _filename << " can not be open.";
+      throw stdair::FileNotFoundException (oMessage.str());
     }
 
     // Create an EOF iterator

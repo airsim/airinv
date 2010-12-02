@@ -121,9 +121,10 @@ namespace AIRINV {
     const bool doesExistAndIsReadable =
       stdair::BasFileMgr::doesExistAndIsReadable (iInventoryInputFilename);
     if (doesExistAndIsReadable == false) {
-      STDAIR_LOG_ERROR ("The inventory input file, '" << iInventoryInputFilename
-                        << "', can not be retrieved on the file-system");
-      throw stdair::FileNotFoundException();
+      std::ostringstream oMessage;
+      oMessage << "The inventory input file, '" << iInventoryInputFilename
+               << "', can not be retrieved on the file-system";
+      throw stdair::FileNotFoundException (oMessage.str());
     }
 
     // Retrieve the bom root object.
@@ -145,16 +146,18 @@ namespace AIRINV {
     bool doesExistAndIsReadable =
       stdair::BasFileMgr::doesExistAndIsReadable (iScheduleInputFilename);
     if (doesExistAndIsReadable == false) {
-      STDAIR_LOG_ERROR ("The inventory input file, '" << iScheduleInputFilename
-                        << "', can not be retrieved on the file-system");
-      throw stdair::FileNotFoundException();
+      std::ostringstream oMessage;
+      oMessage << "The inventory input file, '" << iScheduleInputFilename
+               << "', can not be retrieved on the file-system";
+      throw stdair::FileNotFoundException (oMessage.str());
     }
     doesExistAndIsReadable =
       stdair::BasFileMgr::doesExistAndIsReadable (iODInputFilename);
     if (doesExistAndIsReadable == false) {
-      STDAIR_LOG_ERROR ("The inventory input file, '" << iODInputFilename
-                        << "', can not be retrieved on the file-system");
-      throw stdair::FileNotFoundException();
+      std::ostringstream oMessage;
+      oMessage << "The inventory input file, '" << iODInputFilename
+               << "', can not be retrieved on the file-system";
+      throw stdair::FileNotFoundException (oMessage.str());
     }
 
     // Retrieve the inventory object.
