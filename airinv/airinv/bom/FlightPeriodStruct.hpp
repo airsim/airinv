@@ -7,7 +7,7 @@
 // STL
 #include <string>
 // STDAIR
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_inventory_types.hpp>
 #include <stdair/basic/StructAbstract.hpp>
 #include <stdair/bom/DoWStruct.hpp>
 // AIRINV

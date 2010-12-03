@@ -6,7 +6,7 @@
 // BOOST
 #include <boost/date_time/date_iterator.hpp>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_types.hpp>
 #include <stdair/basic/BasConst_Inventory.hpp>
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/BomRoot.hpp>

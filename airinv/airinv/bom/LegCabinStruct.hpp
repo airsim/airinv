@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_inventory_types.hpp>
 #include <stdair/basic/StructAbstract.hpp>
 // AirInv
 #include <airinv/bom/BucketStruct.hpp>
