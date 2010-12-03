@@ -5,6 +5,7 @@
 #include <cassert>
 // StdAir
 #include <stdair/service/Logger.hpp>
+#include <stdair/stdair_exceptions.hpp>
 // Airinv
 #include <airinv/command/InventoryBuilder.hpp>
 #include <airinv/command/InventoryParserHelper.hpp>

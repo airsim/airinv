@@ -12,6 +12,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+// StdAir
+#include <stdair/stdair_basic_types.hpp>
 
 namespace AIRINV {
 
@@ -51,21 +53,6 @@ namespace AIRINV {
 
   class BookingException : public RootException {
   };
-
-
-  // /////////////// Log /////////////
-  /** Level of logs. */
-  namespace LOG {
-    typedef enum {
-      CRITICAL = 0,
-      ERROR,
-      NOTIFICATION,
-      WARNING,
-      DEBUG,
-      VERBOSE,
-      LAST_VALUE
-    } EN_LogLevel;
-  }
 
 
   // //////// Type definitions /////////

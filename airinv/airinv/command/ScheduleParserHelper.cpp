@@ -4,6 +4,7 @@
 // STL
 #include <cassert>
 // StdAir
+#include <stdair/stdair_exceptions.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
 // AIRINV

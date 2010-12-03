@@ -4,8 +4,6 @@
 // STL
 #include <cassert>
 // Boost
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/ptime.hpp>
 #include <boost/make_shared.hpp>
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
@@ -30,13 +28,14 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Master_Service::AIRINV_Master_Service () 
-  : _airinvMasterServiceContext (NULL) {
+    : _airinvMasterServiceContext (NULL) {
     assert (false);
   }
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_Master_Service::AIRINV_Master_Service (const AIRINV_Master_Service& iService)
-  : _airinvMasterServiceContext (NULL) {
+  AIRINV_Master_Service::
+  AIRINV_Master_Service (const AIRINV_Master_Service& iService)
+    : _airinvMasterServiceContext (NULL) {
     assert (false);
   }
 
@@ -92,7 +91,8 @@ namespace AIRINV {
 
     // Retrieve the AirInv service context
     assert (_airinvMasterServiceContext != NULL);
-    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext = *_airinvMasterServiceContext;
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;
     
     // Store the STDAIR service object within the (AIRINV) service context
     lAIRINV_Master_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr);
@@ -165,7 +165,8 @@ namespace AIRINV {
 
     // Retrieve the Airinv service context
     assert (_airinvMasterServiceContext != NULL);
-    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext = *_airinvMasterServiceContext;
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;
 
     // Store the STDAIR service object within the (AIRINV) service context
     lAIRINV_Master_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr);

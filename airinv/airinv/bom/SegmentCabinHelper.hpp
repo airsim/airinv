@@ -4,8 +4,8 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// STDAIR
-#include <stdair/STDAIR_Types.hpp>
+// StdAir
+#include <stdair/stdair_basic_types.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -14,6 +14,7 @@ namespace stdair {
 }
 
 namespace AIRINV {
+
   /** Class representing the actual business functions for
       an airline segment-cabin. */
   class SegmentCabinHelper {

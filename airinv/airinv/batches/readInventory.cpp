@@ -12,8 +12,6 @@
 #include <boost/tokenizer.hpp>
 #include <boost/program_options.hpp>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
-#include <stdair/STDAIR_Service.hpp>
 #include <stdair/service/Logger.hpp>
 // AirInv
 #include <airinv/AIRINV_Types.hpp>

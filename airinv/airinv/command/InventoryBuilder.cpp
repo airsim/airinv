@@ -6,7 +6,6 @@
 // BOOST
 #include <boost/date_time/date_iterator.hpp>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
 #include <stdair/basic/BasConst_BookingClass.hpp>
 #include <stdair/basic/BasConst_Yield.hpp>
 #include <stdair/basic/BasConst_Inventory.hpp>

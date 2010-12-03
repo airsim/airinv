@@ -7,7 +7,7 @@
 // STL
 #include <string>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_basic_types.hpp>
 #include <stdair/command/CmdAbstract.hpp>
 
 // Forward declarations.

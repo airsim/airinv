@@ -9,7 +9,7 @@
 // Boost
 #include <boost/noncopyable.hpp>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_basic_types.hpp>
 // AirInv
 
 // Forward declarations

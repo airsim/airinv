@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/bom/TravelSolutionStruct.hpp>
