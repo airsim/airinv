@@ -30,6 +30,12 @@ then
 fi
 
 rm -f config.cache acconfig.h
+if [ ! -d config ]
+then
+	echo "Create a config sub-directory."
+	mkdir -p config
+fi
+
 
 echo "- autoreconf."     	&& \
 autoreconf -fvi -I stdair/config          	&& exit 0
