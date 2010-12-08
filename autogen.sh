@@ -38,7 +38,12 @@ fi
 
 
 echo "- autoreconf."     	&& \
-autoreconf -fvi -I stdair/config          	&& exit 0
+autoreconf -fvi          	&& \
+echo "" && \
+echo "Now, the configuration script has to be run. For instance:" && \
+echo "mkdir -p tmp && cd tmp && ../configure --prefix=/home/user/deliveries/airinv-99.99.99 \\" && \
+echo " --with-extracc=/home/user/dev/deliveries/extracc-stable --with-stdair=/home/user/dev/deliveries/stdair-stable --srcdir=.." && \
+echo "" && exit 0
 
 #echo "- configure."		&& ./configure "$@"		&& exit 0
 

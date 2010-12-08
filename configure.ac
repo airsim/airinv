@@ -5,7 +5,7 @@ AC_COPYRIGHT([Copyright (C) 2007-2010 Denis Arnaud <denis_arnaud@users.sourcefor
 AC_INIT([AIRINV],[99.99.99],[denis_arnaud@users.sourceforge.net],[airinv])
 AC_CONFIG_HEADER([airinv/config.h])
 AC_CONFIG_SRCDIR([airinv/basic/BasConst.cpp])
-AC_CONFIG_AUX_DIR([stdair/config])
+AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE
 AM_PATH_CPPUNIT(1.10)
 AM_CONDITIONAL([HAVE_CPPUNIT], [test "x$CPPUNIT_LIBS" != x])
@@ -262,7 +262,7 @@ AC_CONFIG_FILES(
 	doc/local/Makefile
 	doc/doxygen_html.cfg
 	test/Makefile
-	stdair/test/samples/Makefile
+	samples/Makefile
 	test/airinv/Makefile
 )
 AC_OUTPUT
