@@ -262,7 +262,7 @@ AC_CONFIG_FILES(
 	doc/local/Makefile
 	doc/doxygen_html.cfg
 	test/Makefile
-	samples/Makefile
+	test/samples/Makefile
 	test/airinv/Makefile
 )
 AC_OUTPUT
