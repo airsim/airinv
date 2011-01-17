@@ -28,7 +28,7 @@ typedef std::vector<std::string> WordList_T;
 const std::string K_AIRINV_DEFAULT_LOG_FILENAME ("readInventory.log");
 
 /** Default name and location for the (CSV) input file. */
-const std::string K_AIRINV_DEFAULT_INPUT_FILENAME ("../../test/samples/invdump01.csv");
+const std::string K_AIRINV_DEFAULT_INPUT_FILENAME (STDAIR_SAMPLE_DIR "/invdump01.csv");
 
 
 // //////////////////////////////////////////////////////////////////////

@@ -1,10 +1,10 @@
-## test sub-directory
+## test sub-directory of the AirInv project
 include $(top_srcdir)/Makefile.common
 
 MAINTAINERCLEANFILES = Makefile.in
 
 ##
-SUBDIRS = samples airinv
+SUBDIRS = airinv
 
 EXTRA_DIST =
 
