@@ -5,7 +5,7 @@ Name:           airinv
 Version:        99.99.99
 Release:        1%{?dist}
 
-Summary:        C++ library providing a clean API for parsing travel-focused requests
+Summary:        C++ Simulated Airline Inventory Management System library
 
 Group:          System Environment/Libraries 
 License:        LGPLv2
