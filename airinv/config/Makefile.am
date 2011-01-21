@@ -28,3 +28,4 @@ airinv-paths.hpp: Makefile
 	@echo >> $@
 	@echo '#endif // __AIRINV_PATHS_HPP' >> $@
 	@echo >> $@
+
