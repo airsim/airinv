@@ -227,6 +227,15 @@ AC_CONFIG_FILES(
 	airinv-config
 	airinv.pc
 	airinv.m4
+	rmol/Makefile
+	rmol/basic/Makefile
+	rmol/bom/Makefile
+	rmol/factory/Makefile
+	rmol/command/Makefile
+	rmol/service/Makefile
+	rmol/core/Makefile
+	rmol/config/Makefile
+	rmol/batches/Makefile
 	airinv/Makefile
 	airinv/basic/Makefile
 	airinv/bom/Makefile
@@ -246,6 +255,7 @@ AC_CONFIG_FILES(
 	doc/doxygen_html.cfg
 	samples/Makefile
 	test/Makefile
+	test/rmol/Makefile
 	test/airinv/Makefile
 )
 AC_OUTPUT

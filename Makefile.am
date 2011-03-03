@@ -30,7 +30,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure \
 EXTRA_DIST =
 
 # Build in these directories:
-SUBDIRS = airinv man samples $(HTML_DOC_DIR) $(TEST_DIR)
+SUBDIRS = rmol airinv man samples $(HTML_DOC_DIR) $(TEST_DIR)
 
 
 # Configuration helpers

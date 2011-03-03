@@ -86,10 +86,12 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
   AIRINV::AIRINV_Master_Service airinvService (lLogParams,
                                                lInventoryInputFilename);
-  
+
   // Make a booking
-  airinvService.sell (lTravelSolution, lPartySize);
-}
+  const std::string lSegmentDateKey ("SV/5/110310/KBP/JFK");
+  const stdair::ClassCode_T lClassCode ("J");
+  const stdair::PartySize_T lPartySize (2);
+  airinvService.sell (lSegmentDateKey, lClassCode, lPartySize);
 
   // Close the log file
   logOutputFile.close();

@@ -15,6 +15,8 @@
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
+// RMOL
+#include <rmol/RMOL_Service.hpp>
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
@@ -207,27 +209,19 @@ namespace AIRINV {
     assert (_airinvServiceContext != NULL);
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
 
-    try {
+    // Delegate the booking to the dedicated command
+    stdair::BasChronometer lSellChronometer;
+    lSellChronometer.start();
+    const bool saleControl = true;
+    // InventoryManager::sell (lInventory, iSegmentDateKey,
+    //                         iClassCode, iPartySize);
+    const double lSellMeasure = lSellChronometer.elapsed();
       
-      // Delegate the booking to the dedicated command
-      stdair::BasChronometer lSellChronometer;
-      lSellChronometer.start();
-      bool saleControl = true;
-      //InventoryManager::sell (lInventory, iSegmentDateKey,
-      //iClassCode, iPartySize);
-      const double lSellMeasure = lSellChronometer.elapsed();
-      
-      // DEBUG
-      STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
-                        << lAIRINV_ServiceContext.display());
+    // DEBUG
+    STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
+                      << lAIRINV_ServiceContext.display());
 
-      return saleControl;
-    } catch (const std::exception& error) {
-      STDAIR_LOG_ERROR ("Exception: "  << error.what());
-      throw BookingException();
-    }
-
-    return false;
+    return saleControl;
   }
   
 }
