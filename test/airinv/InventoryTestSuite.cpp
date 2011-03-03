@@ -39,7 +39,7 @@ void InventoryTestSuite::simpleInventoryHelper() {
   AIRINV::AIRINV_Master_Service airinvService (lLogParams, lInputFilename);
   
   // Make a booking
-  // airinvService.sell (lTravelSolution, lPartySize);
+  airinvService.sell (lTravelSolution, lPartySize);
 }
 
 // //////////////////////////////////////////////////////////////////////

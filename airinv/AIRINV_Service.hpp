@@ -65,6 +65,9 @@ namespace AIRINV {
         <br>A reference on the root of the BOM tree, namely the BomRoot object,
         is stored within the service context for later use. */
     stdair::STDAIR_ServicePtr_T initStdAirService ();
+
+    /** Initialise the RMOL service (including the log service). */
+    void initRMOLService (stdair::STDAIR_ServicePtr_T);
     
     /** Attach the STDAIR service (holding the log and database services) to
         the AIRINV_Service.
