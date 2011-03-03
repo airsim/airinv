@@ -1,29 +1,77 @@
+/*!
+ * \page InventoryTestSuite_cpp Command-Line Test to Demonstrate How To Test the AirInv Project
+ * \code
+ */
+// //////////////////////////////////////////////////////////////////////
+// Import section
+// //////////////////////////////////////////////////////////////////////
 // STL
 #include <sstream>
 #include <fstream>
 #include <string>
-// CPPUNIT
-#include <extracppunit/CppUnitCore.hpp>
+// Boost Unit Test Framework (UTF)
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MAIN
+#define BOOST_TEST_MODULE InventoryTestSuite
+#include <boost/test/unit_test.hpp>
 // StdAir
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
+#include <stdair/basic/BasFileMgr.hpp>
 #include <stdair/bom/TravelSolutionStruct.hpp>
+#include <stdair/bom/BookingRequestStruct.hpp>
+#include <stdair/service/Logger.hpp>
 // Airinv
-#include <airinv/AIRINV_Types.hpp>
+//#include <airinv/AIRINV_Types.hpp>
 #include <airinv/AIRINV_Master_Service.hpp>
 #include <airinv/config/airinv-paths.hpp>
-// Airinv Test Suite
-#include <test/airinv/InventoryTestSuite.hpp>
 
-// //////////////////////////////////////////////////////////////////////
-// Test is based on ...
-// //////////////////////////////////////////////////////////////////////
+namespace boost_utf = boost::unit_test;
 
-// //////////////////////////////////////////////////////////////////////
-void InventoryTestSuite::simpleInventoryHelper() {
+// (Boost) Unit Test XML Report
+std::ofstream utfReportStream ("InventoryTestSuite_utfresults.xml");
+
+/**
+ * Configuration for the Boost Unit Test Framework (UTF)
+ */
+struct UnitTestConfig {
+  /** Constructor. */
+  UnitTestConfig() {
+    boost_utf::unit_test_log.set_stream (utfReportStream);
+    boost_utf::unit_test_log.set_format (boost_utf::XML);
+    boost_utf::unit_test_log.set_threshold_level (boost_utf::log_test_units);
+    //boost_utf::unit_test_log.set_threshold_level (boost_utf::log_successful_tests);
+  }
+
+  /** Destructor. */
+  ~UnitTestConfig() {
+  }
+};
+
+
+// /////////////// Main: Unit Test Suite //////////////
+
+// Set the UTF configuration (re-direct the output to a specific file)
+BOOST_GLOBAL_FIXTURE (UnitTestConfig);
+
+// Start the test suite
+BOOST_AUTO_TEST_SUITE (master_test_suite)
+
+/**
+ * Test a simple inventory sell
+ */
+BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
 
   // Input file name
-  const stdair::Filename_T lInputFilename (STDAIR_SAMPLE_DIR "/invdump01.csv");
+  const stdair::Filename_T lInventoryInputFilename (STDAIR_SAMPLE_DIR
+                                                    "/invdump01.csv");
+
+  // Check that the file path given as input corresponds to an actual file
+  bool doesExistAndIsReadable =
+    stdair::BasFileMgr::doesExistAndIsReadable (lInventoryInputFilename);
+  BOOST_CHECK_MESSAGE (doesExistAndIsReadable == true,
+                       "The '" << lInventoryInputFilename
+                       << "' input file can not be open and read");
 
   // Output log File
   const stdair::Filename_T lLogFilename ("InventoryTestSuite.log");
@@ -36,28 +84,21 @@ void InventoryTestSuite::simpleInventoryHelper() {
   
   // Initialise the list of classes/buckets
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-  AIRINV::AIRINV_Master_Service airinvService (lLogParams, lInputFilename);
+  AIRINV::AIRINV_Master_Service airinvService (lLogParams,
+                                               lInventoryInputFilename);
   
   // Make a booking
   airinvService.sell (lTravelSolution, lPartySize);
 }
 
-// //////////////////////////////////////////////////////////////////////
-void InventoryTestSuite::simpleInventory () {
-  // TODO: Check that the inventory goes as expected
-  CPPUNIT_ASSERT_NO_THROW ( simpleInventoryHelper(););
+  // Close the log file
+  logOutputFile.close();
 }
 
-// //////////////////////////////////////////////////////////////////////
-// void InventoryTestSuite::errorCase () {
-//  CPPUNIT_ASSERT (false);
-// }
+// End the test suite
+BOOST_AUTO_TEST_SUITE_END()
 
-// //////////////////////////////////////////////////////////////////////
-InventoryTestSuite::InventoryTestSuite () {
-  _describeKey << "Running test on inventory";  
-}
-
-// /////////////// M A I N /////////////////
-CPPUNIT_MAIN()
+/*!
+ * \endcode
+ */
 
