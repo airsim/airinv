@@ -11,7 +11,7 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_Master_ServiceContext::AIRINV_Master_ServiceContext () {
+  AIRINV_Master_ServiceContext::AIRINV_Master_ServiceContext() {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ namespace AIRINV {
   // //////////////////////////////////////////////////////////////////////
   const std::string AIRINV_Master_ServiceContext::shortDisplay() const {
     std::ostringstream oStr;
-    oStr << "AIRINV_Master_ServiceContext: " << std::endl;
+    oStr << "AIRINV_Master_ServiceContext ";
     return oStr.str();
   }
 

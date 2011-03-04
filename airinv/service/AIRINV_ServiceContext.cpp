@@ -4,14 +4,14 @@
 // STL
 #include <cassert>
 #include <sstream>
-// Airinv
+// AirInv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
 
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_ServiceContext::AIRINV_ServiceContext () {
+  AIRINV_ServiceContext::AIRINV_ServiceContext() {
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ namespace AIRINV {
   // //////////////////////////////////////////////////////////////////////
   const std::string AIRINV_ServiceContext::shortDisplay() const {
     std::ostringstream oStr;
-    oStr << "AIRINV_ServiceContext: " << std::endl;
+    oStr << "AIRINV_ServiceContext ";
     return oStr.str();
   }
 
