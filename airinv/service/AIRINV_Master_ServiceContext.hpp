@@ -60,7 +60,7 @@ namespace AIRINV {
      * Get a reference on the (slave) AIRINV service handler which
      * corresponds to the given airline code.
      */
-    AIRINV_ServicePtr_T getAIRINV_Service () const {
+    AIRINV_ServicePtr_T getAIRINV_Service() const {
       return _airinvService;
     }
 
