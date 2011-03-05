@@ -32,22 +32,6 @@ namespace AIRINV {
     friend class FacAirinvServiceContext;
 
   private:
-    /// //////////////// Constructors and destructors /////////////
-    /**
-     * Main constructor.
-     */
-    AIRINV_ServiceContext();
-    /**
-     * Default copy constructor (not to be used).
-     */
-    AIRINV_ServiceContext (const AIRINV_ServiceContext&);
-    /**
-     * Destructor.
-     */
-    ~AIRINV_ServiceContext();
-
-
-  private:
     // ///////////////// Getters ///////////////////
     /**
      * Get the pointer on the STDAIR service handler.
@@ -65,6 +49,13 @@ namespace AIRINV {
     }
 
     /**
+     * State whether or not RMOL owns the STDAIR service resources.
+     */
+    const bool getOwnStdairServiceFlag() const {
+      return _ownStdairService;
+    }
+
+    /**
      * Get the RMOL service handler.
      */
     RMOL::RMOL_Service& getRMOL_Service() const {
@@ -72,12 +63,15 @@ namespace AIRINV {
       return *_rmolService;
     }
     
+
     // ///////////////// Setters ///////////////////
     /**
      * Set the pointer on the STDAIR service handler.
      */
-    void setSTDAIR_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr) {
+    void setSTDAIR_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr,
+                            const bool iOwnStdairService) {
       _stdairService = ioSTDAIR_ServicePtr;
+      _ownStdairService = iOwnStdairService;
     }
     
     /**
@@ -86,6 +80,7 @@ namespace AIRINV {
     void setRMOL_Service (RMOL::RMOL_ServicePtr_T ioRMOL_ServicePtr) {
       _rmolService = ioRMOL_ServicePtr;
     }
+
 
   private:
     // //////////////////// Display Methods /////////////////////
@@ -99,14 +94,46 @@ namespace AIRINV {
      */
     const std::string display() const;
     
+    /**
+     * Display of the structure.
+     */
+    const std::string describe() const;
+
     
+  private:
+    /// //////////////// Constructors and destructors /////////////
+    /**
+     * Main constructor.
+     */
+    AIRINV_ServiceContext();
+    /**
+     * Default copy constructor (not to be used).
+     */
+    AIRINV_ServiceContext (const AIRINV_ServiceContext&);
+
+    /**
+     * Destructor.
+     */
+    ~AIRINV_ServiceContext();
+
+    /**
+     * Clear the context (cabin capacity, bucket holder).
+     */
+    void reset();
+
+
   private:
     // /////////////// Children ///////////////
     /**
      * Standard Airline (StdAir) Service Handler.
      */
     stdair::STDAIR_ServicePtr_T _stdairService;
-    
+
+    /**
+     * State whether or not RMOL owns the STDAIR service resources.
+     */
+    bool _ownStdairService;
+
     /**
      * Standard Airline (RMOL) Service Handler.
      */
