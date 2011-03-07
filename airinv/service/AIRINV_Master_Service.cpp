@@ -373,11 +373,11 @@ namespace AIRINV {
       *_airinvMasterServiceContext;
   
     // Retrieve the slave AIRINV service object from the (AIRINV) service context
-    AIRINV_ServicePtr_T lAIRINV_Service_ptr =
+    AIRINV_Service& lAIRINV_Service =
       lAIRINV_Master_ServiceContext.getAIRINV_Service();
 
     // Delegate the BOM building to the dedicated service
-    lAIRINV_Service_ptr->buildSampleBom();
+    lAIRINV_Service.buildSampleBom();
   }
 
   // //////////////////////////////////////////////////////////////////////
