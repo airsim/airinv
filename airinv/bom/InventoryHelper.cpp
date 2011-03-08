@@ -79,7 +79,7 @@ namespace AIRINV {
         assert (lBC_ptr != NULL);
 
         const stdair::ClassCode_T& lClassCode = lBC_ptr->getClassCode();
-        const stdair::AuthorizationLevel_T& lAU =lBC_ptr-getAuthorizationLevel();
+        const stdair::AuthorizationLevel_T& lAU=lBC_ptr->getAuthorizationLevel();
         const stdair::Availability_T lAvl = lAU - lCommittedSpace;
 
         lClassAvailabilityMap.
