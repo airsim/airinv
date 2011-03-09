@@ -45,7 +45,7 @@ namespace AIRINV {
     // Retrieve the corresponding flight-date.
     std::string lFlightDateKey;
     STDAIR_LOG_DEBUG (iSegmentDateKey);
-    lFlightDateKey.append (iSegmentDateKey, 4, lSize - 13);
+    lFlightDateKey.append (iSegmentDateKey, 4, lSize - 23);
     const stdair::FlightDate& lFlightDate =
       stdair::BomManager::getObject<stdair::FlightDate> (iInventory,
                                                          lFlightDateKey);
@@ -99,7 +99,7 @@ namespace AIRINV {
     // Retrieve the corresponding flight-date.
     std::string lFlightDateKey;
     STDAIR_LOG_DEBUG (iSegmentDateKey);
-    lFlightDateKey.append (iSegmentDateKey, 4, lSize - 13);
+    lFlightDateKey.append (iSegmentDateKey, 4, lSize - 23);
     const stdair::FlightDate& lFlightDate =
       stdair::BomManager::getObject<stdair::FlightDate> (ioInventory,
                                                          lFlightDateKey);
