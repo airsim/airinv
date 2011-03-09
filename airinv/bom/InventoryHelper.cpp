@@ -82,8 +82,10 @@ namespace AIRINV {
         const stdair::AuthorizationLevel_T& lAU=lBC_ptr->getAuthorizationLevel();
         const stdair::Availability_T lAvl = lAU - lCommittedSpace;
 
-        lClassAvailabilityMap.
-          insert (stdair::ClassAvailabilityMap_T::value_type (lClassCode, lAvl));
+       bool insertSuccessful = lClassAvailabilityMap.
+          insert (stdair::ClassAvailabilityMap_T::
+                  value_type (lClassCode, lAvl)).second;
+       assert (insertSuccessful == true);
       }
     }
 
