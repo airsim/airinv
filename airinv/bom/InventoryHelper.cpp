@@ -86,6 +86,12 @@ namespace AIRINV {
           insert (stdair::ClassAvailabilityMap_T::
                   value_type (lClassCode, lAvl)).second;
        assert (insertSuccessful == true);
+        // DEBUG
+        STDAIR_LOG_DEBUG ("Class: " << lClassCode << ", "
+                          << "AU: " << lAU << ", "
+                          << "Committed space: " << lCommittedSpace << ", "
+                          << "Avl: " << lAvl);
+        
       }
     }
 
