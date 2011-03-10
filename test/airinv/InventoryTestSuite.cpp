@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
                                                lInventoryInputFilename);
 
   // Make a booking
-  const std::string lSegmentDateKey ("SV/5/110310/KBP/JFK");
+  const std::string lSegmentDateKey ("SV, 5, 2010-Mar-11, 08:00:00, KBP-JFK");
   const stdair::ClassCode_T lClassCode ("J");
   const stdair::PartySize_T lPartySize (2);
   airinvService.sell (lSegmentDateKey, lClassCode, lPartySize);
