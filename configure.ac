@@ -254,6 +254,7 @@ AC_CONFIG_FILES(
 	doc/local/Makefile
 	doc/doxygen_html.cfg
 	samples/Makefile
+	samples/RDS01/Makefile
 	test/Makefile
 	test/rmol/Makefile
 	test/airinv/Makefile
