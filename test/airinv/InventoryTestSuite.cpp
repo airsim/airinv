@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
                                                lInventoryInputFilename);
 
   // Make a booking
-  const std::string lSegmentDateKey ("SV, 5, 2010-03-11, KBP.JFK, 08:00:00");
+  const std::string lSegmentDateKey ("SV, 5, 2010-03-11, KBP, JFK, 08:00:00");
   const stdair::ClassCode_T lClassCode ("J");
   const stdair::PartySize_T lPartySize (2);
   const bool hasSaleBeenSuccessful =
@@ -100,8 +100,8 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
 
   // TODO: check why the booking-class cannot be retrieved, and reverse the test
   STDAIR_LOG_ERROR ("!!!!!!!!! The test fails. Please correct it !!!!!!!!!");
-  BOOST_CHECK_EQUAL (hasSaleBeenSuccessful, false);
-  BOOST_CHECK_MESSAGE (hasSaleBeenSuccessful == false,
+  BOOST_CHECK_EQUAL (hasSaleBeenSuccessful, true);
+  BOOST_CHECK_MESSAGE (hasSaleBeenSuccessful == true,
                        "No sale can be made for '" << lSegmentDateKey
                        << "'");
 
