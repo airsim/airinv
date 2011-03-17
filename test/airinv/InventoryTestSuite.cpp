@@ -98,8 +98,6 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
   const std::string& lCSVDump = airinvService.csvDisplay();
   STDAIR_LOG_DEBUG (lCSVDump);
 
-  // TODO: check why the booking-class cannot be retrieved, and reverse the test
-  STDAIR_LOG_ERROR ("!!!!!!!!! The test fails. Please correct it !!!!!!!!!");
   BOOST_CHECK_EQUAL (hasSaleBeenSuccessful, true);
   BOOST_CHECK_MESSAGE (hasSaleBeenSuccessful == true,
                        "No sale can be made for '" << lSegmentDateKey
