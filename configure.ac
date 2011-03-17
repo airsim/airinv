@@ -265,6 +265,7 @@ AC_CONFIG_FILES(
 	samples/Makefile
 	samples/RDS01/Makefile
 	test/Makefile
+	test/airrac/Makefile
 	test/rmol/Makefile
 	test/airinv/Makefile
 )
