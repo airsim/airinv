@@ -227,6 +227,15 @@ AC_CONFIG_FILES(
 	airinv-config
 	airinv.pc
 	airinv.m4
+	airrac/Makefile
+	airrac/basic/Makefile
+	airrac/bom/Makefile
+	airrac/factory/Makefile
+	airrac/command/Makefile
+	airrac/service/Makefile
+	airrac/config/Makefile
+	airrac/core/Makefile
+	airrac/batches/Makefile
 	rmol/Makefile
 	rmol/basic/Makefile
 	rmol/bom/Makefile
