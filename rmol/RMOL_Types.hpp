@@ -23,7 +23,6 @@ namespace RMOL {
     /** Constructor. */
     OverbookingException (const std::string& iWhat)
       : stdair::RootException (iWhat) {}
->>>>>>> trunk
   };
 
   /**
