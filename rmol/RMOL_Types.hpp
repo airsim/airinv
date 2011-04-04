@@ -4,62 +4,53 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
+// STL
+#include <vector>
+#include <list>
 // Boost
 #include <boost/shared_ptr.hpp>
-// StdAir
-#include <stdair/stdair_exceptions.hpp>
 
 namespace RMOL {
 
   // Forward declarations
   class RMOL_Service;
 
-  // ///////// Exceptions ///////////
-  /**
-   * @brief Overbooking-related exception.
-   */
-  class OverbookingException : public stdair::RootException {
-  public:
-    /** Constructor. */
-    OverbookingException (const std::string& iWhat)
-      : stdair::RootException (iWhat) {}
+   // ///////// Exceptions ///////////
+  class RootException : public std::exception {
   };
 
-  /**
-   * @brief Unconstraining-related exception.
-   */
-  class UnconstrainingException : public stdair::RootException {
-  public:
-    /** Constructor. */
-    UnconstrainingException (const std::string& iWhat)
-      : stdair::RootException (iWhat) {}
+  class FileNotFoundException : public RootException {
+  };
+  
+  class NonInitialisedServiceException : public RootException {
   };
 
-  /**
-   * @brief Forecast-related exception.
-   */
-  class ForecastException : public stdair::RootException {
-  public:
-    /** Constructor. */
-    ForecastException (const std::string& iWhat)
-      : stdair::RootException (iWhat) {}
+  class MemoryAllocationException : public RootException {
   };
 
-  /**
-   * @brief Optimisation-related exception.
-   */
-  class OptimisationException : public stdair::RootException {
-  public:
-    /** Constructor. */
-    OptimisationException (const std::string& iWhat)
-      : stdair::RootException (iWhat) {}
+  class ObjectNotFoundException : public RootException {
   };
 
+  class DocumentNotFoundException : public RootException {
+  };
+
+
+  // /////////////// Log /////////////
+  /** Level of logs. */
+  namespace LOG {
+    typedef enum {
+      CRITICAL = 0,
+      ERROR,
+      NOTIFICATION,
+      WARNING,
+      DEBUG,
+      VERBOSE,
+      LAST_VALUE
+    } EN_LogLevel;
+  }
 
   // //////// Type definitions /////////
-  /**
-   * Pointer on the RMOL Service handler.
-   */
+  /** Pointer on the RMOL Service handler. */
   typedef boost::shared_ptr<RMOL_Service> RMOL_ServicePtr_T;
 
 }
