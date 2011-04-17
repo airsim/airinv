@@ -82,10 +82,12 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
   logOutputFile.open (lLogFilename.c_str());
   logOutputFile.clear();
 
-  // Initialise the list of classes/buckets
+  // Initialise the inventory service
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-  AIRINV::AIRINV_Master_Service airinvService (lLogParams,
-                                               lInventoryInputFilename);
+  AIRINV::AIRINV_Master_Service airinvService (lLogParams);
+
+  // Build the BOM tree from parsing an inventory dump file
+  airinvService.parseAndLoad (lInventoryInputFilename);
 
   // Make a booking
   const std::string lSegmentDateKey ("SV, 5, 2010-03-11, KBP, JFK, 08:00:00");
