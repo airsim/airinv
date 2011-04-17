@@ -18,6 +18,8 @@
 // AirInv
 #include <airinv/AIRINV_Master_Service.hpp>
 #include <airinv/config/airinv-paths.hpp>
+// GNU Readline Wrapper
+#include <airinv/ui/cmdline/SReadline.hpp>
 
 // //////// Constants //////
 /** Default name and location for the log file. */
@@ -41,17 +43,41 @@ const stdair::ClassCode_T K_AIRINV_DEFAULT_CLASS_CODE ("Y");
 /** Default party size for the sale. */
 const stdair::PartySize_T K_AIRINV_DEFAULT_PARTY_SIZE (2);
 
-/** Default for the input type. It can be either built-in or provided by an
-    input file. That latter must then be given with the -i option. */
+/**
+ * Default for the input type. It can be either built-in or provided by an
+ * input file. That latter must then be given with the -i option.
+ */
 const bool K_AIRINV_DEFAULT_BUILT_IN_INPUT = false;
 
-/** Default for the input type. The BOM tree can be built from either an
-    inventory dump or from a schedule file (and, potentially, an O&D list). */
+/**
+ * Default for the input type. The BOM tree can be built from either an
+ * inventory dump or from a schedule file (and, potentially, an O&D list).
+ */
 const bool K_AIRINV_DEFAULT_FOR_SCHEDULE = false;
 
-/** Early return status (so that it can be differentiated from an
-    error). */
+/**
+ * Early return status (so that it can be differentiated from an error).
+ */
 const int K_AIRINV_EARLY_RETURN_STATUS = 99;
+
+/**
+ * List of strings, representing the tokens as entered by the user on
+ * a command-line.
+ */
+typedef std::vector<std::string> TokenList_T;
+
+/**
+ * Enumeration representing the command entered by the user on the command-line.
+ */
+struct Command_T {
+  typedef enum {
+    NOP = 0,
+    QUIT,
+    DISPLAY,
+    SELL,
+    LAST_VALUE
+  } Type_T;
+};
 
 // ///////// Parsing of Options & Configuration /////////
 // A helper function to simplify the main part.
@@ -220,6 +246,109 @@ int readConfiguration (int argc, char* argv[],
   return 0;
 }
 
+// //////////////////////////////////////////////////////////////////
+void initReadline (swift::SReadline& ioInputReader) {
+
+  // Prepare the list of my own completers
+  std::vector<std::string> Completers;
+
+  // The following is supported:
+  // - "identifiers"
+  // - special identifier %file - means to perform a file name completion
+  Completers.push_back ("help");
+  Completers.push_back ("display %airline_code %flight_number %flight_date");
+  Completers.push_back ("quit");
+
+
+  // Now register the completers.
+  // Actually it is possible to re-register another set at any time
+  ioInputReader.RegisterCompletions (Completers);
+}
+
+// //////////////////////////////////////////////////////////////////
+Command_T::Type_T extractCommand (const TokenList_T& iTokenList) {
+  Command_T::Type_T oCommandType = Command_T::LAST_VALUE;
+
+  // Interpret the user input
+  if (iTokenList.empty() == false) {
+    TokenList_T::const_iterator itTok = iTokenList.begin();
+    const std::string& lCommand (*itTok);
+    
+    if (lCommand == "display") {
+      oCommandType = Command_T::DISPLAY;
+
+    } else if (lCommand == "quit") {
+      oCommandType = Command_T::QUIT;
+
+    } else if (lCommand == "sell") {
+      oCommandType = Command_T::SELL;
+    }
+
+  } else {
+    oCommandType = Command_T::NOP;
+  }
+
+  return oCommandType;
+}
+
+// //////////////////////////////////////////////////////////////////
+void parseFlightDateKey (const TokenList_T& iTokenList,
+                         stdair::AirlineCode_T& ioAirlineCode,
+                         stdair::FlightNumber_T& ioFlightNumber,
+                         stdair::Date_T& ioDepartureDate) {
+  // Interpret the user input
+  if (iTokenList.empty() == false) {
+    TokenList_T::const_iterator itTok = iTokenList.begin();
+    const std::string& lCommand (*itTok);
+    assert (lCommand == "display");
+
+    // Read the airline code
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+      ioAirlineCode = *itTok;
+
+    } else {
+      return;
+    }
+      
+    // Read the flight-number
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+      try {
+
+        ioFlightNumber = boost::lexical_cast<stdair::FlightNumber_T> (*itTok);
+
+      } catch (boost::bad_lexical_cast& eCast) {
+        std::cerr << "The flight number ('" << *itTok
+                  << "') cannot be understood. The default value ("
+                  << ioFlightNumber << ") is kept." << std::endl;
+        return;
+      }
+
+    } else {
+      return;
+    }
+
+    // Read the departure date
+    ++itTok;
+    if (itTok != iTokenList.end()) {
+      try {
+
+      ioDepartureDate = boost::gregorian::from_simple_string (*itTok);
+
+      } catch (boost::bad_lexical_cast& eCast) {
+        std::cerr << "The flight departure date ('" << *itTok
+                  << "') cannot be understood. The default value ("
+                  << ioDepartureDate << ") is kept. " << std::endl;
+        return;
+      }
+
+    } else {
+      return;
+    }
+  }
+}
+
 
 // ///////// M A I N ////////////
 int main (int argc, char* argv[]) {
@@ -233,6 +362,11 @@ int main (int argc, char* argv[]) {
   stdair::Filename_T lInventoryFilename;
   stdair::Filename_T lScheduleInputFilename;
   stdair::Filename_T lODInputFilename;
+
+  // Readline history
+  const unsigned int lHistorySize (100);
+  const std::string lHistoryFilename ("airinv.hist");
+  const std::string lHistoryBackupFilename ("airinv.hist.bak");
 
   // Parameters for the sale
   std::string lSegmentDateKey;
@@ -260,80 +394,122 @@ int main (int argc, char* argv[]) {
 
   // Initialise the inventory service
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-  
+  AIRINV::AIRINV_Master_Service airinvService (lLogParams);
+
+  // DEBUG
+  STDAIR_LOG_DEBUG ("Welcome to airinv");
+
   // Check wether or not a (CSV) input file should be read
   if (isBuiltin == true) {
-
-    // Build the BOM tree from parsing an inventory dump file
-    AIRINV::AIRINV_Master_Service airinvService (lLogParams);
-
-    // DEBUG
-    STDAIR_LOG_DEBUG ("Welcome to airinv");
 
     // Build the sample BOM tree for RMOL
     airinvService.buildSampleBom();
 
     // Define a specific segment-date key for the sample BOM tree
-    const std::string lSpecificSegmentDateKey ("BA,9,2011-06-10,LHR,SYD");
-
-    // Make a booking
-    const bool isSellSuccessful = 
-      airinvService.sell (lSpecificSegmentDateKey, lClassCode, lPartySize);
-
-    // DEBUG
-    STDAIR_LOG_DEBUG ("Sale ('" << lSegmentDateKey << "', " << lClassCode << ": "
-                      << lPartySize << ") successful? " << isSellSuccessful);
-
-    // DEBUG: Display the whole BOM tree
-    const std::string& lCSVDump = airinvService.csvDisplay();
-    STDAIR_LOG_DEBUG (lCSVDump);
+    lSegmentDateKey = "BA,9,2011-06-10,LHR,SYD";
 
   } else {
     if (isForSchedule == true) {
       // Build the BOM tree from parsing a schedule file (and O&D list)
-      AIRINV::AIRINV_Master_Service airinvService (lLogParams,
-                                                   lScheduleInputFilename,
-                                                   lODInputFilename);
-
-      // DEBUG
-      STDAIR_LOG_DEBUG ("Welcome to airinv");
+      airinvService.parseAndLoad (lScheduleInputFilename, lODInputFilename);
 
       if (lSegmentDateKey == K_AIRINV_DEFAULT_SEGMENT_DATE_KEY) {
         // Define a specific segment-date key for the schedule-based inventory
         lSegmentDateKey = "SQ,11,2010-01-15,SIN,BKK";
       }
 
-      // Make a booking
-      const bool isSellSuccessful =
-        airinvService.sell (lSegmentDateKey, lClassCode, lPartySize);
-
-      // DEBUG
-      STDAIR_LOG_DEBUG("Sale ('" << lSegmentDateKey << "', " << lClassCode<< ": "
-                       << lPartySize << ") successful? " << isSellSuccessful);
-
-      // DEBUG: Display the whole BOM tree
-      const std::string& lCSVDump = airinvService.csvDisplay();
-      STDAIR_LOG_DEBUG (lCSVDump);
-
     } else {
       // Build the BOM tree from parsing an inventory dump file
-      AIRINV::AIRINV_Master_Service airinvService (lLogParams,
-                                                   lInventoryFilename);
+      airinvService.parseAndLoad (lInventoryFilename);
+    }
+  }
 
+  // Make a booking
+  const bool isSellSuccessful = 
+    airinvService.sell (lSegmentDateKey, lClassCode, lPartySize);
+
+  // DEBUG
+  STDAIR_LOG_DEBUG ("Sale ('" << lSegmentDateKey << "', " << lClassCode << ": "
+                    << lPartySize << ") successful? " << isSellSuccessful);
+
+  // DEBUG: Display the whole BOM tree
+  const std::string& lCSVDump = airinvService.csvDisplay();
+  STDAIR_LOG_DEBUG (lCSVDump);
+
+  // DEBUG
+  STDAIR_LOG_DEBUG ("====================================================");
+  STDAIR_LOG_DEBUG ("=       Beginning of the interactive session       =");
+  STDAIR_LOG_DEBUG ("====================================================");
+
+  // Initialise the GNU readline wrapper
+  swift::SReadline lReader (lHistoryFilename, lHistorySize);
+  initReadline (lReader);
+
+  // Now we can ask user for a line
+  std::string lUserInput;
+  bool EndOfInput (false);
+  
+  while (lUserInput != "quit" && EndOfInput == false) {
+    // The last parameter could be ommited
+    TokenList_T lTokenList;
+    lUserInput = lReader.GetLine ("airinv> ", lTokenList, EndOfInput);
+
+    // The history could be saved to an arbitrary file at any time
+    lReader.SaveHistory (lHistoryBackupFilename);
+
+    if (EndOfInput) {
       // DEBUG
-      STDAIR_LOG_DEBUG ("Welcome to airinv");
+      STDAIR_LOG_DEBUG ("End of the session. Exiting.");
+      std::cout << "End of the session. Exiting." << std::endl;
 
-      // Make a booking
-      const bool isSellSuccessful =
-        airinvService.sell (lSegmentDateKey, lClassCode, lPartySize);
+      break;
+    }
 
+    // Interpret the user input
+    const Command_T::Type_T lCommandType = extractCommand (lTokenList);
+    switch (lCommandType) {
+    case Command_T::DISPLAY: {
+      stdair::AirlineCode_T lAirlineCode ("SV");
+      stdair::FlightNumber_T lFlightNumber (5);
+      stdair::Date_T lDate (2010, 03, 11);
+      parseFlightDateKey (lTokenList, lAirlineCode, lFlightNumber, lDate);
+
+      // DEBUG: Display the flight-date
+      const std::string& lCSVFlightDateDump =
+        airinvService.csvDisplay (lAirlineCode, lFlightNumber, lDate);
+      std::cout << lCSVFlightDateDump << std::endl;
+      STDAIR_LOG_DEBUG (lCSVFlightDateDump);
+
+      break;
+    }
+
+    case Command_T::NOP: {
+      break;
+    }
+ 
+    case Command_T::QUIT: {
+      break;
+    }
+
+    case Command_T::LAST_VALUE:
+    default: {
       // DEBUG
-      STDAIR_LOG_DEBUG("Sale ('" << lSegmentDateKey << "', " << lClassCode<< ": "
-                       << lPartySize << ") successful? " << isSellSuccessful);
+      std::ostringstream oStr;
+      oStr << "That command is not yet understood: '" << lUserInput << "' => ";
 
-      // DEBUG: Display the whole BOM tree
-      const std::string& lCSVDump = airinvService.csvDisplay();
-      STDAIR_LOG_DEBUG (lCSVDump);
+      unsigned short idx (0);
+      for (TokenList_T::const_iterator itTok = lTokenList.begin();
+           itTok != lTokenList.end(); ++itTok, ++idx) {
+        if (idx != 0) {
+          oStr << ", ";
+        }
+        const std::string& lToken = *itTok;
+        oStr << lToken;
+      }
+
+      STDAIR_LOG_DEBUG (oStr.str());
+      std::cout << oStr.str() << std::endl;
+    }
     }
   }
 

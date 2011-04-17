@@ -8,7 +8,8 @@ bin_PROGRAMS = airinv
 
 ##
 MAINTAINERCLEANFILES = Makefile.in
-CLEANFILES = ${bin_PROGRAMS:%=%.log}
+CLEANFILES = ${bin_PROGRAMS:%=%.log} \
+	${bin_PROGRAMS:%=%.hist} ${bin_PROGRAMS:%=%.hist.bak}
 
 ##
 #
