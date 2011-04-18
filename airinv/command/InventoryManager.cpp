@@ -243,41 +243,6 @@ namespace AIRINV {
       createDirectAccesses (*lCurrentSegmentDate_ptr);
     }
   }
-    
-  // ////////////////////////////////////////////////////////////////////
-  void InventoryManager::
-  buildSimilarFlightDateSets (const stdair::BomRoot& iBomRoot) {
-    // Browse the list of inventories and create direct accesses
-    // within each inventory.
-    const stdair::InventoryList_T& lInvList =
-      stdair::BomManager::getList<stdair::Inventory> (iBomRoot);
-    for (stdair::InventoryList_T::const_iterator itInv = lInvList.begin();
-         itInv != lInvList.end(); ++itInv) {
-      stdair::Inventory* lCurrentInv_ptr = *itInv;
-      assert (lCurrentInv_ptr != NULL);
-
-      buildSimilarFlightDateSets (*lCurrentInv_ptr);
-    }
-  }
-    
-  // ////////////////////////////////////////////////////////////////////
-  void InventoryManager::
-  buildSimilarFlightDateSets (stdair::Inventory& ioInventory) {
-    // For instance, we consider two flight-dates are similar if they have the
-    // same flight number.
-
-    // By conseconquence, the guillotine blocks will have the same identify
-    // number as the flight-dates within it.
-
-    // Browse the flight-date list and build the sets of flight-date
-    // which have the same flight number.
-    GuillotineNumberSimilarFlightDateSetMap_T lGNSFDSM;
-    const stdair::FlightDateList_T& lFlightDateList =
-      stdair::BomManager::getList<stdair::FlightDate> (ioInventory);
-    for (stdair::FlightDateList_T::const_iterator itFD = lFlightDateList.begin();
-         itFD != lFlightDateList.end(); ++itFD) {
-      stdair::FlightDate* lFD_ptr = *itFD;
-      assert (lFD_ptr != NULL);
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
