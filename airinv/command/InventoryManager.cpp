@@ -3,6 +3,8 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <exception>
+// Boost
+#include <boost/make_shared.hpp>
 // StdAir
 #include <stdair/basic/BasConst_Inventory.hpp>
 #include <stdair/basic/BasConst_BomDisplay.hpp>
@@ -20,6 +22,9 @@
 #include <stdair/bom/GuillotineBlock.hpp>
 #include <stdair/bom/TravelSolutionStruct.hpp>
 #include <stdair/bom/FareOptionStruct.hpp>
+#include <stdair/bom/EventStruct.hpp>
+#include <stdair/bom/EventQueue.hpp>
+#include <stdair/bom/SnapshotStruct.hpp>
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/factory/FacBom.hpp>
 #include <stdair/service/Logger.hpp>
@@ -139,6 +144,14 @@ namespace AIRINV {
     return InventoryHelper::sell (ioInventory, iSegmentDateKey,
                                   iClassCode, iPartySize);
   }
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::takeSnapshots (const stdair::Inventory& iInventory,
+                                        const stdair::DateTime_T& iSnapshotTime){
+
+    // Make the snapshots within the inventory
+    InventoryHelper::takeSnapshots (iInventory, iSnapshotTime);
+  }
     
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
@@ -230,6 +243,41 @@ namespace AIRINV {
       createDirectAccesses (*lCurrentSegmentDate_ptr);
     }
   }
+    
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  buildSimilarFlightDateSets (const stdair::BomRoot& iBomRoot) {
+    // Browse the list of inventories and create direct accesses
+    // within each inventory.
+    const stdair::InventoryList_T& lInvList =
+      stdair::BomManager::getList<stdair::Inventory> (iBomRoot);
+    for (stdair::InventoryList_T::const_iterator itInv = lInvList.begin();
+         itInv != lInvList.end(); ++itInv) {
+      stdair::Inventory* lCurrentInv_ptr = *itInv;
+      assert (lCurrentInv_ptr != NULL);
+
+      buildSimilarFlightDateSets (*lCurrentInv_ptr);
+    }
+  }
+    
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  buildSimilarFlightDateSets (stdair::Inventory& ioInventory) {
+    // For instance, we consider two flight-dates are similar if they have the
+    // same flight number.
+
+    // By conseconquence, the guillotine blocks will have the same identify
+    // number as the flight-dates within it.
+
+    // Browse the flight-date list and build the sets of flight-date
+    // which have the same flight number.
+    GuillotineNumberSimilarFlightDateSetMap_T lGNSFDSM;
+    const stdair::FlightDateList_T& lFlightDateList =
+      stdair::BomManager::getList<stdair::FlightDate> (ioInventory);
+    for (stdair::FlightDateList_T::const_iterator itFD = lFlightDateList.begin();
+         itFD != lFlightDateList.end(); ++itFD) {
+      stdair::FlightDate* lFD_ptr = *itFD;
+      assert (lFD_ptr != NULL);
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
@@ -455,5 +503,40 @@ namespace AIRINV {
 
     // Initialise the guillotine block.
     lGuillotineBlock.initSnapshotBlocks (lFlightDateIndexMap,lValueTypeIndexMap);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::initSnapshotEvents (const stdair::Date_T& iStartDate,
+                                             const stdair::Date_T& iEndDate,
+                                             stdair::EventQueue& ioQueue) {
+    const stdair::Duration_T lTimeZero (0, 0, 0);
+    const stdair::Duration_T lOneDayDuration (24, 0, 0);
+    const stdair::DateTime_T lBeginSnapshotTime (iStartDate, lTimeZero);
+    const stdair::DateTime_T lEndSnapshotTime (iEndDate, lTimeZero);
+
+    // TODO: remove the defaut airline code.
+    stdair::NbOfEvents_T lNbOfSnapshots = 0.0;
+    for (stdair::DateTime_T lSnapshotTime = lBeginSnapshotTime;
+         lSnapshotTime < lEndSnapshotTime; lSnapshotTime += lOneDayDuration) {
+      // Create the snapshot event structure
+      stdair::SnapshotPtr_T lSnapshotStruct =
+        boost::make_shared<stdair::SnapshotStruct> (stdair::DEFAULT_AIRLINE_CODE,
+                                                    lSnapshotTime);
+      // Create the event structure
+      stdair::EventStruct lEventStruct (stdair::EventType::SNAPSHOT,
+                                        lSnapshotStruct);
+
+    /**
+       \note When adding an event in the event queue, the event can be
+       altered. That happens when an event already exists, in the
+       event queue, with exactly the same date-time stamp. In that
+       case, the date-time stamp is altered for the newly added event,
+       so that the unicity on the date-time stamp can be guaranteed.
+    */
+    ioQueue.addEvent (lEventStruct);
+    ++lNbOfSnapshots;
+    }
+
+    ioQueue.addStatus (stdair::EventType::SNAPSHOT, lNbOfSnapshots);
   }
 }
