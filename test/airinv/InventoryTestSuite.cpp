@@ -85,26 +85,26 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
   // Initialise the inventory service
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
   AIRINV::AIRINV_Master_Service airinvService (lLogParams);
-
+  
   // Build the BOM tree from parsing an inventory dump file
   airinvService.parseAndLoad (lInventoryInputFilename);
-
+  
   // Make a booking
   const std::string lSegmentDateKey ("SV, 5, 2010-03-11, KBP, JFK, 08:00:00");
   const stdair::ClassCode_T lClassCode ("J");
   const stdair::PartySize_T lPartySize (2);
   const bool hasSaleBeenSuccessful =
     airinvService.sell (lSegmentDateKey, lClassCode, lPartySize);
-
+  
   // DEBUG: Display the list of travel solutions
   const std::string& lCSVDump = airinvService.csvDisplay();
   STDAIR_LOG_DEBUG (lCSVDump);
-
+  
   BOOST_CHECK_EQUAL (hasSaleBeenSuccessful, true);
   BOOST_CHECK_MESSAGE (hasSaleBeenSuccessful == true,
                        "No sale can be made for '" << lSegmentDateKey
                        << "'");
-
+  
   // Close the log file
   logOutputFile.close();
 }
