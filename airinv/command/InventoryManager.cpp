@@ -504,11 +504,11 @@ namespace AIRINV {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void InventoryManager::
+  stdair::RMEventList_T InventoryManager::
   initRMEvents (const stdair::Inventory& iInventory,
-                stdair::RMEventList_T& ioRMEventList,
                 const stdair::Date_T& iStartDate,
                 const stdair::Date_T& iEndDate) {
+    stdair::RMEventList_T oList;
     const stdair::Duration_T lTimeZero (0, 0, 0);
     const stdair::Duration_T lTime (0, 0, 10);
     const stdair::Duration_T lOneDayDuration (24, 0, 0);
@@ -541,10 +541,12 @@ namespace AIRINV {
         if (lEventTime >= lEarliestEventTime && lEventTime <= lLatestEventTime){
           const stdair::KeyDescription_T lKeyDes = lFD_ptr->describeKey();
           stdair::RMEventStruct lRMEvent (lAirlineCode, lKeyDes, lEventTime);
-          ioRMEventList.push_back (lRMEvent);
+          oList.push_back (lRMEvent);
         }
       }      
     }
+    
+    return oList;
   }
 
   // ////////////////////////////////////////////////////////////////////

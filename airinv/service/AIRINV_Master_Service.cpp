@@ -176,11 +176,6 @@ namespace AIRINV {
     AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
       *_airinvMasterServiceContext;
 
-    // Retrieve the StdAir service
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      lAIRINV_Master_ServiceContext.getSTDAIR_ServicePtr();
-    assert (lSTDAIR_Service_ptr != NULL);
-
     /**
      * Initialise the AirInv service handler.
      *
@@ -191,7 +186,7 @@ namespace AIRINV {
      * \note Each Airinv slave service has its own StdAir Service.
      */
     AIRINV_ServicePtr_T lAIRINV_Service_ptr =
-      boost::make_shared<AIRINV_Service> (lSTDAIR_Service_ptr);
+      boost::make_shared<AIRINV_Service> ();
 
     // Store the AIRINV service object within the AIRINV Master service context.
     lAIRINV_Master_ServiceContext.setAIRINV_Service (lAIRINV_Service_ptr);
@@ -210,8 +205,7 @@ namespace AIRINV {
     AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
       *_airinvMasterServiceContext;
   
-    // Retrieve the slave AIRINV service object from the (AIRINV)
-    // service context
+    // Retrieve the slave AIRINV service object from the (AIRINV) service context
     AIRINV_Service& lAIRINV_Service =
       lAIRINV_Master_ServiceContext.getAIRINV_Service();
 
