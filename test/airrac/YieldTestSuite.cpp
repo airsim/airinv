@@ -86,19 +86,11 @@ BOOST_AUTO_TEST_CASE (airrac_simple_yield) {
   
   // Initialise the list of classes/buckets
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
-<<<<<<< HEAD
-  AIRRAC::AIRRAC_Service airracService (lLogParams, lAirlineCode,
-                                        lYieldInputFilename);
-  
-  // Calculate the yields for the given travel solution
-  airracService.calculateYield (lTravelSolution);
-=======
   AIRRAC::AIRRAC_Service airracService (lLogParams, lYieldInputFilename);
   
   // Calculate the yields for the given travel solution
   lTravelSolutionList.push_back(lTravelSolution);
   airracService.calculateYields (lTravelSolutionList);
->>>>>>> trunk
 
   // Close the log file
   logOutputFile.close();
