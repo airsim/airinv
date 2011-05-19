@@ -8,6 +8,18 @@
 #include <unistd.h>
 // ZeroMQ
 #include <zmq.hpp>
+// AirInvServer
+#include <airinv/server/BomPropertyTree.hpp>
+
+//  Convert string to 0MQ string and send to socket
+static bool s_send (zmq::socket_t& socket, const std::string& string) {
+
+  zmq::message_t message (string.size());
+  memcpy (message.data(), string.data(), string.size());
+
+  bool rc = socket.send(message);
+  return (rc);
+}
 
 // //////////////// M A I N ////////////////////////
 int main (int argc, char* argv[]) {
@@ -28,9 +40,13 @@ int main (int argc, char* argv[]) {
     sleep (1);
 
     // Send reply back to client
-    zmq::message_t reply (5);
-    memcpy ((void *) reply.data (), "World", 5);
-    socket.send (reply);
+    stdair::BomPropertyTree lBomTree;
+    lBomTree._airlineCode = "SV";
+    lBomTree._flightNumber = 5;
+    lBomTree._airportCodeList.insert ("CDG");
+    lBomTree._airportCodeList.insert ("KBP");
+    const std::string& lJSONisedBomTree = lBomTree.save();
+    s_send (socket, lJSONisedBomTree);
   }
 
   return 0;
