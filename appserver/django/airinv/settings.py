@@ -2,6 +2,7 @@
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+#SESSION_COOKIE_SECURE = True
 
 ADMINS = ('Denis Arnaud', 'darnaud@amadeus.com')
 
@@ -9,14 +10,17 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'sim_airinv',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'sim_airinv',                  # Or path to database file if using sqlite3.
         'USER': 'airinv',                      # Not used with sqlite3.
         'PASSWORD': 'airinv',                  # Not used with sqlite3.
-        'HOST': 'nceoridb01',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
+        'HOST': 'nceoridb01.nce.amadeus.net',  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3306',                        # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+# Root directory for local URLS (/django/airinv on OriNet)
+ROOT_DIR = '/airinv'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

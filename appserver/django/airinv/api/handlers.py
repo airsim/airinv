@@ -3,7 +3,7 @@ import json
 import zmq
 
 class AirInvHandler( BaseHandler ):
-	def read( self, request, expression ):
+	def read( self, request, airlineCode, flightNumber, departureDate ):
 		# Extract the requested action
 		fullPath = request.get_full_path()
 		fullPathList = fullPath.split('/')

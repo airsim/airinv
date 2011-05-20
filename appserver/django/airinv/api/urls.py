@@ -10,6 +10,6 @@ class CsrfExemptResource( Resource ):
 airinv_resource = CsrfExemptResource( AirInvHandler )
 
 urlpatterns = patterns( '',
-	url( r'^airinv/(?P<expression>.*)$', airinv_resource )
+	url( r'^airinv/(?P<airlineCode>[\w]+)/(?P<flightNumber>\d+)/(?P<departureDate>[-\d]+)$', airinv_resource )
 )
 
