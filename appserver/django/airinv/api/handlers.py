@@ -16,7 +16,8 @@ class AirInvHandler( BaseHandler ):
 		# print "Sending request ", request, "..."
 		socket.send_unicode (jsonAction)
 
-		# Receive the response from the airinv server, formatted in JSON as well
+		# Receive the response from the airinv server,
+		# formatted in JSON as well
 		jsonMessage = socket.recv()
 		message = json.loads (jsonMessage)
 
