@@ -2,14 +2,10 @@ from piston.handler import BaseHandler
 import json
 import zmq
 
-class AirInvHandler( BaseHandler ):
+class AirInvHandler( BaseHandler ):	
 	def read( self, request, airlineCode, flightNumber, departureDate ):
 		# Extract the requested action
-		fullPath = request.get_full_path()
-		fullPathList = fullPath.split('/')
-		actionRequested = fullPathList[-1]
-		actionDetails = actionRequested.split('+')
-		jsonAction = json.dumps ({'flight_date': { 'departure_date': actionDetails[2], 'airline_code': actionDetails[0], 'flight_number': actionDetails[1] }})
+		jsonAction = json.dumps ({'flight_date': { 'departure_date': departureDate, 'airline_code': airlineCode, 'flight_number': flightNumber }})
 		# print "JSON serialised request: ", jsonAction
 
 		# print "Connecting to the airinv server..."
