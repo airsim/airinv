@@ -83,9 +83,11 @@ namespace stdair {
     // functions.
     bpt::ptree lAirportCodeArray;
     BOOST_FOREACH (const std::string& name, _airportCodeList) {
-      lAirportCodeArray.push_back (std::make_pair ("", name));
+      lAirportCodeArray.push_back (std::pair<bpt::ptree::key_type,
+                                             bpt::ptree::data_type> ("", name));
     }
-    pt.push_back (std::make_pair ("airport_codes", lAirportCodeArray));
+      pt.put_child ("flight_date.airport_codes", lAirportCodeArray);
+    //pt.push_back (std::make_pair ("flight_date.airport_codes", lAirportCodeArray));
 
     // Write the property tree to the JSON stream.
     write_json (oStr, pt);
