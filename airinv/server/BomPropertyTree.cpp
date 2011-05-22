@@ -86,7 +86,7 @@ namespace stdair {
       lAirportCodeArray.push_back (std::pair<bpt::ptree::key_type,
                                              bpt::ptree::data_type> ("", name));
     }
-      pt.put_child ("flight_date.airport_codes", lAirportCodeArray);
+    pt.put_child ("flight_date.airport_codes", lAirportCodeArray);
     //pt.push_back (std::make_pair ("flight_date.airport_codes", lAirportCodeArray));
 
     // Write the property tree to the JSON stream.

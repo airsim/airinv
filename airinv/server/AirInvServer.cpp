@@ -19,9 +19,9 @@
 // StdAir
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
+#include <stdair/bom/BomJSONImport.hpp>
+#include <stdair/bom/BomJSONExport.hpp>
 #include <stdair/service/Logger.hpp>
-//
-#include <airinv/server/BomPropertyTree.hpp>
 // AirInvServer
 #include <airinv/config/airinv-paths.hpp>
 #include <airinv/AIRINV_Master_Service.hpp>
@@ -34,7 +34,7 @@ typedef unsigned int ServerPort_T;
 const std::string K_AIRINV_DEFAULT_LOG_FILENAME ("airinvServer.log");
 
 /** Default protocol to use for the server. */
-const std::string K_AIRINV_DEFAULT_SERVER_PROTOCOL ("tcp");
+const std::string K_AIRINV_DEFAULT_SERVER_PROTOCOL ("tcp://");
 
 /** Default address to bind to. */
 const std::string K_AIRINV_DEFAULT_SERVER_ADDRESS ("*");
@@ -363,10 +363,16 @@ int main (int argc, char* argv[]) {
     }
   }
 
+  // Build the connection string (e.g., "tcp://*:5555", which is the default)
+  std::ostringstream oZeroMQBindStream;
+  oZeroMQBindStream << ioServerProtocol << ioServerAddress
+                    << ":" << ioServerPort;
+  const std::string lZeroMQBindString (oZeroMQBindStream.str());
+
   // Prepare the context and socket of the server
   zmq::context_t context (1);
   zmq::socket_t socket (context, ZMQ_REP);
-  socket.bind ("tcp://*:5555");
+  socket.bind (lZeroMQBindString.c_str());
 
   // DEBUG
   STDAIR_LOG_DEBUG ("The AirInv server is ready to receive requests...");
@@ -380,43 +386,36 @@ int main (int argc, char* argv[]) {
     // DEBUG
     STDAIR_LOG_DEBUG ("Received: '" << lFlightDateKeyJSONString << "'");
 
-    // Transform the JSON-ified string into a BOM tree light structure
-    stdair::BomPropertyTree lRequestBomTree;
-    lRequestBomTree.load (lFlightDateKeyJSONString);
+    // Extract, from the JSON-ified string an airline code
+    stdair::AirlineCode_T lAirlineCode;
+    stdair::BomJSONImport::jsonImportInventoryKey (lFlightDateKeyJSONString,
+                                                   lAirlineCode);
 
-    // Extract the flight-date key
-    const stdair::AirlineCode_T& lAirlineCode = lRequestBomTree._airlineCode;
-    const stdair::FlightNumber_T& lFlightNumber = lRequestBomTree._flightNumber;
-    const stdair::Date_T& lDate = lRequestBomTree._departureDate;
+    // Extract, from the JSON-ified string a flight number and a departure date
+    stdair::FlightNumber_T lFlightNumber;
+    stdair::Date_T lDate;
+    stdair::BomJSONImport::jsonImportFlightDateKey (lFlightDateKeyJSONString,
+                                                    lFlightNumber, lDate);
 
     // DEBUG
-    STDAIR_LOG_DEBUG ("i.e., airline code = '" << lAirlineCode
+    STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
                       << "', flight number = " << lFlightNumber
                       << "', departure date = '" << lDate << "'");
 
-    // DEBUG: Display the JSON-ified flight-date
+    // DEBUG: Display the flight-date dump
+    const std::string& lFlightDateCSVDump =
+      airinvService.csvDisplay (lAirlineCode, lFlightNumber, lDate);
+    STDAIR_LOG_DEBUG (std::endl << lFlightDateCSVDump);
+
+    // Dump the full details of the flight-date into the JSON-ified flight-date
     const std::string& lFlightDateJSONDump =
       airinvService.jsonExport (lAirlineCode, lFlightNumber, lDate);
-    STDAIR_LOG_DEBUG (std::endl << lFlightDateJSONDump);
-
-    // Retrieve, from the airline inventories, the flight-date
-    // structure to be sent back to the client
-    // \todo Retrieve the actual flight-date, do not hard-code it.
-    stdair::BomPropertyTree lBomTree;
-    lBomTree._airlineCode = "SV";
-    lBomTree._flightNumber = 5;
-    lBomTree._departureDate = stdair::Date_T (2010, 03, 10);
-    lBomTree._airportCodeList.insert ("CDG");
-    lBomTree._airportCodeList.insert ("KBP");
-
-    // Transform the light BOM tree structure into a JSON-ified string
-    const std::string& lJSONisedBomTree = lBomTree.save();
 
     // DEBUG
-    STDAIR_LOG_DEBUG ("Send: '" << lJSONisedBomTree << "'");
+    STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");
 
     // Send back the flight-date details to the client
-    s_send (socket, lJSONisedBomTree);
+    s_send (socket, lFlightDateJSONDump);
   }
 
   return 0;

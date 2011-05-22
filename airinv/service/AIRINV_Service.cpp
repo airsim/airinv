@@ -324,9 +324,8 @@ namespace AIRINV {
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
 
-    // Delegate the BOM display to the dedicated service
-    // \todo Create stdair::BomExport, implement jsonExport(), and use it here
-    return lSTDAIR_Service.csvDisplay (iAirlineCode, iFlightNumber,
+    // Delegate the JSON export to the dedicated service
+    return lSTDAIR_Service.jsonExport (iAirlineCode, iFlightNumber,
                                        iDepartureDate);
   }
   
