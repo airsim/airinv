@@ -11,11 +11,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'sim_airinv',                  # Or path to database file if using sqlite3.
-        'USER': 'airinv',                      # Not used with sqlite3.
-        'PASSWORD': 'airinv',                  # Not used with sqlite3.
-        'HOST': 'nceoridb01.nce.amadeus.net',  # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3306',                        # Set to empty string for default. Not used with sqlite3.
+        'NAME': 'sim_airinv',  # Or path to database file if using sqlite3.
+        'USER': 'airinv',      # Not used with sqlite3.
+        'PASSWORD': 'airinv',  # Not used with sqlite3.
+        'HOST': 'nceoridb01',  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3306',        # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -95,7 +95,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-	# AirInv Server RESTful API
-	'airinv.api',
+    # AirInv Server RESTful API
+    'airinv.api',
 )
 
