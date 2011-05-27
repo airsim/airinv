@@ -1,40 +1,47 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
-<link href="style.css" rel="stylesheet" type="text/css" /><!--[if IE]>
-<style type="text/css"> 
-/* place css fixes for all versions of IE in this conditional comment */
-.twoColHybLtHdr #sidebar1 { padding-top: 30px; }
-.twoColHybLtHdr #mainContent { zoom: 1; padding-top: 15px; }
-/* the above proprietary zoom property gives IE the hasLayout it may need to avoid several bugs */
-</style>
-<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Welcome to AirInv</title>
+<link type="text/css" href="libs/jQueryUI/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="libs/jQueryUI/js/jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="libs/jQueryUI/js/jquery-ui-1.8.13.custom.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="libs/extJS/resources/css/ext-all.css">
+        <link rel="stylesheet" type="text/css" href="libs/extJS/examples/shared/example.css">
+        <script type="text/javascript" src="libs/extJS/bootstrap.js"></script>
+        <script type="text/javascript" src="libs/extJS/ext-all-debug.js"></script>
+        <script type="text/javascript" src="js/airinv-grid.js"></script>
 </head>
+<body>
+<p align="center"><img src="assets/images/airinvlogo.jpg" width="262" height="110" alt="AirInvLogo"></p>
+<p align="center">
+Company Code: <input id="tbCompanyCode" type="text" value="SV" />
+  Flight Number: <input id="tbFlightNumber" type="text" value="5"/>
+  Date: <input type="text" id="datepicker" value="2010-Mar-11">
+</p>
+<p align="center">
+  <input name="" type="button" value="Fetch!" onClick="fetch()"/>
+</p>
 
-<body class="twoColHybLtHdr">
+<div id="flights-GridDisplay" align="center"></div><div id="legs-GridDisplay" align="center"></div>
 
-<div id="container">
-  <div id="header">
-    <h1>Header</h1>
-  <!-- end #header --></div>
-  <div id="sidebar1">
-    <h3>sidebar1 Content</h3>
-    <p>The background color on this div will only show for the length of the content. If you'd like a dividing line instead, place a border on the left side of the #mainContent div if the #mainContent div will always contain more content than the #sidebar1 div. </p>
-    <p>Donec eu mi sed turpis feugiat feugiat. Integer turpis arcu, pellentesque  eget, cursus et, fermentum ut, sapien. Fusce metus mi, eleifend  sollicitudin, molestie id, varius et, nibh. Donec nec libero.</p>
-  <!-- end #sidebar1 --></div>
-  <div id="mainContent">
-    <h1> Main Content </h1>
-    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent aliquam,  justo convallis luctus rutrum, erat nulla fermentum diam, at nonummy quam  ante ac quam. Maecenas urna purus, fermentum id, molestie in, commodo  porttitor, felis. Nam blandit quam ut lacus. Quisque ornare risus quis  ligula. Phasellus tristique purus a augue condimentum adipiscing. Aenean  sagittis. Etiam leo pede, rhoncus venenatis, tristique in, vulputate at,  odio. Donec et ipsum et sapien vehicula nonummy. Suspendisse potenti. Fusce  varius urna id quam. Sed neque mi, varius eget, tincidunt nec, suscipit id,  libero. In eget purus. Vestibulum ut nisl. Donec eu mi sed turpis feugiat  feugiat. Integer turpis arcu, pellentesque eget, cursus et, fermentum ut,  sapien. Fusce metus mi, eleifend sollicitudin, molestie id, varius et, nibh.  Donec nec libero.</p>
-    <h2>H2 level heading </h2>
-    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent aliquam,  justo convallis luctus rutrum, erat nulla fermentum diam, at nonummy quam  ante ac quam. Maecenas urna purus, fermentum id, molestie in, commodo  porttitor, felis. Nam blandit quam ut lacus. Quisque ornare risus quis  ligula. Phasellus tristique purus a augue condimentum adipiscing. Aenean  sagittis. Etiam leo pede, rhoncus venenatis, tristique in, vulputate at, odio.</p>
-	<!-- end #mainContent --></div>
-	<!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats -->
-	<br class="clearfloat" />
-	<div id="footer">
-    <p>Footer</p>
-  <!-- end #footer --></div>
-<!-- end #container --></div>
-</body>
+<script type="text/javascript">
+$('#datepicker').datepicker({
+					inline: true
+				});
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function fetch()
+	{
+		var companyCode=document.getElementById('tbCompanyCode').value;
+		var flightNumber=document.getElementById('tbFlightNumber').value;
+		var date=document.getElementById('datepicker').value;
+		//In js/airinv-grid
+		queryBuild(companyCode, flightNumber, date)
+	}
+</script>
+
+
 </html>
