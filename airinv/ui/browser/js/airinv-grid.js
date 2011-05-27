@@ -81,8 +81,8 @@ Ext.define('legsinfo', {
 var flightURL;
 function queryBuild(companyCode, flightNumber, date)
 {
-	var queryURL="http://ncevsediri-fed/api/airinv/" + companyCode + "/" + flightNumber + "/" + date;
-	flightURL = queryURL;
+	var queryURL="http://ncevsediri-fed/api/display/inv/" + companyCode + "/" + flightNumber + "/" + date;
+	//flightURL = queryURL;
 	onFlightCall(queryURL);
 }
  
@@ -137,7 +137,7 @@ function onFlightCall(url){
         model: 'legsinfo',
         proxy: {
             type: 'rest',
-            url: flightURL,
+            url: url,
             reader: {
                 type: 'json',
                 root: 'flight_date.legs'
