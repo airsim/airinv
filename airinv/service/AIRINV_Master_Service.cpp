@@ -244,19 +244,6 @@ namespace AIRINV {
     lAIRINV_Service.parseAndLoad (iScheduleInputFilename, iODInputFilename,
                                   iYieldInputFilename);
   }
-
-  // ////////////////////////////////////////////////////////////////////
-  std::string AIRINV_Master_Service::csvDisplay() const {
-
-    // Retrieve the AIRINV service context
-    if (_airinvMasterServiceContext == NULL) {
-      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
-                                                    "has not been initialised");
-    }
-    assert (_airinvMasterServiceContext != NULL);
-
-    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
-      *_airinvMasterServiceContext;
   
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
