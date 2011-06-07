@@ -33,6 +33,7 @@
 #include <airinv/AIRINV_Types.hpp>
 #include <airinv/bom/BomRootHelper.hpp>
 #include <airinv/bom/InventoryHelper.hpp>
+#include <airinv/bom/FlightDateHelper.hpp>
 #include <airinv/command/InventoryManager.hpp>
 
 namespace AIRINV {
@@ -144,6 +145,14 @@ namespace AIRINV {
     // Make the sale within the inventory.
     return InventoryHelper::sell (ioInventory, iSegmentDateKey,
                                   iClassCode, iPartySize);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  updateBookingControls (stdair::FlightDate& ioFlightDate) {
+
+    // Forward the call to FlightDateHelper.
+    FlightDateHelper::updateBookingControls (ioFlightDate);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -367,6 +376,156 @@ namespace AIRINV {
         for (stdair::SegmentCabinList_T::const_iterator itSC =
                lSegmentCabinList.begin();
              itSC != lSegmentCabinList.end(); ++itSC) {
+          stdair::SegmentCabin* lSC_ptr = *itSC;
+          assert (lSC_ptr != NULL);
+
+          std::ostringstream oStr;
+          oStr << lFlightNumber << lDepartureDate.day_of_week()
+               << lOrigin << lDestination << lSC_ptr->getCabinCode();
+          const std::string lMapKey = oStr.str();
+
+          // Add the segment cabin to the similar segment cabin set map.
+          SimilarSegmentCabinSetMap_T::iterator itSSCS = lSSCSM.find (lMapKey);
+          if (itSSCS == lSSCSM.end()) {
+            DepartureDateSegmentCabinMap_T lDDSCMap;
+            lDDSCMap.insert (DepartureDateSegmentCabinMap_T::
+                             value_type (lDepartureDate, lSC_ptr));
+            lSSCSM.insert (SimilarSegmentCabinSetMap_T::
+                           value_type (lMapKey, lDDSCMap));
+          } else {
+            DepartureDateSegmentCabinMap_T& lDDSCMap = itSSCS->second;
+            lDDSCMap.insert (DepartureDateSegmentCabinMap_T::
+                             value_type (lDepartureDate, lSC_ptr));
+          }
+        }
+      }
+    }
+
+    // Initialise the guillotine blocks.
+    stdair::GuillotineNumber_T lGuillotineNumber = 1;
+    for (SimilarSegmentCabinSetMap_T::const_iterator itSSCS = lSSCSM.begin();
+         itSSCS != lSSCSM.end(); ++itSSCS, ++lGuillotineNumber) {
+      const DepartureDateSegmentCabinMap_T& lDDSCMap = itSSCS->second;
+
+      buildGuillotineBlock (ioInventory, lGuillotineNumber, lDDSCMap);
+    }    
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  buildGuillotineBlock (stdair::Inventory& ioInventory,
+                        const stdair::GuillotineNumber_T& iGuillotineNumber,
+                        const DepartureDateSegmentCabinMap_T& iDDSCMap) {
+    // Build an empty guillotine block.
+    const stdair::GuillotineBlockKey lKey (iGuillotineNumber);
+    stdair::GuillotineBlock& lGuillotineBlock =
+      stdair::FacBom<stdair::GuillotineBlock>::instance().create (lKey);
+    stdair::FacBomManager::addToListAndMap (ioInventory, lGuillotineBlock);
+
+    // Build the value type index map.
+    DepartureDateSegmentCabinMap_T::const_iterator itDDSC = iDDSCMap.begin();
+    assert (itDDSC != iDDSCMap.end());
+    const stdair::SegmentCabin* lSegmentCabin_ptr = itDDSC->second;
+    
+    // Browse the booking class list and build the value type for the classes
+    // as well as for the cabin (Q-equivalent).
+    stdair::ValueTypeIndexMap_T lValueTypeIndexMap;
+    stdair::BlockIndex_T lBlockIndex = 0;
+    std::ostringstream lSCMapKey;
+    lSCMapKey << stdair::DEFAULT_SEGMENT_CABIN_VALUE_TYPE
+              << lSegmentCabin_ptr->describeKey();
+    lValueTypeIndexMap.insert (stdair::ValueTypeIndexMap_T::
+                               value_type (lSCMapKey.str(), lBlockIndex));
+    ++lBlockIndex;
+    
+    // Browse the booking class list
+    const stdair::BookingClassList_T& lBCList =
+      stdair::BomManager::getList<stdair::BookingClass>(*lSegmentCabin_ptr);
+    for (stdair::BookingClassList_T::const_iterator itBC= lBCList.begin();
+         itBC != lBCList.end(); ++itBC) {
+      const stdair::BookingClass* lBookingClass_ptr = *itBC;
+      assert (lBookingClass_ptr != NULL);
+      lValueTypeIndexMap.
+        insert (stdair::ValueTypeIndexMap_T::
+                value_type(lBookingClass_ptr->describeKey(),lBlockIndex));
+      ++lBlockIndex;
+    }
+
+    // Build the segment-cabin index map
+    stdair::SegmentCabinIndexMap_T lSegmentCabinIndexMap;
+    stdair::BlockNumber_T lBlockNumber = 0;
+    for (; itDDSC != iDDSCMap.end(); ++itDDSC, ++lBlockNumber) {
+      stdair::SegmentCabin* lCurrentSC_ptr = itDDSC->second;
+      assert (lCurrentSC_ptr != NULL);
+      lSegmentCabinIndexMap.
+        insert (stdair::SegmentCabinIndexMap_T::value_type (lCurrentSC_ptr,
+                                                            lBlockNumber));
+
+      // Added the guillotine to the segment-cabin.
+      lCurrentSC_ptr->setGuillotineBlock (lGuillotineBlock);
+    }
+
+    // Initialise the guillotine block.
+    lGuillotineBlock.initSnapshotBlocks(lSegmentCabinIndexMap,
+                                        lValueTypeIndexMap);
+  }
+    
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  buildSimilarSegmentCabinSets (const stdair::BomRoot& iBomRoot) {
+    // Browse the list of inventories and create direct accesses
+    // within each inventory.
+    const stdair::InventoryList_T& lInvList =
+      stdair::BomManager::getList<stdair::Inventory> (iBomRoot);
+    for (stdair::InventoryList_T::const_iterator itInv = lInvList.begin();
+         itInv != lInvList.end(); ++itInv) {
+      stdair::Inventory* lCurrentInv_ptr = *itInv;
+      assert (lCurrentInv_ptr != NULL);
+
+      buildSimilarSegmentCabinSets (*lCurrentInv_ptr);
+    }
+  }
+    
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  buildSimilarSegmentCabinSets (stdair::Inventory& ioInventory) {
+    // For instance, we consider two flight-dates are
+    // similar if they have the same flight number and the same
+    // day-of-the-week departure.
+
+    // Browse the segment-cabin list and build the sets of segment-cabin
+    // which have the same flight number and origin-destination
+    SimilarSegmentCabinSetMap_T lSSCSM;
+
+    // Browsing the flight-date list
+    const stdair::FlightDateList_T& lFlightDateList =
+      stdair::BomManager::getList<stdair::FlightDate> (ioInventory);
+    for (stdair::FlightDateList_T::const_iterator itFD= lFlightDateList.begin();
+         itFD != lFlightDateList.end(); ++itFD) {
+      const stdair::FlightDate* lFD_ptr = *itFD;
+      assert (lFD_ptr != NULL);
+      const stdair::FlightNumber_T& lFlightNumber = lFD_ptr->getFlightNumber();
+
+      // Browsing the segment-date list and retrieve the departure
+      // date, the origine and the destination of the segment
+      const stdair::SegmentDateList_T& lSegmentDateList =
+        stdair::BomManager::getList<stdair::SegmentDate> (*lFD_ptr);
+      for (stdair::SegmentDateList_T::const_iterator itSD =
+             lSegmentDateList.begin(); itSD != lSegmentDateList.end(); ++itSD) {
+        const stdair::SegmentDate* lSD_ptr = *itSD;
+        assert (lSD_ptr != NULL);
+
+        const stdair::Date_T& lDepartureDate = lSD_ptr->getBoardingDate();
+        const stdair::AirportCode_T& lOrigin = lSD_ptr->getBoardingPoint();
+        const stdair::AirportCode_T& lDestination = lSD_ptr->getOffPoint();
+
+        // Browsing the segment-cabin list and retrieve the cabin code and
+        // build the corresponding key map.
+        const stdair::SegmentCabinList_T& lSegmentCabinList =
+          stdair::BomManager::getList<stdair::SegmentCabin> (*lSD_ptr);
+        for (stdair::SegmentCabinList_T::const_iterator itSC =
+               lSegmentCabinList.begin();
+             itSC != lSegmentCabinList.end(); ++itSC) {
           const stdair::SegmentCabin* lSC_ptr = *itSC;
           assert (lSC_ptr != NULL);
 
@@ -437,36 +596,6 @@ namespace AIRINV {
       lValueTypeIndexMap.insert (stdair::ValueTypeIndexMap_T::
                                  value_type (lFFMapKey.str(), lBlockIndex));
       ++lBlockIndex;
-
-      // Browse the booking class list
-      const stdair::BookingClassList_T& lBCList =
-        stdair::BomManager::getList<stdair::BookingClass>(*lFareFamily_ptr);
-      for (stdair::BookingClassList_T::const_iterator itBC= lBCList.begin();
-           itBC != lBCList.end(); ++itBC) {
-        const stdair::BookingClass* lBookingClass_ptr = *itBC;
-        assert (lBookingClass_ptr != NULL);
-        lValueTypeIndexMap.
-          insert (stdair::ValueTypeIndexMap_T::
-                  value_type(lBookingClass_ptr->describeKey(),lBlockIndex));
-        ++lBlockIndex;
-      }
-    }
-
-    // Build the flight-date index map
-    stdair::SegmentCabinIndexMap_T lSegmentCabinIndexMap;
-    stdair::BlockNumber_T lBlockNumber = 0;
-    for (; itDDSC != iDDSCMap.end(); ++itDDSC, ++lBlockNumber) {
-      const stdair::SegmentCabin* lCurrentSC_ptr = itDDSC->second;
-      assert (lCurrentSC_ptr != NULL);
-      lSegmentCabinIndexMap.
-        insert (stdair::SegmentCabinIndexMap_T::value_type (lCurrentSC_ptr,
-                                                            lBlockNumber));
-    }
-
-    // Initialise the guillotine block.
-    lGuillotineBlock.initSnapshotBlocks(lSegmentCabinIndexMap,
-                                        lValueTypeIndexMap);
-  }
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::initSnapshotEvents (const stdair::Date_T& iStartDate,
