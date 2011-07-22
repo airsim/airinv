@@ -250,6 +250,7 @@ AC_CONFIG_FILES(
 	airrac/command/Makefile
 	airrac/service/Makefile
 	airrac/config/Makefile
+	airrac/config/airrac-paths.hpp
 	airrac/core/Makefile
 	airrac/batches/Makefile
 	rmol/Makefile
@@ -258,8 +259,9 @@ AC_CONFIG_FILES(
 	rmol/factory/Makefile
 	rmol/command/Makefile
 	rmol/service/Makefile
-	rmol/core/Makefile
 	rmol/config/Makefile
+	rmol/config/rmol-paths.hpp
+	rmol/core/Makefile
 	rmol/batches/Makefile
 	airinv/Makefile
 	airinv/basic/Makefile
