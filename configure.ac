@@ -73,9 +73,6 @@ test "x$ax_cv_boost_date_time" != xno && enable_exceptions=yes
 # Set the data directory for AirInv
 pkgdatadir="${datadir}/airinv"
 AC_SUBST(pkgdatadir)
-# Set the directory for data samples exported by AirInv
-sampledir="${pkgdatadir}/samples"
-AC_SUBST(sampledir)
 
 # Check for info pages
 AC_ARG_ENABLE(info-doc, 
@@ -273,20 +270,21 @@ AC_CONFIG_FILES(
 	airinv/command/Makefile
 	airinv/service/Makefile
 	airinv/config/Makefile
+	airinv/config/airinv-paths.hpp
 	airinv/core/Makefile
 	airinv/batches/Makefile
 	airinv/server/Makefile
 	airinv/ui/Makefile
 	airinv/ui/cmdline/Makefile
 	man/Makefile
+	man/doxygen_man1.cfg
+	man/doxygen_man3.cfg
 	doc/Makefile
 	doc/images/Makefile
 	doc/tutorial/Makefile
 	doc/tutorial/src/Makefile
 	doc/local/Makefile
 	doc/doxygen_html.cfg
-	samples/Makefile
-	samples/RDS01/Makefile
 	test/Makefile
 	test/airrac/Makefile
 	test/rmol/Makefile

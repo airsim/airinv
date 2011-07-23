@@ -1,23 +1,23 @@
-# airinv/config
+# rmol/config
 include $(top_srcdir)/Makefile.common
 
 ## Source directory
 
-DISTCLEANFILES = airinv-paths.hpp
+DISTCLEANFILES = rmol-paths.hpp
 
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = airinv-paths.hpp
+EXTRA_DIST = rmol-paths.hpp
 
 # Targets
-all-local: airinv-paths.hpp
+all-local: rmol-paths.hpp
 
-airinv-paths.hpp: Makefile
-	@echo '#ifndef __AIRINV_PATHS_HPP' > $@
-	@echo '#define __AIRINV_PATHS_HPP' >> $@
+rmol-paths.hpp: Makefile
+	@echo '#ifndef __RMOL_PATHS_HPP' > $@
+	@echo '#define __RMOL_PATHS_HPP' >> $@
 	@echo >> $@
-	@echo '#define PACKAGE "airinv"' >> $@
-	@echo '#define PACKAGE_NAME "AIRINV"' >> $@
+	@echo '#define PACKAGE "rmol"' >> $@
+	@echo '#define PACKAGE_NAME "RMOL"' >> $@
 	@echo '#define PACKAGE_VERSION "@VERSION@"' >> $@
 	@echo '#define PREFIXDIR "$(prefix)"' >> $@
 	@echo '#define BINDIR "$(bindir)"' >> $@
@@ -26,6 +26,6 @@ airinv-paths.hpp: Makefile
 	@echo '#define DOCDIR "$(docdir)"' >> $@
 	@echo '#define STDAIR_SAMPLE_DIR "$(STDAIR_SAMPLE_DIR)"' >> $@
 	@echo >> $@
-	@echo '#endif // __AIRINV_PATHS_HPP' >> $@
+	@echo '#endif // __RMOL_PATHS_HPP' >> $@
 	@echo >> $@
 

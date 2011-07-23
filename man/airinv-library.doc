@@ -1,0 +1,42 @@
+/*!
+\page airinv-library
+	  C++ Simulated Airline Inventory Management System library
+
+\section sec_synopsis SYNOPSIS
+
+\code
+#include <airinv/...>
+\endcode
+
+\section sec_description DESCRIPTION
+
+AirInv is a C++ library of airline inventory management classes and
+functions, mainly targeting simulation purposes.
+
+AirInv makes an extensive use of existing open-source libraries for
+increased functionality, speed and accuracy. In particular the Boost
+(C++ Standard Extensions: http://www.boost.org) library is used.
+
+The library covers the following areas:
+- Inventory creation/dressing from a schedule
+- Distributed airline inventories
+- Codeshare and alliances
+
+\section sec_see_also SEE ALSO
+ \b airinv(1), \b airinv-config(1)
+
+
+\section sec_support SUPPORT
+
+Please report any bugs to https://sourceforge.net/apps/trac/airinv/report
+
+
+\section sec_copyright COPYRIGHT
+
+Copyright © 2009-2011 Denis Arnaud
+
+See the COPYING file for more information on the (LGPLv2+) license, or
+directly on Internet:<br>
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+*/
