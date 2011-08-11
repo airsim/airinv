@@ -246,9 +246,6 @@ BOOST_AUTO_TEST_CASE (rmol_forecaster) {
   // Initialise the RMOL service
   RMOL::RMOL_Service rmolService (lLogParams);
 
-  // Cabin capacity (it must be greater then 100 here)
-  const double lCabinCapacity = 100.0;
-
   // Build a sample BOM tree
   rmolService.buildSampleBom();
 
