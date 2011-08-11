@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE (rmol_forecaster) {
   const double lCabinCapacity = 100.0;
 
   // Build a sample BOM tree
-  rmolService.buildSampleBom (lCabinCapacity);
+  rmolService.buildSampleBom();
 
   // Register BCDataSet
   RMOL::BookingClassDataSet lBookingClassDataSet;
