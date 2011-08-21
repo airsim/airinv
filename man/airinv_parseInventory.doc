@@ -1,6 +1,6 @@
 /*!
-\page airinv
-	  Command-line interpreter for the C++ Simulated Airline Inventory Management System library
+\page airinv_parseInventory
+	  Command-line utility for the C++ Simulated Airline Inventory Management System library
 
 \section sec_synopsis SYNOPSIS
 
@@ -46,6 +46,15 @@
     Path (absolute or relative) of the (CSV) input file specifying the
     yield rule details.<br>
 
+ \b -k, \b --segment_date_key
+    Key of the segment on which the sell will be made.<br>
+
+ \b -c, \b --class_code
+    Booking class code on which the sell will be made.<br>
+
+ \b -p, \b --party_size
+    Size of the party booking on the given segment-date.<br>
+
  \b -l, \b --log <path-to-output-log-file><br>
     Path (absolute or relative) of the output log file.<br>
 
@@ -53,7 +62,7 @@ See the output of the <tt>`airinv --help'</tt> command for default options.
 
 
 \section sec_see_also SEE ALSO
-\b airinv_parseInventory(1), \b airinv-config(1), \b airinv-library(3)
+\b airinv(1), \b airinv-config(1), \b airinv-library(3)
 
 
 \section sec_support SUPPORT

@@ -1,7 +1,7 @@
 /*!
 
 \page airinv-config
-	Configuration Script for the C++ Simulated Airline Inventory Management System library
+	Configuration Script for the C++ Simulated Airline Inventory Management System Library
 
 \section sec_synopsis SYNOPSIS
 <b>airinv-config</b> <tt>[--prefix] [--version] [--libs] [--cflags]</tt>
@@ -17,11 +17,14 @@ macros, that are included with \e AirInv, for GNU autoconf.
 
 \e airinv-config accepts the following options:
 
+ \b --help<br>
+    Display this help and exit
+
+ \b --prefix<br>
+    Show the AirInv installation prefix.
+
  \b --version<br>
     Print the currently installed version of AirInv on the standard output.
-
- \b --sampledir<br>
-    Show where the (CSV) sample files are located.
 
  \b --libs<br>
     Print the linker flags that are necessary to link with the AirInv library.
@@ -30,11 +33,26 @@ macros, that are included with \e AirInv, for GNU autoconf.
     Print the compiler flags that are necessary to compile with the
     AirInv library.
 
- \b --prefix<br>
-    Show the AirInv installation prefix.
+ \b --sampledir<br>
+    Show where the (StdAir CSV) sample files are located.
+
+ \b --mandir<br>
+    Show where the manual pages are located.
+
+ \b --infodir<br>
+    Show where the information pages are located.
+
+ \b --docdir<br>
+    Show the documentation base directory.
+
+ \b --htmldocpath<br>
+    Show where the HTML documentation is located.
+
+ \b --refmanpath<br>
+    Show where the PDF documentation is located.
 
 \section sec_see_also SEE ALSO
- \b airinv(1), \b airinv-config(1), \b boost-config(1)
+\b airinv(1), \b airinv_parseInventory(1), \b airinv-library(3)
 
 \section sec_copyright COPYRIGHT
 
