@@ -86,7 +86,7 @@ int readConfiguration(int argc, char* argv[],
      "The cabin set up can be either built-in or parsed from an input file. That latter must then be given with the -i/--input option")
     ("input,i",
      boost::program_options::value< std::string >(&ioInputFilename)->default_value(K_RMOL_DEFAULT_INPUT_FILENAME),
-     "(CVS) input file for the demand distributions")
+     "(CSV) input file for the demand distribution parameters and resource (leg-cabin) capacities")
     ("log,l",
      boost::program_options::value< std::string >(&ioLogFilename)->default_value(K_RMOL_DEFAULT_LOG_FILENAME),
      "Filename for the logs")
@@ -237,29 +237,31 @@ int main (int argc, char* argv[]) {
   logOutputFile.open (lLogFilename.c_str());
   logOutputFile.clear();
 
-  // Initialise the list of classes/buckets
+  // Initialise the log stream
   const stdair::BasLogParams lLogParams (stdair::LOG::DEBUG, logOutputFile);
 
+  // Initialise the RMOL service
+  RMOL::RMOL_Service rmolService (lLogParams);
+
   if (isBuiltin == true) {
-    // No input file has been provided. So, process a sample.
-    RMOL::RMOL_Service rmolService (lLogParams, lCapacity);
-
     // DEBUG
-    STDAIR_LOG_DEBUG ("Please specify an input file!");
+    STDAIR_LOG_DEBUG ("No input file has been given."
+                      "A sample BOM tree will therefore be built.");
 
-    //
-    optimise (rmolService, lMethod, lRandomDraws);
+    // Build a sample BOM tree
+    rmolService.buildSampleBom();
 
   } else {
-    RMOL::RMOL_Service rmolService (lLogParams, lCapacity, lInputFilename);
-
     // DEBUG
-    STDAIR_LOG_DEBUG ("rmol will parse " << lInputFilename
+    STDAIR_LOG_DEBUG ("RMOL will parse " << lInputFilename
                       << " and build the corresponding BOM tree.");
 
     //
-    optimise (rmolService, lMethod, lRandomDraws);
+    rmolService.parseAndLoad (lCapacity, lInputFilename);
   }
+
+  // Launch the optimisation
+  optimise (rmolService, lMethod, lRandomDraws);
 
   //
   logOutputFile.close();

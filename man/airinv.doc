@@ -1,0 +1,72 @@
+/*!
+\page airinv
+	  Command-line interpreter for the C++ Simulated Airline Inventory Management System library
+
+\section sec_synopsis SYNOPSIS
+
+<b>airinv</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-i|--input <path-to-input>] [-l|--log <path-to-output-log-file>]</tt>
+
+\section sec_description DESCRIPTION
+
+\e airinv is a small program showing how to use the AirInv library.
+
+\e airinv accepts the following options:
+
+ \b --prefix<br>
+    Show the AirInv installation prefix.
+
+ \b -v, \b --version<br>
+    Print the currently installed version of AirInv on the standard output.
+
+ \b -h, \b --help<br>
+    Produce that message and show usage.
+
+ \b -b, \b --builtin<br>
+    The sample BOM tree can be either built-in or parsed from an input
+    file. That latter must then be given with either the -i/--inventory
+    option or the set of -s/--schedule, -o/--ond options.<br>
+
+ \b -f, \b --for_schedule<br>
+    The BOM tree should be built from a schedule file (instead of from
+    an inventory dump).<br>
+
+ \b -i, \b --inventory <path-to-input-file><br>
+    Path (absolute or relative) of the (CSV) input file specifying the
+    inventory (flight-date) details.<br>
+
+ \b -s, \b --schedule <path-to-input-file><br>
+    Path (absolute or relative) of the (CSV) input file specifying the
+    network/schedule (flight-period) details.<br>
+
+ \b -o, \b --ond <path-to-input-file><br>
+    Path (absolute or relative) of the (CSV) input file specifying the
+    O&D (origin/destination) details.<br>
+
+ \b -y, \b --yield <path-to-input-file><br>
+    Path (absolute or relative) of the (CSV) input file specifying the
+    yield rule details.<br>
+
+ \b -l, \b --log <path-to-output-log-file><br>
+    Path (absolute or relative) of the output log file.<br>
+
+See the output of the <tt>`airinv --help'</tt> command for default options.
+
+
+\section sec_see_also SEE ALSO
+\b airinv_parseInventory(1), \b airinv-config(1), \b airinv-library(3)
+
+
+\section sec_support SUPPORT
+
+Please report any bugs to https://sourceforge.net/apps/trac/airinv/report
+
+
+\section sec_copyright COPYRIGHT
+
+Copyright © 2009-2011 Denis Arnaud
+
+See the COPYING file for more information on the (LGPLv2+) license, or
+directly on Internet:<br>
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+*/

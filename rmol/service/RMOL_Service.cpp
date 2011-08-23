@@ -39,32 +39,7 @@ namespace RMOL {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  RMOL_Service::RMOL_Service (const stdair::BasLogParams& iLogParams,
-                              const stdair::BasDBParams& iDBParams,
-                              const stdair::CabinCapacity_T& iCabinCapacity,
-                              const stdair::Filename_T& iInputFileName) :
-    _rmolServiceContext (NULL) {
-
-    // Initialise the STDAIR service handler
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      initStdAirService (iLogParams, iDBParams);
-    
-    // Initialise the service context
-    initServiceContext();
-
-    // Add the StdAir service context to the RMOL service context
-    // \note RMOL owns the STDAIR service resources here.
-    const bool ownStdairService = true;
-    addStdAirService (lSTDAIR_Service_ptr, ownStdairService);
-
-    // Initialise the (remaining of the) context
-    initRmolService (iCabinCapacity, iInputFileName);
-  }
-
-  // ////////////////////////////////////////////////////////////////////
-  RMOL_Service::RMOL_Service (const stdair::BasLogParams& iLogParams,
-                              const stdair::CabinCapacity_T& iCabinCapacity,
-                              const stdair::Filename_T& iInputFileName) :
+  RMOL_Service::RMOL_Service (const stdair::BasLogParams& iLogParams) :
     _rmolServiceContext (NULL) {
 
     // Initialise the STDAIR service handler
@@ -80,13 +55,12 @@ namespace RMOL {
     addStdAirService (lSTDAIR_Service_ptr, ownStdairService);
 
     // Initialise the (remaining of the) context
-    initRmolService (iCabinCapacity, iInputFileName);
+    initRmolService();
   }
 
   // ////////////////////////////////////////////////////////////////////
   RMOL_Service::RMOL_Service (const stdair::BasLogParams& iLogParams,
-                              const stdair::BasDBParams& iDBParams,
-                              const stdair::CabinCapacity_T& iCabinCapacity) :
+                              const stdair::BasDBParams& iDBParams) :
     _rmolServiceContext (NULL) {
 
     // Initialise the STDAIR service handler
@@ -102,46 +76,7 @@ namespace RMOL {
     addStdAirService (lSTDAIR_Service_ptr, ownStdairService);
 
     // Initialise the (remaining of the) context
-    initRmolService (iCabinCapacity);
-  }
-
-  // ////////////////////////////////////////////////////////////////////
-  RMOL_Service::RMOL_Service (const stdair::BasLogParams& iLogParams,
-                              const stdair::CabinCapacity_T& iCabinCapacity) :
-    _rmolServiceContext (NULL) {
-
-    // Initialise the STDAIR service handler
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      initStdAirService (iLogParams);
-    
-    // Initialise the service context
-    initServiceContext();
-
-    // Add the StdAir service context to the RMOL service context
-    // \note RMOL owns the STDAIR service resources here.
-    const bool ownStdairService = true;
-    addStdAirService (lSTDAIR_Service_ptr, ownStdairService);
-
-    // Initialise the (remaining of the) context
-    initRmolService (iCabinCapacity);
-  }
-
-  // ////////////////////////////////////////////////////////////////////
-  RMOL_Service::RMOL_Service (stdair::STDAIR_ServicePtr_T ioSTDAIRServicePtr,
-                              const stdair::CabinCapacity_T& iCabinCapacity,
-                              const stdair::Filename_T& iInputFileName)
-    : _rmolServiceContext (NULL) {
-    
-    // Initialise the context
-    initServiceContext();
-    
-    // Add the StdAir service context to the RMOL service context.
-    // \note RMOL does not own the STDAIR service resources here.
-    const bool doesNotOwnStdairService = false;
-    addStdAirService (ioSTDAIRServicePtr, doesNotOwnStdairService);
-
-    // Initialise the (remaining of the) context
-    initRmolService (iCabinCapacity, iInputFileName);
+    initRmolService();
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -155,6 +90,9 @@ namespace RMOL {
     // \note RMOL does not own the STDAIR service resources here.
     const bool doesNotOwnStdairService = false;
     addStdAirService (ioSTDAIRServicePtr, doesNotOwnStdairService);
+
+    // Initialise the (remaining of the) context
+    initRmolService();
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -192,6 +130,23 @@ namespace RMOL {
                                             iOwnStdairService);
   }
 
+  // ////////////////////////////////////////////////////////////////////
+  stdair::STDAIR_ServicePtr_T RMOL_Service::
+  initStdAirService (const stdair::BasLogParams& iLogParams) {
+    
+    /**
+     * Initialise the STDAIR service handler.
+     *
+     * \note The (Boost.)Smart Pointer keeps track of the references
+     *       on the Service object, and deletes that object when it is
+     *       no longer referenced (e.g., at the end of the process).
+     */
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
+      boost::make_shared<stdair::STDAIR_Service> (iLogParams);
+    
+    return lSTDAIR_Service_ptr;
+  }
+
   // //////////////////////////////////////////////////////////////////////
   stdair::STDAIR_ServicePtr_T RMOL_Service::
   initStdAirService (const stdair::BasLogParams& iLogParams,
@@ -211,23 +166,6 @@ namespace RMOL {
   }
   
   // ////////////////////////////////////////////////////////////////////
-  stdair::STDAIR_ServicePtr_T RMOL_Service::
-  initStdAirService (const stdair::BasLogParams& iLogParams) {
-    
-    /**
-     * Initialise the STDAIR service handler.
-     *
-     * \note The (Boost.)Smart Pointer keeps track of the references
-     *       on the Service object, and deletes that object when it is
-     *       no longer referenced (e.g., at the end of the process).
-     */
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
-      boost::make_shared<stdair::STDAIR_Service> (iLogParams);
-    
-    return lSTDAIR_Service_ptr;
-  }
-
-  // ////////////////////////////////////////////////////////////////////
   void RMOL_Service::initRmolService() {
     // Do nothing at this stage. A sample BOM tree may be built by
     // calling the buildSampleBom() method
@@ -235,55 +173,75 @@ namespace RMOL {
 
   // ////////////////////////////////////////////////////////////////////
   void RMOL_Service::
-  initRmolService (const stdair::CabinCapacity_T& iCabinCapacity) {
-    // Build a dummy inventory with a leg-cabin which has the given capacity.
-    // The STDAIR-held BOM tree is altered correspondingly.
-    const bool isForDemo = true;
-    buildSampleBom (isForDemo, iCabinCapacity);
-  }
+  parseAndLoad (const stdair::CabinCapacity_T& iCabinCapacity,
+                const stdair::Filename_T& iInputFileName) {
 
-  // ////////////////////////////////////////////////////////////////////
-  void RMOL_Service::
-  initRmolService (const stdair::CabinCapacity_T& iCabinCapacity,
-                   const stdair::Filename_T& iInputFileName) {
-
-    // Build a dummy inventory with a leg-cabin which has the given capacity.
-    // The STDAIR-held BOM tree is altered correspondingly.
-    const bool isForDemo = true;
-    buildSampleBom (isForDemo, iCabinCapacity);
-
-    // Retrieve the BOM tree root
+    // Retrieve the RMOL service context
+    if (_rmolServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The RMOL service has not"
+                                                    " been initialised");
+    }
     assert (_rmolServiceContext != NULL);
     RMOL_ServiceContext& lRMOL_ServiceContext = *_rmolServiceContext;
+
+    // Retrieve the StdAir service object from the (RMOL) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lRMOL_ServiceContext.getSTDAIR_Service();
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
+
+    // Build a dummy inventory with a leg-cabin which has the given capacity.
+    lSTDAIR_Service.buildDummyInventory (iCabinCapacity);
 
     // Complete the BOM tree with the optimisation problem specification
     InventoryParser::parseInputFileAndBuildBom (iInputFileName, lBomRoot);
   }
   
   // ////////////////////////////////////////////////////////////////////
-  void RMOL_Service::
-  buildSampleBom (const bool isForDemo,
-                  const stdair::CabinCapacity_T iCabinCapacity) {
+  void RMOL_Service::buildSampleBom() {
 
-    // Retrieve the BOM tree root
+    // Retrieve the RMOL service context
+    if (_rmolServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The RMOL service has not"
+                                                    " been initialised");
+    }
     assert (_rmolServiceContext != NULL);
-    RMOL_ServiceContext& lRMOL_ServiceContext = *_rmolServiceContext;
 
-    // Retrieve the StdAir service
+    // Retrieve the RMOL service context and whether it owns the Stdair
+    // service
+    RMOL_ServiceContext& lRMOL_ServiceContext = *_rmolServiceContext;
+    const bool doesOwnStdairService =
+      lRMOL_ServiceContext.getOwnStdairServiceFlag();
+
+    // Retrieve the StdAir service object from the (RMOL) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lRMOL_ServiceContext.getSTDAIR_Service();
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
 
-    // Delegate the action to the dedicated command
-    if (isForDemo == true) {
-      stdair::CmdBomManager::buildSampleBomForRMOL (lBomRoot, iCabinCapacity);
-
-    } else {
-      stdair::CmdBomManager::buildSampleBom (lBomRoot);
+    /**
+     * 1. Have StdAir build the whole BOM tree, only when the StdAir service is
+     *    owned by the current component (RMOL here)
+     */
+    if (doesOwnStdairService == true) {
+      //
+      lSTDAIR_Service.buildSampleBom();
     }
+
+    /**
+     * 2. Delegate the complementary building of objects and links by the
+     *    appropriate levels/components
+     */
+    /**
+     * Let the revenue accounting (i.e., the AirRAC component) build the yields.
+    AIRRAC::AIRRAC_Service& lAIRRAC_Service =
+      lRMOL_ServiceContext.getAIRRAC_Service();
+    lAIRRAC_Service.buildSampleBom();
+     */
+
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
+     *    RMOL)
+     *
+     * \note As of now, no further action needs to be done at that stage.
+     */
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -353,17 +311,19 @@ namespace RMOL {
                       << lOptimisationMeasure);
     STDAIR_LOG_DEBUG ("Result: " << lLegCabin.displayVirtualClassList());
 
-    std::ostringstream logStream;
     stdair::BidPriceVector_T lBidPriceVector = lLegCabin.getBidPriceVector();
+    std::ostringstream logStream;
     logStream << "Bid-Price Vector (BPV): ";
-    const unsigned int size = lBidPriceVector.size();
-    
-    for (unsigned int i = 0; i < size - 1; ++i) {
-      const double bidPrice = lBidPriceVector.at(i);
-      logStream << std::fixed << std::setprecision (2) << bidPrice << ", ";
+    unsigned int idx = 0;
+    for (stdair::BidPriceVector_T::const_iterator itBP = lBidPriceVector.begin();
+         itBP != lBidPriceVector.end(); ++itBP) {
+      if (idx != 0) {
+        logStream << ", ";
+      }
+      const stdair::BidPrice_T& lBidPrice = *itBP;
+      logStream << std::fixed << std::setprecision (2) << lBidPrice;
     }
-    const double bidPrice = lBidPriceVector.at(size -1);
-    logStream << std::fixed << std::setprecision (2) << bidPrice;
+    // DEBUG
     STDAIR_LOG_DEBUG (logStream.str());
   }
 
@@ -407,19 +367,49 @@ namespace RMOL {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  bool RMOL_Service::optimise (stdair::FlightDate& ioFlightDate,
-                               const stdair::DateTime_T& iRMEventTime) {    
-    // Call the functions in the forecaster and the optimiser.
+  bool RMOL_Service::
+  optimise (stdair::FlightDate& ioFlightDate,
+            const stdair::DateTime_T& iRMEventTime,
+            const stdair::ForecastingMethod& iForecastingMethod) {    
     // DEBUG
     STDAIR_LOG_DEBUG ("Forecast");
-    bool isForecasted = Forecaster::forecast (ioFlightDate, iRMEventTime);
+
+    // 1. Forecast
+    bool isForecasted = false;
+    const stdair::ForecastingMethod::EN_ForecastingMethod& lForecastingMethod =
+      iForecastingMethod.getMethod();
+    switch (lForecastingMethod) {
+    case stdair::ForecastingMethod::ADD_PK: {
+      isForecasted = Forecaster::forecastUsingAdditivePickUp (ioFlightDate,
+                                                              iRMEventTime);
+      break;
+    }
+    case stdair::ForecastingMethod::MUL_PK: {
+      isForecasted =
+        Forecaster::forecastUsingMultiplicativePickUp (ioFlightDate,
+                                                       iRMEventTime);
+      break;
+    }
+    default: {
+      assert (false);
+      break;
+    }
+    }
+                                 
+    // DEBUG
     STDAIR_LOG_DEBUG ("Forecast successful: " << isForecasted);
+
+    // 2. Optimisation
     if (isForecasted == true) {
+      // DEBUG
       STDAIR_LOG_DEBUG ("Optimise");
+
       Optimiser::optimise (ioFlightDate);
       return true;
+
     } else {
       return false;
     }
   }
+
 }

@@ -7,8 +7,8 @@
 #include <boost/make_shared.hpp>
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
-#include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomKeyManager.hpp> 
+#include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
 #include <stdair/bom/FlightDate.hpp>
@@ -19,9 +19,9 @@
 #include <stdair/STDAIR_Service.hpp>
 // RMOL
 #include <rmol/RMOL_Service.hpp>
-// AIRRAC
+// AirRAC
 #include <airrac/AIRRAC_Service.hpp>
-// Airinv
+// AirInv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
 #include <airinv/command/ScheduleParser.hpp>
@@ -286,24 +286,83 @@ namespace AIRINV {
   }
   
   // ////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::buildSampleBom (const bool isForRMOL,
-                                       const stdair::CabinCapacity_T iCapacity){
+  void AIRINV_Service::buildSampleBom() {
 
-    // Retrieve the AIRINV service context
+    // Retrieve the AirInv service context
     if (_airinvServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException("The AirInv service has not "
                                                    "been initialised");
     }
     assert (_airinvServiceContext != NULL);
 
+    // Retrieve the AirInv service context and whether it owns the Stdair
+    // service
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
-  
-    // Retrieve the STDAIR service object from the (AIRINV) service context
+    const bool doesOwnStdairService =
+      lAIRINV_ServiceContext.getOwnStdairServiceFlag();
+
+    // Retrieve the StdAir service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
 
-    // Delegate the BOM building to the dedicated service
-    lSTDAIR_Service.buildSampleBom (isForRMOL, iCapacity);
+    /**
+     * 1. Have StdAir build the whole BOM tree, only when the StdAir service is
+     *    owned by the current component (AirSched here)
+     */
+    if (doesOwnStdairService == true) {
+      //
+      lSTDAIR_Service.buildSampleBom();
+    }
+
+    /**
+     * 2. Delegate the complementary building of objects and links by the
+     *    appropriate levels/components
+     * 
+     * \note: Currently, no more things to do by AirSched at that stage,
+     *        as there is no child
+     */
+    /**
+     * Let the revenue accounting (i.e., the AirRAC component) build the yields.
+     */
+    AIRRAC::AIRRAC_Service& lAIRRAC_Service =
+      lAIRINV_ServiceContext.getAIRRAC_Service();
+    lAIRRAC_Service.buildSampleBom();
+
+    /**
+     * Let the revenue management (i.e., the RMOL component) complement the BOM.
+     *
+     * \note As of now, RMOL does not add anything to the sample BOM.
+     */
+    RMOL::RMOL_Service& lRMOL_Service= lAIRINV_ServiceContext.getRMOL_Service();
+    lRMOL_Service.buildSampleBom();
+
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
+     *    AirSched)
+     *
+     *    AirSched has to build the network from the schedule.
+     *    \note: that operation is also invoked by the
+     *    ScheduleParser::generateInventories() in parseAndLoad().
+     */
+    /**
+     * 3.1. Create the routings for all the inventories.
+     *
+     * \note Those links must be directly be provided by the
+     *       stdair::CmdBomManager::buildSampleBom() method, as that latter
+     *       may also be called by non-Inventory-aware components
+     *       (e.g., AirRAC, AvlCal, SimFQT, TraDemGen, TravelCCM),
+     *       which therefore would not be able to build those links.
+     *
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
+    InventoryManager::createDirectAccesses (lBomRoot);
+     */
+
+    /**
+     * 3.2. Build the similar flight-date sets and the corresponding
+     * guillotine blocks.
+     */
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
+    InventoryManager::buildSimilarSegmentCabinSets (lBomRoot);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -331,6 +390,55 @@ namespace AIRINV {
   }
   
   // ////////////////////////////////////////////////////////////////////
+  std::string AIRINV_Service::
+  list (const stdair::AirlineCode_T& iAirlineCode,
+        const stdair::FlightNumber_T& iFlightNumber) const {
+    std::ostringstream oFlightListStr;
+
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInv service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+
+    // \todo Check that the current AIRINV_Service is actually operating for
+    //       the given airline
+
+    // Retrieve the STDAIR service object from the (AirInv) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service();
+
+    // Delegate the BOM display to the dedicated service
+    return lSTDAIR_Service.list (iAirlineCode, iFlightNumber);
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  bool AIRINV_Service::
+  check (const stdair::AirlineCode_T& iAirlineCode,
+         const stdair::FlightNumber_T& iFlightNumber,
+         const stdair::Date_T& iDepartureDate) const {
+    std::ostringstream oFlightListStr;
+
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInv service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+
+    // \todo Check that the current AIRINV_Service is actually operating for
+    //       the given airline
+
+    // Retrieve the STDAIR service object from the (AirInv) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service();
+
+    // Delegate the BOM display to the dedicated service
+    return lSTDAIR_Service.check (iAirlineCode, iFlightNumber, iDepartureDate);
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::csvDisplay() const {
 
     // Retrieve the AIRINV service context
@@ -342,7 +450,7 @@ namespace AIRINV {
 
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
   
-    // Retrieve the STDAIR service object from the (AIRINV) service context
+    // Retrieve the STDAIR service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
 
@@ -365,7 +473,7 @@ namespace AIRINV {
 
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
   
-    // Retrieve the STDAIR service object from the (AIRINV) service context
+    // Retrieve the STDAIR service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
 
@@ -386,13 +494,13 @@ namespace AIRINV {
     assert (_airinvServiceContext != NULL);
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
 
-    // TODO: Retrieve the corresponding inventory.
+    // \todo Retrieve the corresponding inventory
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
 
     stdair::RMEventList_T oRMEventList;
-    const stdair::InventoryList_T lInventoryList =
+    const stdair::InventoryList_T& lInventoryList =
       stdair::BomManager::getList<stdair::Inventory> (lBomRoot);
     for (stdair::InventoryList_T::const_iterator itInv = lInventoryList.begin();
          itInv != lInventoryList.end(); ++itInv) {
@@ -423,8 +531,7 @@ namespace AIRINV {
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
 
     // Delegate the booking to the dedicated command
-    stdair::BasChronometer lAvlChronometer;
-    lAvlChronometer.start();
+    stdair::BasChronometer lAvlChronometer; lAvlChronometer.start();
     InventoryManager::calculateAvailability (lBomRoot, ioTravelSolution);
     // const double lAvlMeasure = lAvlChronometer.elapsed();
 
@@ -437,6 +544,7 @@ namespace AIRINV {
   bool AIRINV_Service::sell (const std::string& iSegmentDateKey,
                              const stdair::ClassCode_T& iClassCode,
                              const stdair::PartySize_T& iPartySize) {
+    bool isSellSuccessful = false;
 
     if (_airinvServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The AirInv service "
@@ -445,28 +553,32 @@ namespace AIRINV {
     assert (_airinvServiceContext != NULL);
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
 
-    // Retrieve the corresponding inventory.
+    // \todo Check that the current AIRINV_Service is actually operating for
+    //       the given airline (inventory key)
+    // Retrieve the corresponding inventory key
+    const stdair::InventoryKey& lInventoryKey =
+      stdair::BomKeyManager::extractInventoryKey (iSegmentDateKey);
+
+    // Retrieve the root of the BOM tree
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
-    const stdair::InventoryKey lInventoryKey =
-      stdair::BomKeyManager::extractInventoryKey (iSegmentDateKey);
+
+    // Retrieve the corresponding inventory
     stdair::Inventory& lInventory = stdair::BomManager::
-      getObject<stdair::Inventory>(lBomRoot, lInventoryKey.toString());
+      getObject<stdair::Inventory> (lBomRoot, lInventoryKey.toString());
 
     // Delegate the booking to the dedicated command
-    stdair::BasChronometer lSellChronometer;
-    lSellChronometer.start();
-    const bool saleControl = 
-      InventoryManager::sell(lInventory, iSegmentDateKey,
-                             iClassCode, iPartySize);
+    stdair::BasChronometer lSellChronometer; lSellChronometer.start();
+    isSellSuccessful = InventoryManager::sell (lInventory, iSegmentDateKey,
+                                               iClassCode, iPartySize);
     // const double lSellMeasure = lSellChronometer.elapsed();
 
     // DEBUG
     // STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
-    //                   << lAIRINV_ServiceContext.display());
+    //                  << lAIRINV_ServiceContext.display());
 
-    return saleControl;
+    return isSellSuccessful;
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -499,7 +611,8 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::optimise (const stdair::AirlineCode_T& iAirlineCode,
                                  const stdair::KeyDescription_T& iFDDescription,
-                                 const stdair::DateTime_T& iRMEventTime) {
+                                 const stdair::DateTime_T& iRMEventTime,
+                                 const stdair::ForecastingMethod& iForecastingMethod) {
     if (_airinvServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The AirInv service "
                                                     "has not been initialised");
@@ -521,7 +634,8 @@ namespace AIRINV {
     RMOL::RMOL_Service& lRMOL_Service =lAIRINV_ServiceContext.getRMOL_Service();
 
     // Optimise the flight-date.
-    bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime);
+    bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
+                                               iForecastingMethod);
 
     // Update the inventory with the new controls.
     if (isOptimised == true) {

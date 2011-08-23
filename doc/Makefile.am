@@ -18,7 +18,6 @@ include $(top_srcdir)/airinv/server/sources.mk
 #
 include $(top_srcdir)/doc/local/sources.mk
 include $(top_srcdir)/doc/tutorial/sources.mk
-include $(top_srcdir)/doc/tutorial/src/sources.mk
 
 SUBDIRS = images tutorial local
 

@@ -73,9 +73,6 @@ test "x$ax_cv_boost_date_time" != xno && enable_exceptions=yes
 # Set the data directory for AirInv
 pkgdatadir="${datadir}/airinv"
 AC_SUBST(pkgdatadir)
-# Set the directory for data samples exported by AirInv
-sampledir="${pkgdatadir}/samples"
-AC_SUBST(sampledir)
 
 # Check for info pages
 AC_ARG_ENABLE(info-doc, 
@@ -169,7 +166,10 @@ AX_SOCI([3.0])
 # -----------------------------------------------------------------------------
 # Support for StdAir (): http://sf.net/projects/stdair
 # -----------------------------------------------------------------------------
-AM_PATH_STDAIR([0.10.0])
+AM_PATH_STDAIR([0.34.0])
+# Set the directory for data samples exported by StdAir
+sampledir="${STDAIR_SAMPLE_DIR}"
+AC_SUBST(sampledir)
 
 # -------------------------------------------------------------------
 # Support for documentation
@@ -250,6 +250,7 @@ AC_CONFIG_FILES(
 	airrac/command/Makefile
 	airrac/service/Makefile
 	airrac/config/Makefile
+	airrac/config/airrac-paths.hpp
 	airrac/core/Makefile
 	airrac/batches/Makefile
 	rmol/Makefile
@@ -258,8 +259,9 @@ AC_CONFIG_FILES(
 	rmol/factory/Makefile
 	rmol/command/Makefile
 	rmol/service/Makefile
-	rmol/core/Makefile
 	rmol/config/Makefile
+	rmol/config/rmol-paths.hpp
+	rmol/core/Makefile
 	rmol/batches/Makefile
 	airinv/Makefile
 	airinv/basic/Makefile
@@ -268,20 +270,20 @@ AC_CONFIG_FILES(
 	airinv/command/Makefile
 	airinv/service/Makefile
 	airinv/config/Makefile
+	airinv/config/airinv-paths.hpp
 	airinv/core/Makefile
 	airinv/batches/Makefile
 	airinv/server/Makefile
 	airinv/ui/Makefile
 	airinv/ui/cmdline/Makefile
 	man/Makefile
+	man/doxygen_man1.cfg
+	man/doxygen_man3.cfg
 	doc/Makefile
 	doc/images/Makefile
 	doc/tutorial/Makefile
-	doc/tutorial/src/Makefile
 	doc/local/Makefile
 	doc/doxygen_html.cfg
-	samples/Makefile
-	samples/RDS01/Makefile
 	test/Makefile
 	test/airrac/Makefile
 	test/rmol/Makefile
