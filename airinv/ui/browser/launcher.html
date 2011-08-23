@@ -66,11 +66,12 @@ body {
 
 <div id="container" style="width:800px;">
   <div id="header" style="background-image:url(assets/images/airsimheader2small.png); width:800px; height:163px">
-    <div id="effect" class="demo" style="width:310px; height:100px; padding:0px; background-image:none">
+    <div id="effect" class="demo" style="width:425px; height:100px; padding:0px; background-image:none">
     <h3 class="ui-widget-header ui-corner-all">Controls</h3>
 	<button>Launch Simulation</button>
-    <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Pause" />
-	<input type="submit" name="btnBeginSim" id="btnBeginSim" value="Dig In"  onClick="parent.location='http://ncevsediri-fed/localoriuser/dev/sim/airinvgit/airinv/ui/browser/airinv.html'"/>
+    <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Stop" disabled="disabled"/>
+	<input type="submit" name="btnBeginSim" id="btnBeginSim" value="Inventory"  onClick="parent.location='airinv.html'"/>
+	<input type="submit" name="btnBeginSim" id="btnBeginSim" value="Schedule"  onClick="parent.location='schedule.html'"/>
 	</div>
   <!-- end #header --></div>
   
@@ -102,7 +103,7 @@ body {
             </p>
             <p>Description: </br>
             <input type="text" id="breakpointDescription" value="Simulation will pause on the following date" style="width:300px"/></p>
-            <div class="demo"<p><input name="input" type="submit" value="Add Breakpoint" onclick="addBreakpoint()"/></p></div>
+            <div class="demo"><p><input name="input" type="submit" value="Add Breakpoint" onclick="addBreakpoint()"/></p></div>
 			</td>
         </tr>
       </table>
