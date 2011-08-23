@@ -183,7 +183,8 @@ Ext.define('subclasses', {
 	belongsTo: 'flightinfo'
 });
 
-	var url="http://ncevsediri-fed/api/display/inv/SV/5/2010-Mar-11";
+	// var url="http://ncevsediri-fed/api/display/inv/SV/5/2010-Mar-11";
+	var url="https://nceshaoril1/api/display/inv/SV/5/2010-Mar-11";
     var store_flights = Ext.create('Ext.data.Store', {
         model: 'flightinfo',
         proxy: {
