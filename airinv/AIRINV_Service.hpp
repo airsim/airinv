@@ -10,6 +10,7 @@
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/basic/ForecastingMethod.hpp>
+#include <stdair/basic/PartnershipTechnique.hpp>
 #include <stdair/bom/RMEventTypes.hpp>
 
 /// Forward declarations
@@ -134,7 +135,8 @@ namespace AIRINV {
     /**
      * Compute the availability for the given travel solution.
      */
-    void calculateAvailability (stdair::TravelSolutionStruct&);
+    void calculateAvailability (stdair::TravelSolutionStruct&,
+                                const stdair::PartnershipTechnique&);
 
     /**
      * Register a booking.
@@ -148,6 +150,18 @@ namespace AIRINV {
                const stdair::PartySize_T&);
 
     /**
+     * Register a cancellation.
+     *
+     * @param const std::string& Key for the segment on which the cancellation
+     *        is made
+     * @param const stdair::ClassCode_T& Class code where the sale is made
+     * @param const stdair::PartySize_T& Party size
+     * @return bool Whether or not the sale was successfull
+     */
+    bool cancel (const std::string& iSegmentDateKey, const stdair::ClassCode_T&,
+                 const stdair::PartySize_T&);
+
+    /**
      * Take inventory snapshots.
      */
     void takeSnapshots (const stdair::AirlineCode_T&,
@@ -159,8 +173,8 @@ namespace AIRINV {
     void optimise (const stdair::AirlineCode_T&,
                    const stdair::KeyDescription_T&,
                    const stdair::DateTime_T&,
-                   const stdair::ForecastingMethod&);
-
+                   const stdair::ForecastingMethod&,
+                   const stdair::PartnershipTechnique&);
 
   public:
     // //////////////// Export support methods /////////////////
@@ -177,7 +191,6 @@ namespace AIRINV {
     std::string jsonExport (const stdair::AirlineCode_T&,
                             const stdair::FlightNumber_T&,
                             const stdair::Date_T& iDepartureDate) const;
-
 
   public:
     // //////////////// Display support methods /////////////////

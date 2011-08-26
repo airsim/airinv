@@ -10,7 +10,9 @@
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/stdair_inventory_types.hpp>
+#include <stdair/stdair_maths_types.hpp>
 #include <stdair/basic/ForecastingMethod.hpp>
+#include <stdair/basic/PartnershipTechnique.hpp>
 
 /// Forward declarations
 namespace stdair {
@@ -134,7 +136,8 @@ namespace AIRINV {
     /**
      * Compute the availability for the given travel solution.
      */
-    void calculateAvailability (stdair::TravelSolutionStruct&);
+    void calculateAvailability (stdair::TravelSolutionStruct&,
+                                const stdair::PartnershipTechnique&);
 
     /**
      * Register a booking.
@@ -146,6 +149,17 @@ namespace AIRINV {
      */
     bool sell (const std::string& iSegmentDateKey, const stdair::ClassCode_T&,
                const stdair::PartySize_T&);
+    /**
+     * Register a cancellation.
+     *
+     * @param const std::string& Key for the segment on which the cancellation
+     *                   is made.
+     * @param const stdair::ClassCode_T& Class code where the sale is made.
+     * @param const stdair::PartySize_T& Party size.
+     * @return bool Whether or not the sale was successfull
+     */
+    bool cancel (const std::string& iSegmentDateKey, const stdair::ClassCode_T&,
+                 const stdair::PartySize_T&);
 
     /**
      * Take inventory snapshots.
@@ -156,7 +170,8 @@ namespace AIRINV {
      * Optimise (revenue management) an flight-date/network-date
      */
     void optimise (const stdair::RMEventStruct&,
-                   const stdair::ForecastingMethod&);    
+                   const stdair::ForecastingMethod&,
+                   const stdair::PartnershipTechnique&);    
 
 
   public:

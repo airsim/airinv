@@ -25,8 +25,6 @@ module_library_add_standard (".;basic;bom;factory;command;service" airrac rmol)
 #    module.
 module_binary_add (batches airinv_parseInventory)
 module_binary_add (ui/cmdline airinv)
-module_binary_add (server AirInvServer)
-module_binary_add (server AirInvClient)
 
 ##
 # Install the CMake import helper, so that third party projects can refer to it

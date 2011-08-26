@@ -3,6 +3,7 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <cassert>
+#include <cmath>
 // Boost
 #include <boost/make_shared.hpp>
 // StdAir
@@ -464,7 +465,8 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
-  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution) {
+  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution,
+                         const stdair::PartnershipTechnique& iPartnershipTechnique) {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext == NULL) {
@@ -485,7 +487,7 @@ namespace AIRINV {
     stdair::BasChronometer lAvlChronometer;
     lAvlChronometer.start();
 
-    lAIRINV_Service.calculateAvailability (ioTravelSolution);
+    lAIRINV_Service.calculateAvailability (ioTravelSolution, iPartnershipTechnique);
 
     // DEBUG
     // const double lAvlMeasure = lAvlChronometer.elapsed();
@@ -536,6 +538,48 @@ namespace AIRINV {
   }
 
   // ////////////////////////////////////////////////////////////////////
+  bool AIRINV_Master_Service::cancel (const std::string& iSegmentDateKey,
+                                      const stdair::ClassCode_T& iClassCode,
+                                      const stdair::PartySize_T& iPartySize) {
+
+    // Retrieve the AirInv Master service context
+    if (_airinvMasterServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvMasterServiceContext != NULL);
+
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;
+  
+    // Retrieve the corresponding inventory key
+    // const stdair::InventoryKey& lInventoryKey =
+    // stdair::BomKeyManager::extractInventoryKey (iSegmentDateKey);
+
+    // Retrieve the slave AirInv service object from the (AirInv Master)
+    // service context
+    AIRINV_Service& lAIRINV_Service =
+      lAIRINV_Master_ServiceContext.getAIRINV_Service();
+
+    // Delegate the booking to the dedicated command
+    stdair::BasChronometer lCancelChronometer;
+    lCancelChronometer.start();
+
+    // Delegate the BOM building to the dedicated service
+    const bool hasBeenSaleSuccessful =
+      lAIRINV_Service.cancel (iSegmentDateKey, iClassCode, iPartySize);
+
+    // const double lCancelMeasure = lCancelChronometer.elapsed();
+
+    // DEBUG
+    // STDAIR_LOG_DEBUG ("Booking cancel: " << lCancelMeasure << " - "
+    //                   << lAIRINV_Master_ServiceContext.display());
+
+    //
+    return hasBeenSaleSuccessful;
+  }
+
+  // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
   takeSnapshots (const stdair::SnapshotStruct& iSnapshot) {
 
@@ -564,7 +608,8 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
   optimise (const stdair::RMEventStruct& iRMEvent,
-            const stdair::ForecastingMethod& iForecastingMethod) {
+            const stdair::ForecastingMethod& iForecastingMethod,
+            const stdair::PartnershipTechnique& iPartnershipTechnique) {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext == NULL) {
@@ -588,6 +633,6 @@ namespace AIRINV {
       iRMEvent.getFlightDateDescription();
 
     lAIRINV_Service.optimise (lAirlineCode, lFDDescription, lRMEventTime,
-                              iForecastingMethod);
+                              iForecastingMethod, iPartnershipTechnique);
   }
 }
