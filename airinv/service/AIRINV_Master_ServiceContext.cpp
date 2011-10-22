@@ -6,27 +6,27 @@
 #include <sstream>
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
-#include <airinv/service/AIRINV_ServiceContext.hpp>
+#include <airinv/service/AIRINV_Master_ServiceContext.hpp>
 
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_ServiceContext::AIRINV_ServiceContext () {
+  AIRINV_Master_ServiceContext::AIRINV_Master_ServiceContext () {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  AIRINV_ServiceContext::~AIRINV_ServiceContext() {
+  AIRINV_Master_ServiceContext::~AIRINV_Master_ServiceContext() {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string AIRINV_ServiceContext::shortDisplay() const {
+  const std::string AIRINV_Master_ServiceContext::shortDisplay() const {
     std::ostringstream oStr;
-    oStr << "AIRINV_ServiceContext: " << std::endl;
+    oStr << "AIRINV_Master_ServiceContext: " << std::endl;
     return oStr.str();
   }
 
   // //////////////////////////////////////////////////////////////////////
-  const std::string AIRINV_ServiceContext::display() const {
+  const std::string AIRINV_Master_ServiceContext::display() const {
     std::ostringstream oStr;
     oStr << shortDisplay();
     return oStr.str();

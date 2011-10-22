@@ -11,6 +11,7 @@
 
 // Forward declarations
 namespace stdair {
+  class BomRoot;
   class Inventory;
   class FlightDate;
   class LegDate;
@@ -20,12 +21,12 @@ namespace stdair {
 
 namespace AIRINV {
   // Forward declarations
-  struct FlightDateStruct_T;
-  struct LegStruct_T;
-  struct LegCabinStruct_T;
-  struct SegmentStruct_T;
-  struct SegmentCabinStruct_T;
-  struct BookingClassStruct_T;
+  struct FlightDateStruct;
+  struct LegStruct;
+  struct LegCabinStruct;
+  struct SegmentStruct;
+  struct SegmentCabinStruct;
+  struct BookingClassStruct;
   namespace InventoryParserHelper {
     struct doEndFlightDate;
   }
@@ -38,35 +39,40 @@ namespace AIRINV {
     friend struct InventoryParserHelper::doEndFlightDate;
 
   private:
+    /** Build the inventory object corresponding to the given
+        FlightDateStruct, and add them to the given bom root. */
+    static void buildInventory (stdair::BomRoot&,
+                                const FlightDateStruct&);
+    
     /** Build the flight-date objects corresponding to the given
-        FlightDateStruct_T, and add them to the given nventory. */
+        FlightDateStruct, and add them to the given nventory. */
     static void buildFlightDate (stdair::Inventory&,
-                                 const FlightDateStruct_T&);
+                                 const FlightDateStruct&);
 
     /** Build the leg-date objects corresponding to the given
-        LegDateStruct_T, and add them to the given flight-date. */
+        LegDateStruct, and add them to the given flight-date. */
     static void buildLegDate (stdair::FlightDate&,
-                              const LegStruct_T&);
+                              const LegStruct&);
     
     /** Build the leg-cabin objects corresponding to the given
-        LegCabinStruct_T, and add them to the given leg-date. */
+        LegCabinStruct, and add them to the given leg-date. */
     static void buildLegCabin (stdair::LegDate&,
-                               const LegCabinStruct_T&);
+                               const LegCabinStruct&);
 
     /** Build the segment-date objects corresponding to the given
-        SegmentDateStruct_T, and add them to the given flight-date. */
+        SegmentDateStruct, and add them to the given flight-date. */
     static void buildSegmentDate (stdair::FlightDate&,
-                                  const SegmentStruct_T&);
+                                  const SegmentStruct&);
 
     /** Build the segment-cabin objects corresponding to the given
-        SegmentCabinStruct_T, and add them to the given segment-date. */
+        SegmentCabinStruct, and add them to the given segment-date. */
     static void buildSegmentCabin (stdair::SegmentDate&,
-                                   const SegmentCabinStruct_T&);
+                                   const SegmentCabinStruct&);
 
     /** Build the booking class objects corresponding to the given
-        BookingClassStruct_T, and add them to the given segment-cabin. */
+        BookingClassStruct, and add them to the given segment-cabin. */
     static void buildBookingClass (stdair::SegmentCabin&,
-                                   const BookingClassStruct_T&);
+                                   const BookingClassStruct&);
 
   };
 

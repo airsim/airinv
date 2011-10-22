@@ -5,43 +5,38 @@
 #include <cassert>
 #include <sstream>
 // StdAir
-#include <stdair/basic/BasConst_General.hpp>
+#include <stdair/basic/BasConst_Period_BOM.hpp>
 #include <stdair/service/Logger.hpp>
 // AIRINV
 #include <airinv/AIRINV_Types.hpp>
-#include <airinv/bom/FlightDateStruct.hpp>
+#include <airinv/bom/FlightPeriodStruct.hpp>
 
 namespace AIRINV {
 
-  // //////////////////////////////////////////////////////////////////////
-  FlightDateStruct::FlightDateStruct ()
-    : _flightDate (stdair::DEFAULT_DATE),
-      _flightTypeCode (FlightTypeCode::DOMESTIC),
-      _flightVisibilityCode (FlightVisibilityCode::NORMAL),
-      _itSeconds (0), _legAlreadyDefined (false) {
+  // ////////////////////////////////////////////////////////////////////
+  FlightPeriodStruct::FlightPeriodStruct ()
+    : _dateRange (stdair::BOOST_DEFAULT_DATE_PERIOD),
+      _dow (stdair::DEFAULT_DOW_STRING),
+      _legAlreadyDefined (false), _itSeconds (0) {
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  stdair::Date_T FlightDateStruct::getDate() const {
-    return stdair::Date_T (_itYear + 2000, _itMonth, _itDay);
+  // ////////////////////////////////////////////////////////////////////
+  stdair::Date_T FlightPeriodStruct::getDate() const {
+    return stdair::Date_T (_itYear, _itMonth, _itDay);
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  stdair::Duration_T FlightDateStruct::getTime() const {
+  // ////////////////////////////////////////////////////////////////////
+  stdair::Duration_T FlightPeriodStruct::getTime() const {
     return boost::posix_time::hours (_itHours)
       + boost::posix_time::minutes (_itMinutes)
       + boost::posix_time::seconds (_itSeconds);
   }
   
-  // //////////////////////////////////////////////////////////////////////
-  const std::string FlightDateStruct::describe() const {
+  // ////////////////////////////////////////////////////////////////////
+  const std::string FlightPeriodStruct::describe() const {
     std::ostringstream ostr;
-    ostr << _airlineCode << _flightNumber << ", " << _flightDate
-         << " (" << _flightTypeCode;
-    if (_flightVisibilityCode.getCode() != FlightVisibilityCode::NORMAL) {
-      ostr << "/" << _flightVisibilityCode;
-    }
-    ostr << ")" << std::endl;
+    ostr << _airlineCode << _flightNumber << ", " << _dateRange
+         << " - " << _dow << std::endl;
       
     for (LegStructList_T::const_iterator itLeg = _legList.begin();
          itLeg != _legList.end(); ++itLeg) {
@@ -63,8 +58,8 @@ namespace AIRINV {
     return ostr.str();
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct::addAirport (const stdair::AirportCode_T& iAirport) {
+  // ////////////////////////////////////////////////////////////////////
+  void FlightPeriodStruct::addAirport (const stdair::AirportCode_T& iAirport) {
     AirportList_T::const_iterator itAirport = _airportList.find (iAirport);
     if (itAirport == _airportList.end()) {
       // Add the airport code to the airport set
@@ -79,8 +74,8 @@ namespace AIRINV {
     }
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct::buildSegments () {
+  // ////////////////////////////////////////////////////////////////////
+  void FlightPeriodStruct::buildSegments () {
     // The list of airports encompasses all the airports on which
     // the flight takes off or lands. Moreover, that list is
     // time-ordered: the first airport is the initial departure of
@@ -111,8 +106,8 @@ namespace AIRINV {
     _airportOrderedList.clear();
   }
       
-  // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct::
+  // ////////////////////////////////////////////////////////////////////
+  void FlightPeriodStruct::
   addSegmentCabin (const SegmentStruct& iSegment,
                    const SegmentCabinStruct& iCabin) {
     // Retrieve the Segment structure corresponding to the (boarding, off) point
@@ -133,7 +128,7 @@ namespace AIRINV {
     // does not correspond to the leg (boarding, off) points, throw an exception
     // so that the user knows the schedule input file is corrupted.
     if (itSegment == _segmentList.end()) {
-      STDAIR_LOG_ERROR ("Within the inventory input file, there is a "
+      STDAIR_LOG_ERROR ("Within the schedule input file, there is a "
                         << "flight for which the airports of segments "
                         << "and those of the legs do not correspond.");
       throw SegmentDateNotFoundException();
@@ -145,12 +140,11 @@ namespace AIRINV {
     lSegment._cabinList.push_back (iCabin);
   }
     
-  // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct::
+  // ////////////////////////////////////////////////////////////////////
+  void FlightPeriodStruct::
   addSegmentCabin (const SegmentCabinStruct& iCabin) {
     // Iterate on all the Segment structures (as they get the same cabin
     // definitions)
-      
     for (SegmentStructList_T::iterator itSegment = _segmentList.begin();
          itSegment != _segmentList.end(); ++itSegment) {
       SegmentStruct& lSegment = *itSegment;
@@ -159,8 +153,8 @@ namespace AIRINV {
     }
   }
 
-  // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct::
+  // ////////////////////////////////////////////////////////////////////
+  void FlightPeriodStruct::
   addFareFamily (const SegmentStruct& iSegment,
                  const SegmentCabinStruct& iCabin,
                  const FareFamilyStruct& iFareFamily) {
@@ -207,7 +201,7 @@ namespace AIRINV {
     // so that the user knows the schedule input file is corrupted.
     if (itCabin == lSegment._cabinList.end()) {
       STDAIR_LOG_ERROR ("Within the schedule input file, there is a flight "
-                          << "for which the cabin code does not exist.");
+                        << "for which the cabin code does not exist.");
       throw SegmentDateNotFoundException();
     }
     // Add the Cabin structure to the Segment Cabin structure.
@@ -216,8 +210,8 @@ namespace AIRINV {
     lCabin._fareFamilies.push_back(iFareFamily);
   }
     
-  // //////////////////////////////////////////////////////////////////////
-  void FlightDateStruct::
+  // ////////////////////////////////////////////////////////////////////
+  void FlightPeriodStruct::
   addFareFamily (const SegmentCabinStruct& iCabin,
                  const FareFamilyStruct& iFareFamily) {
     // Iterate on all the Segment structures (as they get the same cabin

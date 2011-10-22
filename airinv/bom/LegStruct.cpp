@@ -13,12 +13,12 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  LegStruct_T::LegStruct_T ()
+  LegStruct::LegStruct ()
     : _boardingDate (stdair::DEFAULT_DATE), _offDate (stdair::DEFAULT_DATE) {
   }
     
   // //////////////////////////////////////////////////////////////////////
-  const std::string LegStruct_T::describe() const {
+  const std::string LegStruct::describe() const {
     std::ostringstream ostr;
     ostr << "    " << _boardingPoint << " / " << _boardingDate << " "
          << boost::posix_time::to_simple_string(_boardingTime)
@@ -29,7 +29,7 @@ namespace AIRINV {
          << std::endl;
     for (LegCabinStructList_T::const_iterator itCabin = _cabinList.begin();
          itCabin != _cabinList.end(); itCabin++) {
-      const LegCabinStruct_T& lCabin = *itCabin;
+      const LegCabinStruct& lCabin = *itCabin;
       ostr << lCabin.describe();
     }
     ostr << std::endl;
@@ -38,7 +38,24 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void LegStruct_T::fill (stdair::LegDate& ioLegDate) const {
+  void LegStruct::fill (const stdair::Date_T& iRefDate,
+                          stdair::LegDate& ioLegDate) const {
+    // Set the Off Point
+    ioLegDate.setOffPoint (_offPoint);
+    // Set the Boarding Date
+    ioLegDate.setBoardingDate (iRefDate + _boardingDateOffset);
+    // Set the Boarding Time
+    ioLegDate.setBoardingTime (_boardingTime);
+    // Set the Off Date
+    ioLegDate.setOffDate (iRefDate + _offDateOffset);
+    // Set the Off Time
+    ioLegDate.setOffTime (_offTime);
+    // Set the Elapsed Time
+    ioLegDate.setElapsedTime (_elapsed);
+  }
+
+  // //////////////////////////////////////////////////////////////////////
+  void LegStruct::fill (stdair::LegDate& ioLegDate) const {
     // Set the Off Point
     ioLegDate.setOffPoint (_offPoint);
     // Set the Boarding Date

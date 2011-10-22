@@ -21,7 +21,7 @@ namespace stdair {
 namespace AIRINV {
 
   /** Utility Structure for the parsing of BookingClass structures. */
-  struct BookingClassStruct_T : public stdair::StructAbstract {
+  struct BookingClassStruct : public stdair::StructAbstract {
     // Attributes
     stdair::ClassCode_T _classCode;
     stdair::SubclassCode_T _subclassCode;
@@ -53,11 +53,11 @@ namespace AIRINV {
     const std::string describe() const;
 
     /** Default Constructor. */
-    BookingClassStruct_T();
+    BookingClassStruct();
   };
 
   /** List of BookingClass structures. */
-  typedef std::vector<BookingClassStruct_T> BookingClassStructList_T;
+  typedef std::vector<BookingClassStruct> BookingClassStructList_T;
 
 }
 #endif // __AIRINV_BOM_BOOKINGCLASSSTRUCT_HPP

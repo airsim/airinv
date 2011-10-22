@@ -18,13 +18,13 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
 
     ParserSemanticAction::
-    ParserSemanticAction (FlightDateStruct_T& ioFlightDate)
+    ParserSemanticAction (FlightDateStruct& ioFlightDate)
       : _flightDate (ioFlightDate) {
     }      
 
     // //////////////////////////////////////////////////////////////////
     storeSnapshotDate::
-    storeSnapshotDate (FlightDateStruct_T& ioFlightDate)
+    storeSnapshotDate (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -36,7 +36,7 @@ namespace AIRINV {
       
     // //////////////////////////////////////////////////////////////////
     storeAirlineCode::
-    storeAirlineCode (FlightDateStruct_T& ioFlightDate)
+    storeAirlineCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -61,7 +61,7 @@ namespace AIRINV {
     }
       
     // //////////////////////////////////////////////////////////////////
-    storeFlightNumber::storeFlightNumber (FlightDateStruct_T& ioFlightDate)
+    storeFlightNumber::storeFlightNumber (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
 
@@ -71,7 +71,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeFlightDate::storeFlightDate (FlightDateStruct_T& ioFlightDate)
+    storeFlightDate::storeFlightDate (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -82,7 +82,7 @@ namespace AIRINV {
     }
       
     // //////////////////////////////////////////////////////////////////
-    storeFlightTypeCode::storeFlightTypeCode (FlightDateStruct_T& ioFlightDate)
+    storeFlightTypeCode::storeFlightTypeCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -97,7 +97,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeFlightVisibilityCode::
-    storeFlightVisibilityCode (FlightDateStruct_T& ioFlightDate)
+    storeFlightVisibilityCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -112,7 +112,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeLegBoardingPoint::
-    storeLegBoardingPoint (FlightDateStruct_T& ioFlightDate)
+    storeLegBoardingPoint (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
 
@@ -148,7 +148,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeLegOffPoint::
-    storeLegOffPoint (FlightDateStruct_T& ioFlightDate)
+    storeLegOffPoint (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
 
@@ -163,7 +163,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeBoardingDate::storeBoardingDate (FlightDateStruct_T& ioFlightDate)
+    storeBoardingDate::storeBoardingDate (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -174,7 +174,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeBoardingTime::storeBoardingTime (FlightDateStruct_T& ioFlightDate)
+    storeBoardingTime::storeBoardingTime (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -191,7 +191,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeOffDate::storeOffDate (FlightDateStruct_T& ioFlightDate)
+    storeOffDate::storeOffDate (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -201,7 +201,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeOffTime::storeOffTime (FlightDateStruct_T& ioFlightDate)
+    storeOffTime::storeOffTime (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -214,7 +214,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeLegCabinCode::storeLegCabinCode (FlightDateStruct_T& ioFlightDate)
+    storeLegCabinCode::storeLegCabinCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -243,7 +243,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeSaleableCapacity::
-    storeSaleableCapacity (FlightDateStruct_T& ioFlightDate)
+    storeSaleableCapacity (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -254,7 +254,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeAU::storeAU (FlightDateStruct_T& ioFlightDate)
+    storeAU::storeAU (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -265,7 +265,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeUPR::storeUPR (FlightDateStruct_T& ioFlightDate)
+    storeUPR::storeUPR (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -276,7 +276,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeBookingCounter::storeBookingCounter (FlightDateStruct_T& ioFlightDate)
+    storeBookingCounter::storeBookingCounter (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -287,7 +287,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeNAV::storeNAV (FlightDateStruct_T& ioFlightDate)
+    storeNAV::storeNAV (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -298,7 +298,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeGAV::storeGAV (FlightDateStruct_T& ioFlightDate)
+    storeGAV::storeGAV (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -309,7 +309,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeACP::storeACP (FlightDateStruct_T& ioFlightDate)
+    storeACP::storeACP (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -320,7 +320,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeETB::storeETB (FlightDateStruct_T& ioFlightDate)
+    storeETB::storeETB (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -331,7 +331,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeYieldUpperRange::storeYieldUpperRange(FlightDateStruct_T& ioFlightDate)
+    storeYieldUpperRange::storeYieldUpperRange(FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -351,7 +351,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeBucketAvaibality::
-    storeBucketAvaibality (FlightDateStruct_T& ioFlightDate)
+    storeBucketAvaibality (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -362,7 +362,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeSeatIndex::storeSeatIndex (FlightDateStruct_T& ioFlightDate)
+    storeSeatIndex::storeSeatIndex (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -374,7 +374,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeSegmentBoardingPoint::
-    storeSegmentBoardingPoint (FlightDateStruct_T& ioFlightDate)
+    storeSegmentBoardingPoint (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
 
@@ -421,7 +421,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeSegmentOffPoint::storeSegmentOffPoint (FlightDateStruct_T& ioFlightDate)
+    storeSegmentOffPoint::storeSegmentOffPoint (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
 
@@ -435,7 +435,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeSegmentCabinCode::
-    storeSegmentCabinCode (FlightDateStruct_T& ioFlightDate)
+    storeSegmentCabinCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -461,7 +461,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeSegmentCabinBookingCounter::
-    storeSegmentCabinBookingCounter (FlightDateStruct_T& ioFlightDate)
+    storeSegmentCabinBookingCounter (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -472,7 +472,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeClassCode::storeClassCode (FlightDateStruct_T& ioFlightDate)
+    storeClassCode::storeClassCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -491,7 +491,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeSubclassCode::storeSubclassCode (FlightDateStruct_T& ioFlightDate)
+    storeSubclassCode::storeSubclassCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -503,7 +503,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeParentClassCode::
-    storeParentClassCode (FlightDateStruct_T& ioFlightDate)
+    storeParentClassCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -515,7 +515,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeParentSubclassCode::
-    storeParentSubclassCode (FlightDateStruct_T& ioFlightDate)
+    storeParentSubclassCode (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -527,7 +527,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     storeCumulatedProtection::
-    storeCumulatedProtection (FlightDateStruct_T& ioFlightDate)
+    storeCumulatedProtection (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -538,7 +538,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeProtection::storeProtection (FlightDateStruct_T& ioFlightDate)
+    storeProtection::storeProtection (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -549,7 +549,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeNego::storeNego (FlightDateStruct_T& ioFlightDate)
+    storeNego::storeNego (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -560,7 +560,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeNoShow::storeNoShow (FlightDateStruct_T& ioFlightDate)
+    storeNoShow::storeNoShow (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -571,7 +571,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeOverbooking::storeOverbooking (FlightDateStruct_T& ioFlightDate)
+    storeOverbooking::storeOverbooking (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -582,7 +582,7 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    storeNbOfBkgs::storeNbOfBkgs (FlightDateStruct_T& ioFlightDate)
+    storeNbOfBkgs::storeNbOfBkgs (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -593,7 +593,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeNbOfGroupBkgs::storeNbOfGroupBkgs (FlightDateStruct_T& ioFlightDate)
+    storeNbOfGroupBkgs::storeNbOfGroupBkgs (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -604,7 +604,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeNbOfPendingGroupBkgs::storeNbOfPendingGroupBkgs(FlightDateStruct_T& ioFlightDate)
+    storeNbOfPendingGroupBkgs::storeNbOfPendingGroupBkgs(FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -615,7 +615,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeNbOfStaffBkgs::storeNbOfStaffBkgs (FlightDateStruct_T& ioFlightDate)
+    storeNbOfStaffBkgs::storeNbOfStaffBkgs (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -626,7 +626,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeNbOfWLBkgs::storeNbOfWLBkgs (FlightDateStruct_T& ioFlightDate)
+    storeNbOfWLBkgs::storeNbOfWLBkgs (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -637,7 +637,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeClassETB::storeClassETB (FlightDateStruct_T& ioFlightDate)
+    storeClassETB::storeClassETB (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -648,7 +648,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeClassAvailability::storeClassAvailability (FlightDateStruct_T& ioFlightDate)
+    storeClassAvailability::storeClassAvailability (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -659,7 +659,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeSegmentAvailability::storeSegmentAvailability (FlightDateStruct_T& ioFlightDate)
+    storeSegmentAvailability::storeSegmentAvailability (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -670,7 +670,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeRevenueAvailability::storeRevenueAvailability (FlightDateStruct_T& ioFlightDate)
+    storeRevenueAvailability::storeRevenueAvailability (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
     
@@ -681,7 +681,7 @@ namespace AIRINV {
     }
     
     // //////////////////////////////////////////////////////////////////
-    storeClasses::storeClasses (FlightDateStruct_T& ioFlightDate)
+    storeClasses::storeClasses (FlightDateStruct& ioFlightDate)
       : ParserSemanticAction (ioFlightDate) {
     }
 
@@ -705,10 +705,10 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
-    doEndFlightDate::doEndFlightDate (stdair::Inventory& ioInventory,
-                                      FlightDateStruct_T& ioFlightDate,
+    doEndFlightDate::doEndFlightDate (stdair::BomRoot& ioBomRoot,
+                                      FlightDateStruct& ioFlightDate,
                                       unsigned int& ioNbOfFlights)
-      : ParserSemanticAction (ioFlightDate), _inventory (ioInventory),
+      : ParserSemanticAction (ioFlightDate), _bomRoot (ioBomRoot),
         _nbOfFlights (ioNbOfFlights) {
     }
     
@@ -741,7 +741,7 @@ namespace AIRINV {
         //}
       
       // Build the FlightDate BOM objects
-      InventoryBuilder::buildFlightDate (_inventory, _flightDate);
+      InventoryBuilder::buildInventory (_bomRoot, _flightDate);
 
       ++_nbOfFlights;
     }
@@ -824,10 +824,10 @@ namespace AIRINV {
     // //////////////////////////////////////////////////////////////////
 
     // //////////////////////////////////////////////////////////////////
-    InventoryParser::InventoryParser (stdair::Inventory& ioInventory,
-                                      FlightDateStruct_T& ioFlightDate,
+    InventoryParser::InventoryParser (stdair::BomRoot& ioBomRoot,
+                                      FlightDateStruct& ioFlightDate,
                                       unsigned int& ioNbOfFlights) 
-      : _inventory (ioInventory), _flightDate (ioFlightDate),
+      : _bomRoot (ioBomRoot), _flightDate (ioFlightDate),
         _nbOfFlights (ioNbOfFlights) {
     }
 
@@ -844,7 +844,7 @@ namespace AIRINV {
       flight_date = flight_key
         >> leg_list
         >> segment_list
-        >> flight_date_end[doEndFlightDate (self._inventory, self._flightDate,
+        >> flight_date_end[doEndFlightDate (self._bomRoot, self._flightDate,
                                             self._nbOfFlights)]
         ;
 
@@ -1048,9 +1048,9 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   InventoryFileParser::
-  InventoryFileParser (stdair::Inventory& ioInventory,
+  InventoryFileParser (stdair::BomRoot& ioBomRoot,
                     const std::string& iFilename)
-    : _filename (iFilename), _inventory (ioInventory),
+    : _filename (iFilename), _bomRoot (ioBomRoot),
       _nbOfFlights (0) {
     init();
   }
@@ -1078,7 +1078,7 @@ namespace AIRINV {
     STDAIR_LOG_DEBUG ("Parsing inventory input file: " << _filename);
 
     // Initialise the parser (grammar) with the helper/staging structure.
-    InventoryParserHelper::InventoryParser lInventoryParser (_inventory,
+    InventoryParserHelper::InventoryParser lInventoryParser (_bomRoot,
                                                              _flightDate,
                                                              _nbOfFlights);
       

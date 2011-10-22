@@ -7,6 +7,7 @@ noinst_LTLIBRARIES = libairinvsvc.la
 
 libairinvsvc_la_SOURCES = $(airinv_svc_h_sources) $(airinv_svc_cc_sources) 
 libairinvsvc_la_CXXFLAGS = $(BOOST_CFLAGS) $(STDAIR_CFLAGS)
+libairinvsvc_la_LIBADD =
 libairinvsvc_la_LDFLAGS =
 
 #

@@ -11,6 +11,7 @@
 #include <stdair/basic/BasConst_Yield.hpp>
 #include <stdair/basic/BasConst_Inventory.hpp>
 #include <stdair/bom/BomManager.hpp>
+#include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
 #include <stdair/bom/FlightDate.hpp>
 #include <stdair/bom/SegmentDate.hpp>
@@ -25,11 +26,35 @@
 #include <airinv/command/InventoryBuilder.hpp>
 
 namespace AIRINV {
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryBuilder::
+  buildInventory (stdair::BomRoot& ioBomRoot,
+                  const FlightDateStruct& iFlightDateStruct) {
+    const stdair::AirlineCode_T& lAirlineCode = iFlightDateStruct._airlineCode;
+ 
+    // Instantiate an inventory object (if not exist)
+    // for the given key (airline code)
+    stdair::Inventory* lInventory_ptr = stdair::BomManager::
+      getObjectPtr<stdair::Inventory> (ioBomRoot, lAirlineCode);
+    if (lInventory_ptr == NULL) {
+      stdair::InventoryKey lKey (lAirlineCode);
+      lInventory_ptr =
+        &stdair::FacBom<stdair::Inventory>::instance().create (lKey);
+      stdair::FacBomManager::
+        instance().addToListAndMap (ioBomRoot, *lInventory_ptr);
+      stdair::FacBomManager::
+        instance().linkWithParent (ioBomRoot, *lInventory_ptr);
+    }
+    assert (lInventory_ptr != NULL);
+
+    // Build the flight-date within the inventory.
+    buildFlightDate (*lInventory_ptr, iFlightDateStruct);
+  }
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildFlightDate (stdair::Inventory& ioInventory,
-                   const FlightDateStruct_T& iFlightDateStruct) {
+                   const FlightDateStruct& iFlightDateStruct) {
     // Create the FlightDateKey
     const stdair::FlightDateKey lFlightDateKey (iFlightDateStruct._flightNumber,
                                                 iFlightDateStruct._flightDate);
@@ -38,14 +63,16 @@ namespace AIRINV {
     // flight-date object with the same key has already been created,
     // then just update it, ifnot, create a flight-date and update it.
     stdair::FlightDate* lFlightDate_ptr = stdair::BomManager::
-      getChildPtr<stdair::FlightDate> (ioInventory, lFlightDateKey.toString());
+      getObjectPtr<stdair::FlightDate> (ioInventory, lFlightDateKey.toString());
     if (lFlightDate_ptr == NULL) {
       // Instantiate a flighy-date object for the given key (flight number and
       // flight date)
       lFlightDate_ptr =
-        &stdair::FacBomManager::create<stdair::FlightDate> (lFlightDateKey);
-      stdair::FacBomManager::addToListAndMap (ioInventory, *lFlightDate_ptr);
-      stdair::FacBomManager::linkWithParent (ioInventory, *lFlightDate_ptr);
+        &stdair::FacBom<stdair::FlightDate>::instance().create (lFlightDateKey);
+      stdair::FacBomManager::instance().addToListAndMap (ioInventory, 
+                                                         *lFlightDate_ptr);
+      stdair::FacBomManager::instance().linkWithParent (ioInventory, 
+                                                        *lFlightDate_ptr);
     }
     assert (lFlightDate_ptr != NULL);
 
@@ -56,7 +83,7 @@ namespace AIRINV {
     for (LegStructList_T::const_iterator itLegDate =
            iFlightDateStruct._legList.begin();
          itLegDate != iFlightDateStruct._legList.end(); ++itLegDate) {
-      const LegStruct_T& lCurrentLegDateStruct = *itLegDate;
+      const LegStruct& lCurrentLegDateStruct = *itLegDate;
       buildLegDate (*lFlightDate_ptr, lCurrentLegDateStruct);
     }
 
@@ -64,7 +91,7 @@ namespace AIRINV {
            iFlightDateStruct._segmentList.begin();
          itSegmentDate != iFlightDateStruct._segmentList.end();
          ++itSegmentDate) {
-      const SegmentStruct_T& lCurrentSegmentDateStruct = *itSegmentDate;
+      const SegmentStruct& lCurrentSegmentDateStruct = *itSegmentDate;
       buildSegmentDate (*lFlightDate_ptr, lCurrentSegmentDateStruct);
     }
   }
@@ -72,19 +99,21 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildLegDate (stdair::FlightDate& ioFlightDate,
-                const LegStruct_T& iLegDateStruct) {
+                const LegStruct& iLegDateStruct) {
     // Check that the leg-date object is not already existing. If a
     // leg-date object with the same key has already been created,
     // then just update it, ifnot, create a leg-date and update it.
     stdair::LegDate* lLegDate_ptr = stdair::BomManager::
-      getChildPtr<stdair::LegDate> (ioFlightDate, iLegDateStruct._boardingPoint);
+      getObjectPtr<stdair::LegDate>(ioFlightDate, iLegDateStruct._boardingPoint);
 
     if (lLegDate_ptr == NULL) {
       // Instantiate a leg-date object for the given key (boarding point);
       stdair::LegDateKey lKey (iLegDateStruct._boardingPoint);
-      lLegDate_ptr = &stdair::FacBomManager::create<stdair::LegDate> (lKey);
-      stdair::FacBomManager::addToListAndMap (ioFlightDate, *lLegDate_ptr);
-      stdair::FacBomManager::linkWithParent (ioFlightDate, *lLegDate_ptr);
+      lLegDate_ptr = &stdair::FacBom<stdair::LegDate>::instance().create (lKey);
+      stdair::FacBomManager::instance().addToListAndMap (ioFlightDate, 
+                                                         *lLegDate_ptr);
+      stdair::FacBomManager::instance().linkWithParent (ioFlightDate, 
+                                                        *lLegDate_ptr);
     }
     assert (lLegDate_ptr != NULL);
 
@@ -95,7 +124,7 @@ namespace AIRINV {
     for (LegCabinStructList_T::const_iterator itLegCabin =
            iLegDateStruct._cabinList.begin();
          itLegCabin != iLegDateStruct._cabinList.end(); ++itLegCabin) {
-      const LegCabinStruct_T& lCurrentLegCabinStruct = *itLegCabin;
+      const LegCabinStruct& lCurrentLegCabinStruct = *itLegCabin;
       buildLegCabin (*lLegDate_ptr, lCurrentLegCabinStruct);
     }
   }
@@ -103,18 +132,20 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildLegCabin (stdair::LegDate& ioLegDate,
-                 const LegCabinStruct_T& iLegCabinStruct) {
+                 const LegCabinStruct& iLegCabinStruct) {
     // Check that the leg-cabin object is not already existing. If a
     // leg-cabin object with the same key has already been created,
     // then just update it, ifnot, create a leg-cabin and update it.
     stdair::LegCabin* lLegCabin_ptr = stdair::BomManager::
-      getChildPtr<stdair::LegCabin> (ioLegDate, iLegCabinStruct._cabinCode);
+      getObjectPtr<stdair::LegCabin> (ioLegDate, iLegCabinStruct._cabinCode);
     if (lLegCabin_ptr == NULL) {
       // Instantiate a leg-cabin object for the given key (cabin code);
       stdair::LegCabinKey lKey (iLegCabinStruct._cabinCode);
-      lLegCabin_ptr = &stdair::FacBomManager::create<stdair::LegCabin> (lKey);
-      stdair::FacBomManager::addToListAndMap (ioLegDate, *lLegCabin_ptr);
-      stdair::FacBomManager::linkWithParent (ioLegDate, *lLegCabin_ptr);
+      lLegCabin_ptr = &stdair::FacBom<stdair::LegCabin>::instance().create(lKey);
+      stdair::FacBomManager::instance().addToListAndMap (ioLegDate, 
+                                                         *lLegCabin_ptr);
+      stdair::FacBomManager::instance().linkWithParent (ioLegDate, 
+                                                        *lLegCabin_ptr);
     }
     assert (lLegCabin_ptr != NULL);
 
@@ -126,7 +157,7 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildSegmentDate (stdair::FlightDate& ioFlightDate,
-                    const SegmentStruct_T& iSegmentDateStruct) {
+                    const SegmentStruct& iSegmentDateStruct) {
     // Check that the segment-date object is not already existing. If a
     // segment-date object with the same key has already been created,
     // then just update it, ifnot, create a segment-date and update it.
@@ -134,14 +165,16 @@ namespace AIRINV {
       lSegmentDateKey (iSegmentDateStruct._boardingPoint,
                        iSegmentDateStruct._offPoint);
     stdair::SegmentDate* lSegmentDate_ptr = stdair::BomManager::
-      getChildPtr<stdair::SegmentDate> (ioFlightDate,lSegmentDateKey.toString());
+      getObjectPtr<stdair::SegmentDate> (ioFlightDate,lSegmentDateKey.toString());
     if (lSegmentDate_ptr == NULL) {
       // Instantiate a segment-date object for the given key (boarding
       // and off points);
-      lSegmentDate_ptr = 
-        &stdair::FacBomManager::create<stdair::SegmentDate> (lSegmentDateKey);
-    stdair::FacBomManager::addToListAndMap (ioFlightDate, *lSegmentDate_ptr);
-    stdair::FacBomManager::linkWithParent (ioFlightDate, *lSegmentDate_ptr);
+      lSegmentDate_ptr =  &stdair::FacBom<stdair::SegmentDate>::
+        instance().create (lSegmentDateKey);
+      stdair::FacBomManager::instance().addToListAndMap (ioFlightDate, 
+                                                         *lSegmentDate_ptr);
+      stdair::FacBomManager::instance().linkWithParent (ioFlightDate,
+                                                        *lSegmentDate_ptr);
     }
     assert (lSegmentDate_ptr != NULL);
 
@@ -154,7 +187,7 @@ namespace AIRINV {
            iSegmentDateStruct._cabinList.begin();
          itSegmentCabin != iSegmentDateStruct._cabinList.end(); 
          ++itSegmentCabin) {
-      const SegmentCabinStruct_T& lCurrentSegmentCabinStruct = *itSegmentCabin;
+      const SegmentCabinStruct& lCurrentSegmentCabinStruct = *itSegmentCabin;
       buildSegmentCabin (*lSegmentDate_ptr, lCurrentSegmentCabinStruct);
     }
   }
@@ -162,20 +195,22 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildSegmentCabin (stdair::SegmentDate& ioSegmentDate,
-                     const SegmentCabinStruct_T& iSegmentCabinStruct) {
+                     const SegmentCabinStruct& iSegmentCabinStruct) {
     // Check that the segment-cabin object is not already existing. If a
     // segment-cabin object with the same key has already been created,
     // then just update it, ifnot, create a segment-cabin and update it.
     stdair::SegmentCabin* lSegmentCabin_ptr = stdair::BomManager::
-      getChildPtr<stdair::SegmentCabin> (ioSegmentDate,
+      getObjectPtr<stdair::SegmentCabin> (ioSegmentDate,
                                          iSegmentCabinStruct._cabinCode);
     if (lSegmentCabin_ptr == NULL) {
       // Instantiate a segment-cabin object for the given key (cabin code);
       stdair::SegmentCabinKey lKey (iSegmentCabinStruct._cabinCode);
       lSegmentCabin_ptr = 
-        &stdair::FacBomManager::create<stdair::SegmentCabin> (lKey);
-    stdair::FacBomManager::addToListAndMap (ioSegmentDate, *lSegmentCabin_ptr);
-    stdair::FacBomManager::linkWithParent (ioSegmentDate, *lSegmentCabin_ptr);
+        &stdair::FacBom<stdair::SegmentCabin>::instance().create (lKey);
+      stdair::FacBomManager::instance().addToListAndMap (ioSegmentDate, 
+                                                         *lSegmentCabin_ptr);
+      stdair::FacBomManager::instance().linkWithParent (ioSegmentDate, 
+                                                        *lSegmentCabin_ptr);
     }
     assert (lSegmentCabin_ptr != NULL);
 
@@ -188,7 +223,7 @@ namespace AIRINV {
            iSegmentCabinStruct._classList.begin();
          itBookingClass != iSegmentCabinStruct._classList.end(); 
          ++itBookingClass) {
-      const BookingClassStruct_T& lCurrentBookingClassStruct = *itBookingClass;
+      const BookingClassStruct& lCurrentBookingClassStruct = *itBookingClass;
       buildBookingClass (*lSegmentCabin_ptr, lCurrentBookingClassStruct);
     }
   }
@@ -196,22 +231,22 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryBuilder::
   buildBookingClass (stdair::SegmentCabin& ioSegmentCabin,
-                     const BookingClassStruct_T& iBookingClassStruct){
+                     const BookingClassStruct& iBookingClassStruct){
     // Check that the booking class object is not already existing. If a
     // booking-class object with the same key has already been created,
     // then just upcabin it, ifnot, create a booking-class and upcabin it.
     stdair::BookingClass* lBookingClass_ptr = stdair::BomManager::
-      getChildPtr<stdair::BookingClass> (ioSegmentCabin,
+      getObjectPtr<stdair::BookingClass> (ioSegmentCabin,
                                          iBookingClassStruct._classCode);
     if (lBookingClass_ptr == NULL) {
       // Instantiate a booking class object for the given key (class code);
       const stdair::BookingClassKey lClassKey (iBookingClassStruct._classCode);
       lBookingClass_ptr = 
-        &stdair::FacBomManager::create<stdair::BookingClass> (lClassKey);
-      stdair::FacBomManager::addToListAndMap (ioSegmentCabin,
-                                              *lBookingClass_ptr);
-      stdair::FacBomManager::linkWithParent (ioSegmentCabin,
-                                             *lBookingClass_ptr);
+        &stdair::FacBom<stdair::BookingClass>::instance().create (lClassKey);
+      stdair::FacBomManager::instance().addToListAndMap (ioSegmentCabin,
+                                                         *lBookingClass_ptr);
+      stdair::FacBomManager::instance().linkWithParent (ioSegmentCabin,
+                                                        *lBookingClass_ptr);
     }
     assert (lBookingClass_ptr != NULL);
 

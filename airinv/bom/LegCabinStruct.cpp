@@ -12,7 +12,7 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  const std::string LegCabinStruct_T::describe() const {
+  const std::string LegCabinStruct::describe() const {
     std::ostringstream ostr;
     ostr << "        " << _cabinCode << ", " << _saleableCapacity
          << ", " << _adjustment  << ", " << _dcsRegrade
@@ -25,7 +25,7 @@ namespace AIRINV {
 
     for (BucketStructList_T::const_iterator itBucket = _bucketList.begin();
          itBucket != _bucketList.end(); ++itBucket) {
-      const BucketStruct_T& lBucket = *itBucket;
+      const BucketStruct& lBucket = *itBucket;
       ostr << lBucket.describe();
     }
     if (_bucketList.empty() == false) {
@@ -35,7 +35,7 @@ namespace AIRINV {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  void LegCabinStruct_T::fill (stdair::LegCabin& ioLegCabin) const {
+  void LegCabinStruct::fill (stdair::LegCabin& ioLegCabin) const {
     // Set the Capacity
     ioLegCabin.setCapacities (_saleableCapacity);
   }

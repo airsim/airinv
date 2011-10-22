@@ -14,13 +14,13 @@
 namespace AIRINV {
 
   /** Utility Structure for the parsing of fare family details. */
-  struct FareFamilyStruct_T : public stdair::StructAbstract {
+  struct FareFamilyStruct : public stdair::StructAbstract {
     // Attributes
     stdair::FamilyCode_T _familyCode;
     stdair::ClassList_String_T _classes;
 
     /** Constructors. */
-    FareFamilyStruct_T (const stdair::FamilyCode_T&,
+    FareFamilyStruct (const stdair::FamilyCode_T&,
                         const stdair::ClassList_String_T&);
       
     /** Give a description of the structure (for display purposes). */
@@ -28,7 +28,7 @@ namespace AIRINV {
   };
 
   /** List of FareFamily-Detail structures. */
-  typedef std::vector<FareFamilyStruct_T> FareFamilyStructList_T;
+  typedef std::vector<FareFamilyStruct> FareFamilyStructList_T;
 
 }
 #endif // __AIRINV_BOM_FAREFAMILYSTRUCT_HPP

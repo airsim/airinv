@@ -1,5 +1,5 @@
-#ifndef __AIRINV_SVC_AIRINVSERVICECONTEXT_HPP
-#define __AIRINV_SVC_AIRINVSERVICECONTEXT_HPP
+#ifndef __AIRINV_SVC_AIRINVMASTERSERVICECONTEXT_HPP
+#define __AIRINV_SVC_AIRINVMASTERSERVICECONTEXT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -16,23 +16,33 @@
 #include <airinv/service/ServiceAbstract.hpp>
 
 namespace AIRINV {
+  class AIRINV_Service;
+
+  /** Pointer on the AIRINV Service handler. */
+  typedef boost::shared_ptr<AIRINV_Service> AIRINV_ServicePtr_T;
+
+  /** Typedef which defines a map of airline codes and the corresponding
+      airline inventories. */
+  typedef std::map<const stdair::AirlineCode_T,
+                   AIRINV_ServicePtr_T> AIRINV_ServicePtr_Map_T;
 
   /** Class holding the context of the Airinv services. */
-  class AIRINV_ServiceContext : public ServiceAbstract {
-    /** The AIRINV_Service class should be the sole class to get access to
+  class AIRINV_Master_ServiceContext : public ServiceAbstract {
+    /** The AIRINV_Master_Service class should be the sole class to get access to
         ServiceContext content: general users do not want to bother
         with a context interface. */
-    friend class AIRINV_Service;
-    friend class FacAirinvServiceContext;
+    friend class AIRINV_Master_Service;
+    friend class FacAirinvMasterServiceContext;
 
   private:
     /// //////////////// Constructors and destructors /////////////
-    /** Main constructor. */
-    AIRINV_ServiceContext ();
+    /** Default constructor. */
+    AIRINV_Master_ServiceContext ();
     /** Default copy constructor (not to be used). */
-    AIRINV_ServiceContext (const AIRINV_ServiceContext&);
+    AIRINV_Master_ServiceContext (const AIRINV_Master_ServiceContext&);
+
     /** Destructor. */
-    ~AIRINV_ServiceContext();
+    ~AIRINV_Master_ServiceContext();
 
 
   private:
@@ -48,18 +58,29 @@ namespace AIRINV {
       return *_stdairService;
     }
     
+    /** Get a reference on the AIRINV service handler which corresponds to
+        the given airline code. */
+    AIRINV_ServicePtr_T getAIRINV_Service () const {
+      return _airinvService;
+    }
+    
     // ///////////////// Setters ///////////////////
     /** Set the pointer on the STDAIR service handler. */
     void setSTDAIR_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_ServicePtr) {
       _stdairService = ioSTDAIR_ServicePtr;
     }
 
+    /** Set the pointer on the AIRINV service handler. */
+    void setAIRINV_Service (AIRINV_ServicePtr_T ioAIRINV_ServicePtr) {
+      _airinvService = ioAIRINV_ServicePtr;
+    }
+    
   private:
     // //////////////////// Display Methods /////////////////////
-    /** Display the short AIRINV_ServiceContext content. */
+    /** Display the short AIRINV_Master_ServiceContext content. */
     const std::string shortDisplay() const;
     
-    /** Display the full AIRINV_ServiceContext content. */
+    /** Display the full AIRINV_Master_ServiceContext content. */
     const std::string display() const;
     
     
@@ -67,7 +88,13 @@ namespace AIRINV {
     // /////////////// Children ///////////////
     /** Standard Airline (StdAir) Service Handler. */
     stdair::STDAIR_ServicePtr_T _stdairService;
+
+    
+  private:
+    // //////////// Attributes //////////////////
+    /** Airline Inventory Service Handler map. */
+    AIRINV_ServicePtr_T _airinvService;
   };
 
 }
-#endif // __AIRINV_SVC_AIRINVSERVICECONTEXT_HPP
+#endif // __AIRINV_SVC_AIRINVMASTERSERVICECONTEXT_HPP

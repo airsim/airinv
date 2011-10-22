@@ -12,7 +12,7 @@
 namespace AIRINV {
     
   // //////////////////////////////////////////////////////////////////////
-  const std::string SegmentCabinStruct_T::describe() const {
+  const std::string SegmentCabinStruct::describe() const {
     std::ostringstream ostr;
     ostr << "        " << _cabinCode;
 
@@ -25,7 +25,7 @@ namespace AIRINV {
 
     for (FareFamilyStructList_T::const_iterator itFF = _fareFamilies.begin();
          itFF != _fareFamilies.end(); ++itFF) {
-      const FareFamilyStruct_T& lFF = *itFF;
+      const FareFamilyStruct& lFF = *itFF;
       ostr << lFF.describe();
     }
     if (_fareFamilies.empty() == false) {
@@ -34,7 +34,7 @@ namespace AIRINV {
 
     for (BookingClassStructList_T::const_iterator itBkgClass= _classList.begin();
          itBkgClass != _classList.end(); ++itBkgClass) {
-      const BookingClassStruct_T& lBkgClass = *itBkgClass;
+      const BookingClassStruct& lBkgClass = *itBkgClass;
       ostr << lBkgClass.describe();
     }
     if (_classList.empty() == false) {
@@ -45,7 +45,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void SegmentCabinStruct_T::fill (stdair::SegmentCabin& ioSegmentCabin) const {
+  void SegmentCabinStruct::fill (stdair::SegmentCabin& ioSegmentCabin) const {
     // Set the total number of bookings
     // ioSegmentCabin.setNbOfBookings (_nbOfBookings);
   }

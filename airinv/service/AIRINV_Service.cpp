@@ -20,6 +20,7 @@
 // Airinv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
+#include <airinv/command/ScheduleParser.hpp>
 #include <airinv/command/InventoryParser.hpp>
 #include <airinv/command/InventoryManager.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
@@ -40,56 +41,14 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::
-  AIRINV_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr,
-                  const stdair::AirlineCode_T& iAirlineCode)
-    : _airinvServiceContext (NULL) {
-
-    // Retrieve the Inventory object, at the root of the BOM tree, on
-    // which all of the other BOM objects of the airline inventory will be
-    // attached
-    assert (ioSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = ioSTDAIR_Service_ptr->getBomRoot();
-    stdair::Inventory& lInventory =
-      stdair::BomManager::getChild<stdair::Inventory> (lBomRoot, iAirlineCode);
-    // Initialise the service context
-    initServiceContext (iAirlineCode, lInventory);
-
-    // Retrieve the AirInv service context
-    assert (_airinvServiceContext != NULL);
-    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
-    
-    // Store the STDAIR service object within the (AIRINV) service context
-    lAIRINV_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr);
-    
-    // Initialise the context
-    init ();
-  }
-
-  // //////////////////////////////////////////////////////////////////////
-  AIRINV_Service::
-  AIRINV_Service (const stdair::BasLogParams& iLogParams,
-                  const stdair::BasDBParams& iDBParams,
-                  const stdair::AirlineCode_T& iAirlineCode,
-                  const stdair::Filename_T& iInventoryInputFilename)
+  AIRINV_Service (const stdair::Filename_T& iInventoryInputFilename)
     : _airinvServiceContext (NULL) {
     
     // Initialise the STDAIR service handler
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      initStdAirService (iLogParams, iDBParams);
-    
-    // Create an Inventory object, at the root of the BOM tree, and on
-    // which all of the other BOM objects of the airline inventory will be
-    // attached
-    assert (lSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
-    stdair::InventoryKey lKey (iAirlineCode);
-    stdair::Inventory& lInventory =
-      stdair::FacBomManager::create<stdair::Inventory> (lKey);
-    stdair::FacBomManager::addToListAndMap (lBomRoot, lInventory);
-    stdair::FacBomManager::linkWithParent (lBomRoot, lInventory);
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = initStdAirService ();
     
     // Initialise the service context
-    initServiceContext (iAirlineCode, lInventory);
+    initServiceContext ();
 
     // Add the StdAir service context to the AIRINV service context
     addStdAirService (lSTDAIR_Service_ptr);
@@ -100,34 +59,21 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::
-  AIRINV_Service (const stdair::BasLogParams& iLogParams,
-                  const stdair::AirlineCode_T& iAirlineCode,
-                  const stdair::Filename_T& iInventoryInputFilename)
+  AIRINV_Service (const stdair::Filename_T& iScheduleInputFilename,
+                  const stdair::Filename_T& iODInputFilename)
     : _airinvServiceContext (NULL) {
     
     // Initialise the STDAIR service handler
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      initStdAirService (iLogParams);
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = initStdAirService ();
     
-    // Create an Inventory object, at the root of the BOM tree, and on
-    // which all of the other BOM objects of the airline inventory will be
-    // attached
-    assert (lSTDAIR_Service_ptr != NULL);
-    const stdair::BomRoot& lBomRoot = lSTDAIR_Service_ptr->getBomRoot();
-    stdair::InventoryKey lKey (iAirlineCode);
-    stdair::Inventory& lInventory =
-      stdair::FacBomManager::create<stdair::Inventory> (lKey);
-    stdair::FacBomManager::addToListAndMap (lBomRoot, lInventory);
-    stdair::FacBomManager::linkWithParent (lBomRoot, lInventory);
-
     // Initialise the service context
-    initServiceContext (iAirlineCode, lInventory);
-    
+    initServiceContext ();
+
     // Add the StdAir service context to the AIRINV service context
     addStdAirService (lSTDAIR_Service_ptr);
     
     // Initialise the (remaining of the) context
-    init (iInventoryInputFilename);
+    init (iScheduleInputFilename, iODInputFilename);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -137,12 +83,10 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::
-  initServiceContext (const stdair::AirlineCode_T& iAirlineCode,
-                      stdair::Inventory& ioInventory) {
+  void AIRINV_Service::initServiceContext () {
     // Initialise the context
     AIRINV_ServiceContext& lAIRINV_ServiceContext = 
-      FacAirinvServiceContext::instance().create (iAirlineCode, ioInventory);
+      FacAirinvServiceContext::instance().create ();
     _airinvServiceContext = &lAIRINV_ServiceContext;
   }
 
@@ -159,34 +103,15 @@ namespace AIRINV {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  stdair::STDAIR_ServicePtr_T AIRINV_Service::
-  initStdAirService (const stdair::BasLogParams& iLogParams,
-                     const stdair::BasDBParams& iDBParams) {
+  stdair::STDAIR_ServicePtr_T AIRINV_Service::initStdAirService () {
 
     // Initialise the STDAIR service handler
     // Note that the track on the object memory is kept thanks to the Boost
     // Smart Pointers component.
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
-      boost::make_shared<stdair::STDAIR_Service> (iLogParams, iDBParams);
+      boost::make_shared<stdair::STDAIR_Service> ();
     
     return lSTDAIR_Service_ptr;
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  stdair::STDAIR_ServicePtr_T AIRINV_Service::
-  initStdAirService (const stdair::BasLogParams& iLogParams) {
-
-    // Initialise the STDAIR service handler
-    // Note that the track on the object memory is kept thanks to the Boost
-    // Smart Pointers component.
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr = 
-      boost::make_shared<stdair::STDAIR_Service> (iLogParams);
-
-    return lSTDAIR_Service_ptr;
-  }
-  
-  // //////////////////////////////////////////////////////////////////////
-  void AIRINV_Service::init () {
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -201,14 +126,46 @@ namespace AIRINV {
       throw stdair::FileNotFoundException();
     }
 
+    // Retrieve the bom root object.
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service ();
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot ();
+    
+    // Initialise the airline inventories
+    InventoryParser::buildInventory (iInventoryInputFilename, lBomRoot);
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::
+  init (const stdair::Filename_T& iScheduleInputFilename,
+        const stdair::Filename_T& iODInputFilename) {
+    // Check that the file path given as input corresponds to an actual file
+    bool doesExistAndIsReadable =
+      stdair::BasFileMgr::doesExistAndIsReadable (iScheduleInputFilename);
+    if (doesExistAndIsReadable == false) {
+      STDAIR_LOG_ERROR ("The inventory input file, '" << iScheduleInputFilename
+                        << "', can not be retrieved on the file-system");
+      throw stdair::FileNotFoundException();
+    }
+    doesExistAndIsReadable =
+      stdair::BasFileMgr::doesExistAndIsReadable (iODInputFilename);
+    if (doesExistAndIsReadable == false) {
+      STDAIR_LOG_ERROR ("The inventory input file, '" << iODInputFilename
+                        << "', can not be retrieved on the file-system");
+      throw stdair::FileNotFoundException();
+    }
+
     // Retrieve the inventory object.
     assert (_airinvServiceContext != NULL);
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
-    stdair::Inventory& lInventory = lAIRINV_ServiceContext.getInventory();
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service ();
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot ();
     
-    // Initialise the airline inventory
-    InventoryParser::buildInventory (iInventoryInputFilename, lInventory);
-
+    // Initialise the airline inventories
+    ScheduleParser::generateInventories (iScheduleInputFilename, lBomRoot);
   }
   
   // //////////////////////////////////////////////////////////////////////
@@ -229,15 +186,12 @@ namespace AIRINV {
 
     try {
       
-      // Retrieve the airline inventory
-      stdair::Inventory& lInventory =
-        lAIRINV_ServiceContext.getInventory();
-      
       // Delegate the booking to the dedicated command
       stdair::BasChronometer lSellChronometer;
       lSellChronometer.start();
-      bool saleControl = InventoryManager::sell (lInventory, iSegmentDateKey,
-                                                 iClassCode, iPartySize);
+      bool saleControl = true;
+      //InventoryManager::sell (lInventory, iSegmentDateKey,
+      //iClassCode, iPartySize);
       const double lSellMeasure = lSellChronometer.elapsed();
       
       // DEBUG

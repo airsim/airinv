@@ -18,6 +18,10 @@ namespace AIRINV {
   class FlightDateHelper {
   public:
     // ////////// Business Methods /////////
+    /** Fill the attributes derived from the routing legs (e.g., board
+        and off dates). */
+    static void fillFromRouting (const stdair::FlightDate&);
+
     /** Update the availability pool of all the segment-cabins after a
         reservation. */
     static void updateAvailablityPool (const stdair::FlightDate&,

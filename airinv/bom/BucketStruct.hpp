@@ -21,7 +21,7 @@ namespace stdair {
 namespace AIRINV {
 
   /** Utility Structure for the parsing of Bucket structures. */
-  struct BucketStruct_T : public stdair::StructAbstract {
+  struct BucketStruct : public stdair::StructAbstract {
     // Attributes
     stdair::Yield_T _yieldRangeUpperValue;
     stdair::CabinCapacity_T _availability;
@@ -35,11 +35,11 @@ namespace AIRINV {
     const std::string describe() const;
 
     /** Default Constructor. */
-    BucketStruct_T();
+    BucketStruct();
   };
 
   /** List of Bucket structures. */
-  typedef std::vector<BucketStruct_T> BucketStructList_T;
+  typedef std::vector<BucketStruct> BucketStructList_T;
 
 }
 #endif // __AIRINV_BOM_BUCKETSTRUCT_HPP

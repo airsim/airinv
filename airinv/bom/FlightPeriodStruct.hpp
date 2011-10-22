@@ -1,21 +1,18 @@
-#ifndef __AIRINV_BOM_FLIGHTDATESTRUCT_HPP
-#define __AIRINV_BOM_FLIGHTDATESTRUCT_HPP
+#ifndef __AIRINV_BOM_FLIGHTPERIODSTRUCT_HPP
+#define __AIRINV_BOM_FLIGHTPERIODSTRUCT_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <string>
-// StdAir
+// STDAIR
 #include <stdair/STDAIR_Types.hpp>
 #include <stdair/basic/StructAbstract.hpp>
 #include <stdair/bom/DoWStruct.hpp>
-// AirInv
-#include <airinv/basic/FlightTypeCode.hpp>
-#include <airinv/basic/FlightVisibilityCode.hpp>
-#include <airinv/bom/LegStruct.hpp>
+// AIRINV
 #include <airinv/bom/LegCabinStruct.hpp>
-#include <airinv/bom/BucketStruct.hpp>
+#include <airinv/bom/LegStruct.hpp>
 #include <airinv/bom/SegmentStruct.hpp>
 #include <airinv/bom/SegmentCabinStruct.hpp>
 #include <airinv/bom/FareFamilyStruct.hpp>
@@ -23,8 +20,8 @@
 
 namespace AIRINV {
 
-  /** Utility Structure for the parsing of Flight-Date structures. */
-  struct FlightDateStruct : public stdair::StructAbstract {
+  /** Utility Structure for the parsing of Flight-Period structures. */
+  struct FlightPeriodStruct : public stdair::StructAbstract {
     
     /** Set the date from the staging details. */
     stdair::Date_T getDate() const;
@@ -64,7 +61,8 @@ namespace AIRINV {
         <br>Note that the SegmentCabin structure is retrieved from the internal
         list, already filled by a previous step (the buildSegmentCabins()
         method). */
-    void addFareFamily (const SegmentStruct&, const SegmentCabinStruct&,
+    void addFareFamily (const SegmentStruct&,
+                        const SegmentCabinStruct&,
                         const FareFamilyStruct&);
       
     /** Add, to all the Segment structures, the general fare family sets
@@ -72,25 +70,33 @@ namespace AIRINV {
         <br>Note that the SegmentCabin structures are stored within the internal
         list, already filled by a previous step (the buildSegmentCabins()
         method). */
-    void addFareFamily (const SegmentCabinStruct&, const FareFamilyStruct&);
+    void addFareFamily (const SegmentCabinStruct&,
+                        const FareFamilyStruct&);
       
     /** Constructor. */
-    FlightDateStruct ();
+    FlightPeriodStruct ();
 
     // Attributes
     stdair::AirlineCode_T _airlineCode;
     stdair::FlightNumber_T _flightNumber;
-    stdair::Date_T _flightDate;
-    FlightTypeCode _flightTypeCode;
-    FlightVisibilityCode _flightVisibilityCode;
+    stdair::DatePeriod_T _dateRange;
+    stdair::DoWStruct _dow;
     LegStructList_T _legList;
     SegmentStructList_T _segmentList;
 
+    /** Staging Leg (resp. Cabin) structure, gathering the result of
+        the iteration on one leg (resp. cabin). */
+    bool _legAlreadyDefined;
+    LegStruct _itLeg;
+    LegCabinStruct _itLegCabin;
+
     /** Staging Date. */
+    stdair::Date_T _dateRangeStart;
+    stdair::Date_T _dateRangeEnd;
     unsigned int _itYear;
     unsigned int _itMonth;
     unsigned int _itDay;
-    int _dateOffSet;
+    int _dateOffset;
       
     /** Staging Time. */
     long _itHours;
@@ -102,19 +108,11 @@ namespace AIRINV {
     AirportList_T _airportList;
     AirportOrderedList_T _airportOrderedList;
 
-    /** Staging Leg (resp. Cabin) structure, gathering the result of
-        the iteration on one leg (resp. cabin). */
-    bool _legAlreadyDefined;
-    LegStruct _itLeg;
-    LegCabinStruct _itLegCabin;
-    BucketStruct _itBucket;
-
     /** Staging Segment-related attributes. */
     bool _areSegmentDefinitionsSpecific;
     SegmentStruct _itSegment;
     SegmentCabinStruct _itSegmentCabin;
-    BookingClassStruct _itBookingClass;
   };
 
 }
-#endif // __AIRINV_BOM_FLIGHTDATESTRUCT_HPP
+#endif // __AIRINV_BOM_FLIGHTPERIODSTRUCT_HPP

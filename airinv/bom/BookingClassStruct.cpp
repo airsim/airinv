@@ -13,18 +13,18 @@
 namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
-  BookingClassStruct_T::BookingClassStruct_T () {
+  BookingClassStruct::BookingClassStruct () {
   }
   
   // //////////////////////////////////////////////////////////////////////
-  stdair::ClassCode_T BookingClassStruct_T::getFullSubclassCode() const {
+  stdair::ClassCode_T BookingClassStruct::getFullSubclassCode() const {
     std::ostringstream oStr;
     oStr << _classCode << _subclassCode;
     return oStr.str();
   }
   
   // //////////////////////////////////////////////////////////////////////
-  const std::string BookingClassStruct_T::describe() const {
+  const std::string BookingClassStruct::describe() const {
     std::ostringstream ostr;
     ostr << "            " << _classCode << _subclassCode
          << " (" << _parentClassCode << _parentSubclassCode << ")"
@@ -41,7 +41,7 @@ namespace AIRINV {
   }
 
   // //////////////////////////////////////////////////////////////////////
-  void BookingClassStruct_T::fill (stdair::BookingClass& ioBookingClass) const {
+  void BookingClassStruct::fill (stdair::BookingClass& ioBookingClass) const {
     // Set the Yield Range Upper Value
     // ioBookingClass.setYieldRangeValue (_yieldRangeUpperValue);
 

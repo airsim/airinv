@@ -12,8 +12,24 @@
 #include <stdair/bom/LegCabin.hpp>
 // AIRINV
 #include <airinv/bom/FlightDateHelper.hpp>
+#include <airinv/bom/SegmentDateHelper.hpp>
 
 namespace AIRINV {
+  // ////////////////////////////////////////////////////////////////////
+  void FlightDateHelper::fillFromRouting (const stdair::FlightDate& iFlightDate){
+    const stdair::SegmentDateList_T& lSegmentDateList =
+      stdair::BomManager::getList<stdair::SegmentDate> (iFlightDate);
+
+    // Browse the list of segment-dates and update each segment-date.
+    for (stdair::SegmentDateList_T::const_iterator itSegmentDate =
+           lSegmentDateList.begin();
+         itSegmentDate != lSegmentDateList.end(); ++itSegmentDate) {
+      stdair::SegmentDate* lCurrentSegmentDate_ptr = *itSegmentDate;
+      assert (lCurrentSegmentDate_ptr != NULL);
+      SegmentDateHelper::fillFromRouting (*lCurrentSegmentDate_ptr);
+    }
+  }
+
   // ////////////////////////////////////////////////////////////////////
   void FlightDateHelper::
   updateAvailablityPool (const stdair::FlightDate& iFlightDate,
@@ -26,8 +42,8 @@ namespace AIRINV {
       const stdair::SegmentDate* lSegmentDate_ptr = *itSegmentDate;
       assert (lSegmentDate_ptr != NULL);
       stdair::SegmentCabin& lSegmentCabin =
-        stdair::BomManager::getChild<stdair::SegmentCabin> (*lSegmentDate_ptr,
-                                                            iCabinCode);
+        stdair::BomManager::getObject<stdair::SegmentCabin> (*lSegmentDate_ptr,
+                                                             iCabinCode);
 
       // Update the availability pool of the segment-cabin to the minimal
       // availability pool of the member leg-cabins.
