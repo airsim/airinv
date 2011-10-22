@@ -30,11 +30,22 @@ then
 fi
 
 rm -f config.cache acconfig.h
+if [ ! -d config ]
+then
+	echo "Create a config sub-directory."
+	mkdir -p config
+fi
+
 
 echo "- autoreconf."     	&& \
 autoreconf -fvi          	&& \
-echo "- configure."		&& \
-./configure "$@"		&& exit 0
+echo "" && \
+echo "Now, the configuration script has to be run. For instance:" && \
+echo "mkdir -p tmp && cd tmp && ../configure --prefix=/home/user/dev/deliveries/airinv-0.3.0 \\" && \
+echo " --with-stdair=/home/user/dev/deliveries/stdair-stable --srcdir=.." && \
+echo "" && exit 0
+
+#echo "- configure."		&& ./configure "$@"		&& exit 0
 
 exit 1
 

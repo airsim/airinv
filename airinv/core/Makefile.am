@@ -21,4 +21,6 @@ libairinv_la_LIBADD = \
 	$(top_builddir)/airinv/service/libairinvsvc.la
 libairinv_la_LDFLAGS = \
 	$(BOOST_DATE_TIME_LIB) $(BOOST_PROGRAM_OPTIONS_LIB) $(STDAIR_LIBS) \
+	$(top_builddir)/rmol/core/librmol.la \
+	$(top_builddir)/airrac/core/libairrac.la \
 	-version-info $(GENERIC_LIBRARY_VERSION)

@@ -13,6 +13,7 @@
 // AIRINV
 #include <airinv/bom/FlightDateHelper.hpp>
 #include <airinv/bom/SegmentDateHelper.hpp>
+#include <airinv/bom/SegmentCabinHelper.hpp>
 
 namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_basic_types.hpp>
 // AirInv
 #include <airinv/server/Connection.hpp>
 #include <airinv/server/RequestHandler.hpp>

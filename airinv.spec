@@ -2,10 +2,10 @@
 %global mydocs __tmp_docdir
 #
 Name:           airinv
-Version:        0.2.0
+Version:        0.3.0
 Release:        1%{?dist}
 
-Summary:        C++ library providing a clean API for parsing travel-focused requests
+Summary:        C++ Simulated Airline Inventory Management System library
 
 Group:          System Environment/Libraries 
 License:        LGPLv2
@@ -13,12 +13,7 @@ URL:            http://sourceforge.net/projects/%{name}/
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
 %{?el5:BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)}
 
-BuildRequires:  boost-devel
-BuildRequires:  openmpi-devel
-BuildRequires:  soci-mysql-devel
-# When the extracc package will part of stdair, remove the following line
-# (see https://bugzilla.redhat.com/show_bug.cgi?id=616881 for more details)
-BuildRequires:  extracc-devel
+BuildRequires:  boost-devel, openmpi-devel, soci-mysql-devel, zeromq-devel
 BuildRequires:  stdair-devel
 
 %description
@@ -70,24 +65,17 @@ find . -type f -name '*.[hc]pp' -exec chmod 644 {} \;
 make %{?_smp_mflags}
 
 %install
-# On Fedora, the BuildRoot is automatically cleaned. Which is not the case for
-# RedHat. See: https://fedoraproject.org/wiki/Packaging/Guidelines#BuildRoot_tag
-%{?rhel:rm -rf $RPM_BUILD_ROOT}
-
-make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
 
 # Remove unpackaged files from the buildroot
 rm -f $RPM_BUILD_ROOT%{_libdir}/lib%{name}.la
-# When the extracc package will be approved, the following line has to be removed
-rm -f $RPM_BUILD_ROOT%{_libdir}/libextracppunit.la
 
 mkdir -p %{mydocs}
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html %{mydocs}
 
-%if 0%{?rhel}
 %clean
 rm -rf $RPM_BUILD_ROOT
-%endif
 
 %post -p /sbin/ldconfig
 
@@ -118,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 25 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.3.0-1
+- Upstream integration
+
 * Fri Oct 15 2010 Christophe Lacombe <clacombe@amadeus.com> 0.2.0-1
 - Upstream integration
 

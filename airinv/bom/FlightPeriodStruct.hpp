@@ -6,11 +6,11 @@
 // //////////////////////////////////////////////////////////////////////
 // STL
 #include <string>
-// STDAIR
-#include <stdair/STDAIR_Types.hpp>
+// StdAir
+#include <stdair/stdair_inventory_types.hpp>
 #include <stdair/basic/StructAbstract.hpp>
 #include <stdair/bom/DoWStruct.hpp>
-// AIRINV
+// AirInv
 #include <airinv/bom/LegCabinStruct.hpp>
 #include <airinv/bom/LegStruct.hpp>
 #include <airinv/bom/SegmentStruct.hpp>

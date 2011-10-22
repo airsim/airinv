@@ -4,6 +4,7 @@
 // STL
 #include <cassert>
 // StdAir
+#include <stdair/stdair_exceptions.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
 // AIRINV
@@ -82,8 +83,9 @@ namespace AIRINV {
       _flightPeriod._dateRangeEnd = _flightPeriod.getDate() + oneDay;
 
       // Transform the date pair (i.e., the date range) into a date period
-      _flightPeriod._dateRange = DatePeriod_T (_flightPeriod._dateRangeStart,
-                                               _flightPeriod._dateRangeEnd);
+      _flightPeriod._dateRange =
+        stdair::DatePeriod_T (_flightPeriod._dateRangeStart,
+                              _flightPeriod._dateRangeEnd);
         
       // Reset the number of seconds
       _flightPeriod._itSeconds = 0;
@@ -180,7 +182,7 @@ namespace AIRINV {
       // As the boarding date off set is optional, it can be set only
       // afterwards, based on the staging date off-set value
       // (_flightPeriod._dateOffset).
-      const DateOffset_T lDateOffset (_flightPeriod._dateOffset);
+      const stdair::DateOffset_T lDateOffset (_flightPeriod._dateOffset);
       _flightPeriod._itLeg._boardingDateOffset = lDateOffset;
     }
 
@@ -201,7 +203,7 @@ namespace AIRINV {
       // As the boarding date off set is optional, it can be set only
       // afterwards, based on the staging date off-set value
       // (_flightPeriod._dateOffset).
-      const DateOffset_T lDateOffset (_flightPeriod._dateOffset);
+      const stdair::DateOffset_T lDateOffset (_flightPeriod._dateOffset);
       _flightPeriod._itLeg._offDateOffset = lDateOffset;
     }
 
@@ -309,7 +311,7 @@ namespace AIRINV {
     void storeClasses::operator() (iterator_t iStr,
                                    iterator_t iStrEnd) const {
       std::string lClasses (iStr, iStrEnd);
-      _flightPeriod._itSegmentCabin._classes = lClasses;
+      _flightPeriod._itSegmentCabin._itFareFamily._classes = lClasses;
 
       // The list of classes is the last (according to the arrival order
       // within the schedule input file) detail of the segment cabin. Hence,
@@ -334,7 +336,7 @@ namespace AIRINV {
     void storeFamilyCode::operator() (int iCode) const {
       std::ostringstream ostr;
       ostr << iCode;
-      _flightPeriod._itSegmentCabin._itFamilyCode = ostr.str(); 
+      _flightPeriod._itSegmentCabin._itFareFamily._familyCode = ostr.str(); 
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -347,8 +349,8 @@ namespace AIRINV {
     void storeFClasses::operator() (iterator_t iStr,
                                     iterator_t iStrEnd) const {
       std::string lClasses (iStr, iStrEnd);
-      FareFamilyStruct lFareFamily(_flightPeriod._itSegmentCabin._itFamilyCode,
-                                     lClasses);
+      FareFamilyStruct lFareFamily (_flightPeriod._itSegmentCabin._itFareFamily._familyCode,
+                                    lClasses);
 
       // The list of classes is the last (according to the arrival order
       // within the schedule input file) detail of the segment cabin. Hence,
@@ -581,7 +583,7 @@ namespace AIRINV {
       segment_cabin_details =
         (cabin_code_p)[storeSegmentCabinCode(self._flightPeriod)]
         >> ';' >> (class_code_list_p)[storeClasses(self._flightPeriod)]
-        >> *(';' >> family_cabin_details)
+        >> +(';' >> family_cabin_details)
         ;
 
       family_cabin_details =
@@ -645,10 +647,9 @@ namespace AIRINV {
 
     // Check the filename exists and can be open
     if (!_startIterator) {
-      STDAIR_LOG_ERROR ("The file " << _filename << " can not be open."
-                          << std::endl);
-
-      throw stdair::FileNotFoundException();
+      std::ostringstream oMessage;
+      oMessage << "The file " << _filename << " can not be open." << std::endl;
+      throw stdair::FileNotFoundException (oMessage.str());
     }
 
     // Create an EOF iterator

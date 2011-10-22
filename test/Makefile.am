@@ -1,10 +1,15 @@
-## test sub-directory
+## test sub-directory of the AirInv project
 include $(top_srcdir)/Makefile.common
 
 MAINTAINERCLEANFILES = Makefile.in
 
 ##
-SUBDIRS = samples airinv
+# As every component can already be tested independently, for instance
+# by a Continuous Integration (CI) framework such as Hudson/Jenkins,
+# it is useless to retest them here. Uncomment the following line only
+# when you have cannot test those components by another way.
+#SUBDIRS = rmol airinv
+SUBDIRS = airinv
 
 EXTRA_DIST =
 

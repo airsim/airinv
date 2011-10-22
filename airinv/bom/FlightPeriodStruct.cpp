@@ -131,7 +131,10 @@ namespace AIRINV {
       STDAIR_LOG_ERROR ("Within the schedule input file, there is a "
                         << "flight for which the airports of segments "
                         << "and those of the legs do not correspond.");
-      throw SegmentDateNotFoundException();
+      throw SegmentDateNotFoundException ("Within the schedule input file, "
+                                          "there is a flight for which the "
+                                          "airports of segments and those of "
+                                          "the legs do not correspond.");
     }
 
     // Add the Cabin structure to the Segment Cabin structure.
@@ -177,9 +180,12 @@ namespace AIRINV {
     // so that the user knows the schedule input file is corrupted.
     if (itSegment == _segmentList.end()) {
       STDAIR_LOG_ERROR ("Within the schedule input file, there is a flight "
-                          << "for which the airports of segments and "
-                          << "those of the legs do not correspond.");
-      throw SegmentDateNotFoundException();
+                        << "for which the airports of segments and "
+                        << "those of the legs do not correspond.");
+      throw SegmentDateNotFoundException ("Within the schedule input file, "
+                                          "there is a flight for which the "
+                                          "airports of segments and those of "
+                                          "the legs do not correspond.");
     }
 
     // Add the Cabin structure to the Segment Cabin structure.
@@ -196,14 +202,18 @@ namespace AIRINV {
         break;
       }
     }
+
     // If the segmentCabin key (cabin code) given in the schedule input file
     // does not correspond to the stored cabin codes, throw an exception
     // so that the user knows the schedule input file is corrupted.
     if (itCabin == lSegment._cabinList.end()) {
       STDAIR_LOG_ERROR ("Within the schedule input file, there is a flight "
                         << "for which the cabin code does not exist.");
-      throw SegmentDateNotFoundException();
+      throw SegmentDateNotFoundException ("Within the schedule input file, "
+                                          "there is a flight for which the "
+                                          "cabin code does not exist.");
     }
+
     // Add the Cabin structure to the Segment Cabin structure.
     assert (itCabin != lSegment._cabinList.end());
     SegmentCabinStruct& lCabin = *itCabin;
@@ -231,14 +241,18 @@ namespace AIRINV {
           break;
         }
       }
+
       // If the segmentCabin key (cabin code) given in the schedule input file
       // does not correspond to the stored cabin codes, throw an exception
       // so that the user knows the schedule input file is corrupted.
       if (itCabin == lSegment._cabinList.end()) {
         STDAIR_LOG_ERROR ("Within the schedule input file, there is a flight"
-                            << " for which the cabin code does not exist.");
-        throw SegmentDateNotFoundException();
+                          << " for which the cabin code does not exist.");
+        throw SegmentDateNotFoundException ("Within the schedule input file, "
+                                            "there is a flight for which the "
+                                            "cabin code does not exist.");
       }
+
       // Add the Cabin structure to the Segment Cabin structure.
       assert (itCabin != lSegment._cabinList.end());
       SegmentCabinStruct& lCabin = *itCabin;

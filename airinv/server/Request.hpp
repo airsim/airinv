@@ -8,7 +8,8 @@
 #include <string>
 #include <vector>
 // StdAir
-#include <stdair/STDAIR_Types.hpp>
+#include <stdair/stdair_basic_types.hpp>
+#include <stdair/stdair_date_time_types.hpp>
 // AirInv
 
 namespace AIRINV {

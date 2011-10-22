@@ -1,6 +1,5 @@
 tmp
 /build/
-/appserver/
 Makefile.in
 INSTALL
 aclocal.m4

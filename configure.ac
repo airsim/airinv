@@ -1,17 +1,22 @@
 # Process this file with autoconf to produce a configure script
 #-------------------------------------------------------------------
 AC_PREREQ(2.59)
-AC_COPYRIGHT([Copyright (C) 2007-2010 Denis Arnaud <denis_arnaud@users.sourceforge.net>])
-AC_INIT([AIRINV],[0.2.0],[denis_arnaud@users.sourceforge.net],[airinv])
+AC_COPYRIGHT([Copyright (C) 2007-2011 Denis Arnaud <denis_arnaud@users.sourceforge.net>])
+AC_INIT([AIRINV],[0.3.0],[denis_arnaud@users.sourceforge.net],[airinv])
 AC_CONFIG_HEADER([airinv/config.h])
 AC_CONFIG_SRCDIR([airinv/basic/BasConst.cpp])
 AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_MACRO_DIR([config])
 AM_INIT_AUTOMAKE
 AM_PATH_CPPUNIT(1.10)
 AM_CONDITIONAL([HAVE_CPPUNIT], [test "x$CPPUNIT_LIBS" != x])
 
+# Package name
+PACKAGE_PRETTY_NAME="AirInv"
+AC_SUBST(PACKAGE_PRETTY_NAME)
+
 # Shared library versioning
-GENERIC_LIBRARY_VERSION="0:2:0"
+GENERIC_LIBRARY_VERSION="0:3:0"
 #                        | | |
 #                 +------+ | +---+
 #                 |        |     |
@@ -65,6 +70,13 @@ AC_ARG_ENABLE(exceptions,
 test "x$enable_exceptions" != xno && enable_exceptions=yes
 test "x$ax_cv_boost_date_time" != xno && enable_exceptions=yes
 
+# Set the data directory for AirInv
+pkgdatadir="${datadir}/airinv"
+AC_SUBST(pkgdatadir)
+# Set the directory for data samples exported by AirInv
+sampledir="${pkgdatadir}/samples"
+AC_SUBST(sampledir)
+
 # Check for info pages
 AC_ARG_ENABLE(info-doc, 
               [AS_HELP_STRING([--disable-info-doc],
@@ -98,13 +110,21 @@ if test -z "${CXXFLAGS}"; then
    CXXFLAGS="-g -Wall"
 fi
 
-# -----------------------------------------------------------------------------
-# Support for ExtraCC (Extra-CruiseControl): http://sf.net/projects/extracc
-# -----------------------------------------------------------------------------
-AM_PATH_EXTRACC
-AC_SUBST(EXTRACC_VERSION)
-AC_SUBST(EXTRACC_CFLAGS)
-AC_SUBST(EXTRACC_LIBS)
+# -----------------------------------------------------------------
+# Readline: http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html
+# -----------------------------------------------------------------
+AM_PATH_READLINE([6.0])
+AC_SUBST(READLINE_VERSION)
+AC_SUBST(READLINE_CFLAGS)
+AC_SUBST(READLINE_LIBS)
+
+# -----------------------------------------------------------------
+# ZeroMQ: http://zeromq.org
+# -----------------------------------------------------------------
+AM_PATH_ZEROMQ([2.0])
+AC_SUBST(READLINE_VERSION)
+AC_SUBST(READLINE_CFLAGS)
+AC_SUBST(READLINE_LIBS)
 
 # -----------------------------------------------------------
 # Python: http://www.python.org
@@ -116,61 +136,40 @@ AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_ADD_LIBS)
 
 # -----------------------------------------------------------
-# MPICH2: http://www.mcs.anl.gov/research/projects/mpich2
-# Note: Boost.MPI depends on MPICH2, rather than on OpenMPI
-# -----------------------------------------------------------
-#AX_MPICH2
-#AC_SUBST(MPICH2_VERSION)
-#AC_SUBST(MPICH2_CFLAGS)
-#AC_SUBST(MPICH2_LIBS)
-
-# -----------------------------------------------------------
 # OpenMPI: http://www.open-mpi.org
 # -----------------------------------------------------------
 AX_OPENMPI
-AC_SUBST(OPENMPI_VERSION)
-AC_SUBST(OPENMPI_CFLAGS)
-AC_SUBST(OPENMPI_LIBS)
+AC_SUBST(MPIGEN_VERSION)
+AC_SUBST(MPIGEN_CFLAGS)
+AC_SUBST(MPIGEN_LIBS)
+
+# -----------------------------------------------------------
+# MPICH2: http://www.mcs.anl.gov/research/projects/mpich2
+# -----------------------------------------------------------
+#AX_MPICH2
+#AC_SUBST(MPIGEN_VERSION)
+#AC_SUBST(MPIGEN_CFLAGS)
+#AC_SUBST(MPIGEN_LIBS)
 
 # ---------------------------------------------------------------
 # Boost (STL Extensions): http://www.boost.org
 # ---------------------------------------------------------------
 AX_BOOST([1.33])
-AC_SUBST(BOOST_VERSION)
-AC_SUBST(BOOST_CFLAGS)
-AC_SUBST(BOOST_LIBS)
-AC_SUBST(BOOST_DATE_TIME_LIB)
-AC_SUBST(BOOST_PROGRAM_OPTIONS_LIB)
-AC_SUBST(BOOST_FILESYSTEM_LIB)
-AC_SUBST(BOOST_THREAD_LIB)
-AC_SUBST(BOOST_PYTHON_LIB)
-AC_SUBST(BOOST_ASIO_LIB)
-AC_SUBST(BOOST_MPI_LIB)
-AC_SUBST(BOOST_MPI_PYTHON_LIB)
 
 # --------------------------------------------------------------------
 # Support for MySQL (C client API): http://www.mysql.org
 # --------------------------------------------------------------------
 AX_MYSQL
-AC_SUBST(MYSQL_VERSION)
-AC_SUBST(MYSQL_CFLAGS)
-AC_SUBST(MYSQL_LIBS)
 
 # --------------------------------------------------------
 # SOCI (Database API: http://soci.sourceforge.net)
 # --------------------------------------------------------
 AX_SOCI([3.0])
-AC_SUBST(SOCI_VERSION)
-AC_SUBST(SOCI_CFLAGS)
-AC_SUBST(SOCI_LIBS)
 
 # -----------------------------------------------------------------------------
 # Support for StdAir (): http://sf.net/projects/stdair
 # -----------------------------------------------------------------------------
-AM_PATH_STDAIR
-AC_SUBST(STDAIR_VERSION)
-AC_SUBST(STDAIR_CFLAGS)
-AC_SUBST(STDAIR_LIBS)
+AM_PATH_STDAIR([0.10.0])
 
 # -------------------------------------------------------------------
 # Support for documentation
@@ -244,6 +243,24 @@ AC_CONFIG_FILES(
 	airinv-config
 	airinv.pc
 	airinv.m4
+	airrac/Makefile
+	airrac/basic/Makefile
+	airrac/bom/Makefile
+	airrac/factory/Makefile
+	airrac/command/Makefile
+	airrac/service/Makefile
+	airrac/config/Makefile
+	airrac/core/Makefile
+	airrac/batches/Makefile
+	rmol/Makefile
+	rmol/basic/Makefile
+	rmol/bom/Makefile
+	rmol/factory/Makefile
+	rmol/command/Makefile
+	rmol/service/Makefile
+	rmol/core/Makefile
+	rmol/config/Makefile
+	rmol/batches/Makefile
 	airinv/Makefile
 	airinv/basic/Makefile
 	airinv/bom/Makefile
@@ -254,6 +271,8 @@ AC_CONFIG_FILES(
 	airinv/core/Makefile
 	airinv/batches/Makefile
 	airinv/server/Makefile
+	airinv/ui/Makefile
+	airinv/ui/cmdline/Makefile
 	man/Makefile
 	doc/Makefile
 	doc/images/Makefile
@@ -261,11 +280,34 @@ AC_CONFIG_FILES(
 	doc/tutorial/src/Makefile
 	doc/local/Makefile
 	doc/doxygen_html.cfg
+	samples/Makefile
+	samples/RDS01/Makefile
 	test/Makefile
-	test/samples/Makefile
+	test/airrac/Makefile
+	test/rmol/Makefile
 	test/airinv/Makefile
 )
 AC_OUTPUT
+
+# OpenMPI
+if test "x$HAVE_OPENMPI" = "x1"; then
+   OPENMPI_OUTPUT="  - OPENMPI ................ :
+    o OPENMPI_VERSION ...... : ${MPIGEN_VERSION}
+    o OPENMPI_CFLAGS ....... : ${MPIGEN_CFLAGS}
+    o OPENMPI_LIBS ......... : ${MPIGEN_LIBS}"
+else
+   OPENMPI_OUTPUT="  - OPENMPI ................ : No"
+fi
+
+# MPICH2
+if test "x$HAVE_MPICH2" = "x1"; then
+   MPICH2_OUTPUT="  - MPICH2 ................. :
+    o MPICH2_VERSION ....... : ${MPIGEN_VERSION}
+    o MPICH2_CFLAGS ........ : ${MPIGEN_CFLAGS}
+    o MPICH2_LIBS .......... : ${MPIGEN_LIBS}"
+else
+   MPICH2_OUTPUT="  - MPICH2 ................. : No"
+fi
 
 echo "
 ------------------------------------------------------------------------------
@@ -273,84 +315,100 @@ $PACKAGE-$VERSION library configuration:
 ------------------------------------------------------------------------------
 
 Directories:
-  - prefix ............ : ${prefix}
-  - exec_prefix ....... : ${exec_prefix}
-  - includedir ........ : ${includedir}
-  - libdir ............ : ${libdir}
-  - docdir ............ : ${docdir}
-  - mandir ............ : ${mandir}
-  - infodir ........... : ${infodir}
+  - prefix ................. : ${prefix}
+  - exec_prefix ............ : ${exec_prefix}
+  - includedir ............. : ${includedir}
+  - libdir ................. : ${libdir}
+  - datarootdir ............ : ${datarootdir}
+  - datadir ................ : ${datadir}
+  - pkgdatadir ............. : ${pkgdatadir}
+  - sampledir .............. : ${sampledir}
+  - docdir ................. : ${docdir}
+  - mandir ................. : ${mandir}
+  - infodir ................ : ${infodir}
 
 Switches:
-  - exceptions ........ : ${enable_exceptions}
-  - use-nls ........... : ${USE_NLS}
-  - info-doc .......... : ${enable_info_doc}
-  - html-doc .......... : ${enable_html_doc}
-  - shared ............ : ${enable_shared}
-  - static ............ : ${enable_static}
+  - exceptions ............. : ${enable_exceptions}
+  - use-nls ................ : ${USE_NLS}
+  - info-doc ............... : ${enable_info_doc}
+  - html-doc ............... : ${enable_html_doc}
+  - shared ................. : ${enable_shared}
+  - static ................. : ${enable_static}
 
 Documentation tools:
-  - texinfo ........... : ${texinfo_ok}
-  - doxygen ........... : ${doxygen_ok}
-  - latex ............. : ${latex_ok}
-  - dvips ............. : ${dvips_ok}
-  - ghostscript ....... : ${gs_ok}
+  - texinfo ................ : ${texinfo_ok}
+  - doxygen ................ : ${doxygen_ok}
+  - latex .................. : ${latex_ok}
+  - dvips .................. : ${dvips_ok}
+  - ghostscript ............ : ${gs_ok}
 
 Testing tools:
-  - diff .............. : ${diff_ok}
-  - sed ............... : ${sed_ok}
+  - diff ................... : ${diff_ok}
+  - sed .................... : ${sed_ok}
 
 Compiler/linker flags/libs/defs:
-  - CXX ............... : ${CXX}
-  - CXXFLAGS .......... : ${CXXFLAGS}
-  - CPPFLAGS .......... : ${CPPFLAGS}
-  - LDFLAGS ........... : ${LDFLAGS}
-  - LIBS .............. : ${LIBS}
+  - CXX .................... : ${CXX}
+  - CXXFLAGS ............... : ${CXXFLAGS}
+  - CPPFLAGS ............... : ${CPPFLAGS}
+  - LDFLAGS ................ : ${LDFLAGS}
+  - LIBS ................... : ${LIBS}
 
 External libraries:
-  - Python ............. :
-    o PYTHON_version ... : ${PYTHON_VERSION}
-    o PYTHON_CFLAGS .... : ${PYTHON_CFLAGS}
-    o PYTHON_LIBS ...... : ${PYTHON_LIBS} 
-    o PYTHON_ADD_LIBS .. : ${PYTHON_ADD_LIBS} 
+  - ZeroMQ ................. :
+    o ZEROMQ_VERSION ....... : ${ZEROMQ_VERSION}
+    o ZEROMQ_CFLAGS ........ : ${ZEROMQ_CFLAGS}
+    o ZEROMQ_LIBS .......... : ${ZEROMQ_LIBS} 
 
-  - Boost ............. :
-    o BOOST_VERSION ... : ${BOOST_VERSION}
-    o BOOST_CFLAGS .... : ${BOOST_CFLAGS}
-    o BOOST_LIBS ...... : ${BOOST_LIBS}
-    o BOOST_DT_LIB .... : ${BOOST_DATE_TIME_LIB}
-    o BOOST_PO_LIB .... : ${BOOST_PROGRAM_OPTIONS_LIB}
-    o BOOST_FS_LIB .... : ${BOOST_FILESYSTEM_LIB}
-    o BOOST_THRD_LIB .. : ${BOOST_THREAD_LIB}
-    o BOOST_PY_LIB .... : ${BOOST_PYTHON_LIB}
-    o BOOST_ASIO_LIB .. : ${BOOST_ASIO_LIB}
-    o BOOST_MPI_LIB ... : ${BOOST_MPI_LIB}
-    o BOOST_MPIPY_LIB . : ${BOOST_MPI_PYTHON_LIB}
+  - Readline ............... :
+    o READLINE_VERSION ..... : ${READLINE_VERSION}
+    o READLINE_CFLAGS ...... : ${READLINE_CFLAGS}
+    o READLINE_LIBS ........ : ${READLINE_LIBS} 
 
-  - MySQL ............. :
-    o MYSQL_version ... : ${MYSQL_VERSION}
-    o MYSQL_CFLAGS .... : ${MYSQL_CFLAGS}
-    o MYSQL_LIBS ...... : ${MYSQL_LIBS} 
+${OPENMPI_OUTPUT}
 
-  - Soci .............. :
-    o SOCI_VERSION .... : ${SOCI_VERSION}
-    o SOCI_CFLAGS ..... : ${SOCI_CFLAGS}
-    o SOCI_LIBS ....... : ${SOCI_LIBS}
+${MPICH2_OUTPUT}
 
-  - StdAir ............ :
-    o STDAIR_VERSION .. : ${STDAIR_VERSION}
-    o STDAIR_CFLAGS ... : ${STDAIR_CFLAGS}
-    o STDAIR_LIBS ..... : ${STDAIR_LIBS}
+  - Python ................. :
+    o PYTHON_VERSION ....... : ${PYTHON_VERSION}
+    o PYTHON_CFLAGS ........ : ${PYTHON_CFLAGS}
+    o PYTHON_LIBS .......... : ${PYTHON_LIBS} 
+    o PYTHON_ADD_LIBS ...... : ${PYTHON_ADD_LIBS} 
 
-  - ExtraCC ........... :
-    o EXTRACC_VERSION . : ${EXTRACC_VERSION}
-    o EXTRACC_CFLAGS .. : ${EXTRACC_CFLAGS}
-    o EXTRACC_LIBS .... : ${EXTRACC_LIBS}
+  - Boost .................. :
+    o BOOST_VERSION ........ : ${BOOST_VERSION}
+    o BOOST_CFLAGS ......... : ${BOOST_CFLAGS}
+    o BOOST_LIBS ........... : ${BOOST_LIBS}
+    o BOOST_UTF_LIB ........ : ${BOOST_UNIT_TEST_FRAMEWORK_LIB}
+    o BOOST_DATE_TIME_LIB .. : ${BOOST_DATE_TIME_LIB}
+    o BOOST_PO_LIB ......... : ${BOOST_PROGRAM_OPTIONS_LIB}
+    o BOOST_SYSTEM_LIB ..... : ${BOOST_SYSTEM_LIB}
+    o BOOST_FILESYSTEM_LIB . : ${BOOST_FILESYSTEM_LIB}
+    o BOOST_THREAD_LIB ..... : ${BOOST_THREAD_LIB}
+    o BOOST_PYTHON_LIB ..... : ${BOOST_PYTHON_LIB}
+    o BOOST_ASIO_LIB ....... : ${BOOST_ASIO_LIB}
+    o BOOST_MPI_LIB ........ : ${BOOST_MPI_LIB}
+    o BOOST_MPI_PYTHON_LIB . : ${BOOST_MPI_PYTHON_LIB}
+    o BOOST_IOSTREAMS_LIB .. : ${BOOST_IOSTREAMS_LIB}
+    o BOOST_SIGNALS_LIB .... : ${BOOST_SIGNALS_LIB}
+    o BOOST_SERIAL_LIB ..... : ${BOOST_SERIALIZATION_LIB}
+    o BOOST_WSERIAL_LIB .... : ${BOOST_WSERIALIZATION_LIB}
+    o BOOST_REGEX_LIB ...... : ${BOOST_REGEX_LIB}
 
-  - CPPUNIT ........... :
-    o CPPUNIT_VERSION . : ${CPPUNIT_VERSION}
-    o CPPUNIT_CFLAGS .. : ${CPPUNIT_CFLAGS}
-    o CPPUNIT_LIBS .... : ${CPPUNIT_LIBS}
+  - MySQL .................. :
+    o MYSQL_VERSION ........ : ${MYSQL_VERSION}
+    o MYSQL_CFLAGS ......... : ${MYSQL_CFLAGS}
+    o MYSQL_LIBS ........... : ${MYSQL_LIBS} 
+
+  - Soci ................... :
+    o SOCI_VERSION ......... : ${SOCI_VERSION}
+    o SOCI_CFLAGS .......... : ${SOCI_CFLAGS}
+    o SOCI_LIBS ............ : ${SOCI_LIBS}
+
+  - StdAir ................. :
+    o STDAIR_VERSION ....... : ${STDAIR_VERSION}
+    o STDAIR_CFLAGS ........ : ${STDAIR_CFLAGS}
+    o STDAIR_LIBS .......... : ${STDAIR_LIBS}
+    o STDAIR_SAMPLE_DIR .... : ${STDAIR_SAMPLE_DIR}
 
 ------------------------------------------------------------------------------
 Now type 'make && make install' to build and install $PACKAGE-$VERSION library

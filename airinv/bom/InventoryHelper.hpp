@@ -4,8 +4,10 @@
 // //////////////////////////////////////////////////////////////////////
 // Import section
 // //////////////////////////////////////////////////////////////////////
-// STDAIR
-#include <stdair/STDAIR_Types.hpp>
+// STL
+#include <string>
+// StdAir
+#include <stdair/stdair_basic_types.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -14,6 +16,7 @@ namespace stdair {
 }
 
 namespace AIRINV {
+  
   /** Class representing the actual business functions for
       an airline inventory. */
   class InventoryHelper {
@@ -22,10 +25,19 @@ namespace AIRINV {
     /** Fill the attributes derived from the routing legs (e.g., board
         and off dates). */
     static void fillFromRouting (const stdair::Inventory&);
+
+    /** Compute the availability for the given travel solution. */
+    static void calculateAvailability (const stdair::Inventory&,
+                                       const std::string&,
+                                       stdair::TravelSolutionStruct&);
     
     /** Make a sale with the given travel solution. */
     static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
                       const stdair::ClassCode_T&, const stdair::PartySize_T&);
+
+    /** Take inventory snapshots. */
+    static void takeSnapshots (const stdair::Inventory&,
+                               const stdair::DateTime_T&);
   };
 
 }
