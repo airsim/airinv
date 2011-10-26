@@ -1,8 +1,9 @@
 /*! 
-\page linking Linking with AirInv
+\page linking Linking with Airinv
 
 \section toc Table of Contents
 - \ref intro
+- \ref dependencies
 - \ref pkgconfig
 - \ref airinv_config
 - \ref autotools
@@ -12,11 +13,23 @@
 \section intro Introduction
 
 There are two convenient methods of linking your
-programs with the AirInv library. The first one employs the \c
+programs with the Airinv library. The first one employs the \c
 `pkg-config' command (see <a href="http://pkgconfig.freedesktop.org/">
 http://pkgconfig.freedesktop.org/</a>), whereas the second one uses \c
 `airinv-config' script. These methods are shortly described below.
 
+\section dependencies Dependencies
+
+The Airinv library depends on several other C++ components.
+
+\subsection stdairdep StdAir
+Among them, as for now, only StdAir has been packaged. The support for StdAir
+is taken in charge by a dedicated M4 macro file (namely, <tt>`stdair.m4'</tt>), 
+from the configuration script (generated thanks to <tt>`configure.ac'</tt>).
+
+\image html airinv_dependencies.png "Airinv Dependencies"
+\image rtf airinv_dependencies.png "Airinv Dependencies"
+\image latex airinv_dependencies.png "Airinv Dependencies" width=15cm
 
 \section pkgconfig Using the pkg-config command
 
@@ -28,7 +41,7 @@ options. The syntax of the \c `pkg-config' is as follows:
 pkg-config <options> <library_name>  
 \endcode
 
-For instance, assuming that you need to compile an AirInv based program
+For instance, assuming that you need to compile an Airinv based program
 <tt>`my_prog.cpp'</tt>, you should use the following command:
 
 \code
@@ -40,10 +53,10 @@ For more information see the \c `pkg-config' man pages.
 
 \section airinv_config Using the airinv-config script
 
-AirInv provides a shell script called \c `airinv-config`, which is
+Airinv provides a shell script called \c `airinv-config`, which is
 installed by default in \c `$prefix/bin'
 (\c `/usr/local/bin') directory. It can be used to simplify
-compilation and linking of AirInv based programs. The usage of this
+compilation and linking of Airinv based programs. The usage of this
 script is quite similar to the usage of the \c `pkg-config' command.
 
 Assuming that you need to compile the program \c `my_prog.cpp'
@@ -69,29 +82,29 @@ export PATH=/usr/local/bin:$PATH
 
 \section autotools M4 macro for the GNU Autotools
 
-A M4 macro file is delivered with AirInv, namely `airinv.m4', which
+A M4 macro file is delivered with Airinv, namely `airinv.m4', which
 can be found in, e.g., `/usr/share/aclocal'. When used by a
-`configure' script, thanks to he <tt>`AM_PATH_AirInv'</tt> macro
+`configure' script, thanks to he <tt>`AM_PATH_Airinv'</tt> macro
 (specified in the M4 macro file), the following Makefile variables are
 then defined:
-- <tt>`AirInv_VERSION'</tt> (e.g., defined to 0.23.0)
-- <tt>`AirInv_CFLAGS'</tt> (e.g., defined to <tt>`-I${prefix}/include'</tt>)
-- <tt>`AirInv_LIBS'</tt> (e.g., defined to <tt>`-L${prefix}/lib -lairinv'</tt>)
+- <tt>`Airinv_VERSION'</tt> (e.g., defined to 0.23.0)
+- <tt>`Airinv_CFLAGS'</tt> (e.g., defined to <tt>`-I${prefix}/include'</tt>)
+- <tt>`Airinv_LIBS'</tt> (e.g., defined to <tt>`-L${prefix}/lib -lairinv'</tt>)
 
 
-\section dynamiclinking Using AirInv with dynamic linking
+\section dynamiclinking Using Airinv with dynamic linking
 
-When using static linking some of the library routines in AirInv are
+When using static linking some of the library routines in Airinv are
 copied into your executable program. This can lead to unnecessary
 large executables. To avoid having too large executable files you may
 use dynamic linking instead. Dynamic linking means that the actual
 linking is performed when the program is executed. This requires that
-the system is able to locate the shared AirInv library file during your
-program execution. If you install the AirInv library using a non-standard
+the system is able to locate the shared Airinv library file during your
+program execution. If you install the Airinv library using a non-standard
 prefix, the \c `LD_LIBRARY_PATH' environment variable might be used to
 inform the linker of the dynamic library location, e.g.:
 \code
-export LD_LIBRARY_PATH=<AirInv installation prefix>/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=<Airinv installation prefix>/lib:$LD_LIBRARY_PATH
 \endcode
 
 */

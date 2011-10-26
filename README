@@ -1,3 +1,4 @@
+
 Summary:
 --------
 AirInv is a C++ library of airline inventory management classes and
@@ -48,7 +49,7 @@ http://sourceforge.net/project/showfiles.php?group_id=261633
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airinv-0.2.0 \
+  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airinv-0.1.0 \
    -DWITH_STDAIR_PREFIX=/home/user/dev/deliveries/stdair-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON ..
 * To build the project, type:

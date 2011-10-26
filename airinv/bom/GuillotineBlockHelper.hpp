@@ -25,13 +25,20 @@ namespace AIRINV {
     /** Take inventory snapshots. */
     static void takeSnapshots (stdair::GuillotineBlock&,
                                const stdair::DateTime_T&);
-
   private:
     // ////////// Helpers for business methods. //////////
     /** Take the snapshots for the given segment-cabin. */
-    static void takeSnapshots (stdair::GuillotineBlock&, const stdair::Date_T&,
+    static void takeSnapshots (stdair::GuillotineBlock&, const stdair::DTD_T&,
                                const stdair::SegmentCabin&,
                                const stdair::BlockNumber_T);
+
+    /** Register the product and price oriented bookings. */
+    static void registerProductAndPriceOrientedBookings 
+    (stdair::GuillotineBlock&, const stdair::DTD_T&,
+     const stdair::SegmentCabin&, const stdair::BlockNumber_T);
+
+    /** Retrieve the FRAT5 coefficient given the DTD. */
+    static double getFRAT5Coefficient (const stdair::DTD_T&);
   };
 
 }

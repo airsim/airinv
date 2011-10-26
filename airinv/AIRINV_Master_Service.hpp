@@ -10,6 +10,12 @@
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/stdair_inventory_types.hpp>
+#include <stdair/stdair_maths_types.hpp>
+#include <stdair/basic/ForecastingMethod.hpp>
+#include <stdair/basic/PartnershipTechnique.hpp>
+// AirRAC
+#include <airrac/AIRRAC_Types.hpp>
+
 
 /// Forward declarations
 namespace stdair {
@@ -101,11 +107,11 @@ namespace AIRINV {
      *
      * @param const stdair::Filename_T& Filename of the input schedule file.
      * @param const stdair::Filename_T& Filename of the input O&D file.
-     * @param const stdair::Filename_T& Filename of the input yield file.
+     * @param const AIRRAC::YieldFilePath& Filename of the input yield file.
      */
     void parseAndLoad (const stdair::Filename_T& iScheduleFilename,
                        const stdair::Filename_T& iODInputFilename,
-                       const stdair::Filename_T& iYieldInputFilename);
+                       const AIRRAC::YieldFilePath& iYieldFilename);
 
     /**
      * Destructor.
@@ -124,24 +130,17 @@ namespace AIRINV {
     /**
      * Build a sample BOM tree, and attach it to the BomRoot instance.
      *
-     * As for now, two sample BOM trees can be built.
-     * <ul>
-     *   <li>One BOM tree is based on two actual inventories (one for BA,
-     *     another for AF). Each inventory contains one flight. One of
-     *     those flights has two legs (and therefore three segments).</li>
-     *   <li>The other BOM tree is fake, as a hook for RMOL to work.</li>
-     * </ul>
-     *
-     * @param const bool isForRMOL Whether the sample BOM tree is for RMOL.
-     * @param const CabinCapacity_T Capacity of the cabin for RMOL optimisation.
+     * The BOM tree is based on two actual inventories (one for BA,
+     * another for AF). Each inventory contains one flight. One of
+     * those flights has two legs (and therefore three segments).
      */
-    void buildSampleBom (const bool isForRMOL = false,
-                         const stdair::CabinCapacity_T iCabinCapacity = 0);
+    void buildSampleBom();
 
     /**
      * Compute the availability for the given travel solution.
      */
-    void calculateAvailability (stdair::TravelSolutionStruct&);
+    void calculateAvailability (stdair::TravelSolutionStruct&,
+                                const stdair::PartnershipTechnique&);
 
     /**
      * Register a booking.
@@ -153,6 +152,17 @@ namespace AIRINV {
      */
     bool sell (const std::string& iSegmentDateKey, const stdair::ClassCode_T&,
                const stdair::PartySize_T&);
+    /**
+     * Register a cancellation.
+     *
+     * @param const std::string& Key for the segment on which the cancellation
+     *                   is made.
+     * @param const stdair::ClassCode_T& Class code where the sale is made.
+     * @param const stdair::PartySize_T& Party size.
+     * @return bool Whether or not the sale was successfull
+     */
+    bool cancel (const std::string& iSegmentDateKey, const stdair::ClassCode_T&,
+                 const stdair::PartySize_T&);
 
     /**
      * Take inventory snapshots.
@@ -162,7 +172,9 @@ namespace AIRINV {
     /**
      * Optimise (revenue management) an flight-date/network-date
      */
-    void optimise (const stdair::RMEventStruct&);    
+    void optimise (const stdair::RMEventStruct&,
+                   const stdair::ForecastingMethod&,
+                   const stdair::PartnershipTechnique&);    
 
 
   public:
@@ -184,6 +196,34 @@ namespace AIRINV {
 
   public:
     // //////////////// Display support methods /////////////////
+    /**
+     * Display the list of flight-dates (contained within the BOM tree)
+     * corresponding to the parameters given as input.
+     *
+     * @param const AirlineCode& Airline for which the flight-dates should be
+     *        displayed. If set to "all" (the default), all the inventories
+     *        will be displayed.
+     * @param const FlightNumber_T& Flight number for which all the departure
+     *        dates should be displayed. If set to 0 (the default),
+     *        all the flight numbers will be displayed.
+     * @return std::string Output string in which the BOM tree is
+     *         logged/dumped.
+     */
+    std::string list (const stdair::AirlineCode_T& iAirlineCode = "all",
+                      const stdair::FlightNumber_T& iFlightNumber = 0) const;
+
+    /**
+     * Check whether the given flight-date is a valid one.
+     *
+     * @param const stdair::AirlineCode_T& Airline code of the flight to check.
+     * @param const stdair::FlightNumber_T& Flight number of the
+     *        flight to check.
+     * @param const stdair::Date_T& Departure date of the flight to check.
+     * @return bool Whether or not the given flight date is valid.
+     */
+    bool check (const stdair::AirlineCode_T&, const stdair::FlightNumber_T&,
+                const stdair::Date_T& iDepartureDate) const;
+
     /**
      * Recursively display (dump in the returned string) the objects
      * of the BOM tree.

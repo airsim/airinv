@@ -1,0 +1,87 @@
+
+##################################################
+## Set up of a JavaScript-based UI for the whole chain, from the client
+## to the server, through the Web and application servers.
+##################################################
+
+##
+# A few variables
+##
+MY_USER=user
+HOME_DIR=/home/${MY_USER}
+AIRINV_DIR=${HOME_DIR}/dev/sim/airinv/airinvgit
+MY_HOST=myhost
+
+##
+# Required packages (on Fedora/RedHat)
+##
+yum -y install Django django-piston python-zmq zeromq-devel httpd stdair-devel
+
+##
+# Set-up of the Apache Web server
+##
+# 1. Create symbolic links to local sub-directories:
+su -
+cd /var/www/html
+ln -s ${AIRINV_DIR}/airinv/ui/browser browser
+ln -s ${HOME_DIR} localoriuser
+
+# 2. Create a proxy from Apache to Django
+#    That proxy creates a bridge from the Apache Web server to Django,
+#    expected to be launched on port 8000.
+su -
+cd ${AIRINV_DIR}/appserver/django/setup
+./addProxyForDjangoAirinvApp.sh
+
+##
+# Launch Django (expected to listen on port 8000)
+##
+su - ${MY_USER}
+cd ${AIRINV_DIR}/appserver/django/airinv
+./manage.py runserver localhost:8000
+
+##
+# AirInv server
+##
+# 0. If needed, build the AirInvServer binary
+su - build
+cd ${AIRINV_DIR}
+rm -rf build && mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=${HOME_DIR}/dev/deliveries/airinv-99.99.99 \
+ -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=OFF ..
+# (only if a newer version of StdAir is needed, add the following line)
+# -DWITH_STDAIR_PREFIX=${HOME_DIR}/dev/deliveries/stdair-stable
+make check
+make install
+
+# 1. Launch the AirInvServer
+#    Note that, by default, it listens on port 5555
+./AirInvserver
+
+# 2. Check that the AirInvServer runs correctly with the AirInvClient
+./AirInvClient
+
+##
+# Set-up the JavaScript script for the grid data fecther
+##
+su - ${MY_USER}
+cd ${AIRINV_DIR}/ui/browser/js
+# Search for 'var url = "http://[...]/api/display/inv/[...]"' (circa line 185)
+# and replace by the appropriate host name (${MY_HOST}). Remember that that
+# code may be executed by external browser clients. Hence, 'localhost' does
+# not fit in there.
+
+##
+# Install the ExtJS and jQueryUI libraries
+##
+su - ${MY_USER}
+cd ${AIRINV_DIR}/airinv/ui/browser/libs
+
+##
+# Trigger the browser
+##
+google-chrome http://${MY_HOST}/browser/launcher.html
+google-chrome http://${MY_HOST}/browser/airinv.html
+
+vi airinv-grid.js

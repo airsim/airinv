@@ -24,23 +24,34 @@ namespace AIRINV {
   public:
     // ////////// Business Methods /////////
     /**
-     * Initialise the AU for the booking classes.
-     */
-    static void initialiseAU (stdair::SegmentCabin&);
-    
-    /**
      * Update the segment-cabin with the reservation.
      */
     static void updateFromReservation (const stdair::FlightDate&,
                                        stdair::SegmentCabin&,
                                        const stdair::PartySize_T&);
 
-  private:
+    /**
+     * Build the pseudo bid price vector from the vectors of the leg-cabins.
+     */
+    static void buildPseudoBidPriceVector (stdair::SegmentCabin&);
+
+    /**
+     * Update the booking controls using the pseudo bid price vector.
+     */
+    static void updateBookingControlsUsingPseudoBidPriceVector (const stdair::SegmentCabin&);
+
+    /**
+     * Update the authorisation levels using the booking limits. */
+    static void updateAUs (const stdair::SegmentCabin&);
+
+    /**
+     * Update the availability of the booking classes. */
+    static void updateAvailabilities (const stdair::SegmentCabin&);
+    
     /**
      * Initialise the AU for the booking classes.
      */
-    static void initialiseAU (stdair::FareFamily&,
-                              const stdair::CabinCapacity_T&);
+    static void initialiseAU (stdair::SegmentCabin&);
   };
 
 }

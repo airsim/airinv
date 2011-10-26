@@ -16,6 +16,17 @@
 namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void SegmentDateHelper::fillFromRouting (stdair::SegmentDate& ioSegmentDate) {
+    /*
+     * If the segment is just marketed by this carrier,
+     * retrieve the operating segment and call the fillFromRouting
+     * method on it.
+     */
+    stdair::SegmentDate* lOperatingSegmentDate_ptr =
+      ioSegmentDate.getOperatingSegmentDate ();
+    if (lOperatingSegmentDate_ptr != NULL) {
+      fillFromRouting (*lOperatingSegmentDate_ptr);
+      return;
+    }
     // Retrieve the first and the last legs of the routing.
     // Note that in the majority of the cases, as flights are mono-legs,
     // the first and last legs are thus the same.
