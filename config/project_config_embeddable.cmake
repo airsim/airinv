@@ -654,6 +654,38 @@ macro (get_rmol)
 
 endmacro (get_rmol)
 
+# ~~~~~~~~~~ Airinv ~~~~~~~~~
+macro (get_airinv)
+  unset (_required_version)
+  if (${ARGC} GREATER 0)
+    set (_required_version ${ARGV0})
+    message (STATUS "Requires Airinv-${_required_version}")
+  else (${ARGC} GREATER 0)
+    message (STATUS "Requires Airinv without specifying any version")
+  endif (${ARGC} GREATER 0)
+
+  find_package (Airinv ${_required_version} REQUIRED
+	HINTS ${WITH_AIRINV_PREFIX})
+  if (Airinv_FOUND)
+    #
+    message (STATUS "Found Airinv version: ${AIRINV_VERSION}")
+
+    # Update the list of include directories for the project
+    include_directories (${AIRINV_INCLUDE_DIRS})
+
+    # Update the list of dependencies for the project
+    set (PROJ_DEP_LIBS_FOR_LIB ${PROJ_DEP_LIBS_FOR_LIB} ${AIRINV_LIBRARIES})
+
+  else (Airinv_FOUND)
+    set (ERROR_MSG "The Airinv library cannot be found. If it is installed in")
+    set (ERROR_MSG "${ERROR_MSG} a in a non standard directory, just invoke")
+    set (ERROR_MSG "${ERROR_MSG} 'cmake' specifying the -DWITH_AIRINV_PREFIX=")
+    set (ERROR_MSG "${ERROR_MSG}<Airinv install path> variable.")
+    message (FATAL_ERROR "${ERROR_MSG}")
+  endif (Airinv_FOUND)
+
+endmacro (get_airinv)
+
 
 ##############################################
 ##           Build, Install, Export         ##
@@ -1654,14 +1686,28 @@ macro (display_rmol)
   if (RMOL_FOUND)
     message (STATUS)
     message (STATUS "* RMOL:")
-    message (STATUS "  - RMOL_VERSION ............. : ${RMOL_VERSION}")
-    message (STATUS "  - RMOL_BINARY_DIRS ......... : ${RMOL_BINARY_DIRS}")
-    message (STATUS "  - RMOL_EXECUTABLES ......... : ${RMOL_EXECUTABLES}")
-    message (STATUS "  - RMOL_LIBRARY_DIRS ........ : ${RMOL_LIBRARY_DIRS}")
-    message (STATUS "  - RMOL_LIBRARIES ........... : ${RMOL_LIBRARIES}")
-    message (STATUS "  - RMOL_INCLUDE_DIRS ........ : ${RMOL_INCLUDE_DIRS}")
+    message (STATUS "  - RMOL_VERSION ............... : ${RMOL_VERSION}")
+    message (STATUS "  - RMOL_BINARY_DIRS ........... : ${RMOL_BINARY_DIRS}")
+    message (STATUS "  - RMOL_EXECUTABLES ........... : ${RMOL_EXECUTABLES}")
+    message (STATUS "  - RMOL_LIBRARY_DIRS .......... : ${RMOL_LIBRARY_DIRS}")
+    message (STATUS "  - RMOL_LIBRARIES ............. : ${RMOL_LIBRARIES}")
+    message (STATUS "  - RMOL_INCLUDE_DIRS .......... : ${RMOL_INCLUDE_DIRS}")
   endif (RMOL_FOUND)
 endmacro (display_rmol)
+
+# Airinv
+macro (display_airinv)
+  if (Airinv_FOUND)
+    message (STATUS)
+    message (STATUS "* Airinv:")
+    message (STATUS "  - AIRINV_VERSION ............. : ${AIRINV_VERSION}")
+    message (STATUS "  - AIRINV_BINARY_DIRS ......... : ${AIRINV_BINARY_DIRS}")
+    message (STATUS "  - AIRINV_EXECUTABLES ......... : ${AIRINV_EXECUTABLES}")
+    message (STATUS "  - AIRINV_LIBRARY_DIRS ........ : ${AIRINV_LIBRARY_DIRS}")
+    message (STATUS "  - AIRINV_LIBRARIES ........... : ${AIRINV_LIBRARIES}")
+    message (STATUS "  - AIRINV_INCLUDE_DIRS ........ : ${AIRINV_INCLUDE_DIRS}")
+  endif (Airinv_FOUND)
+endmacro (display_airinv)
 
 ##
 macro (display_status_all_modules)
@@ -1749,6 +1795,7 @@ macro (display_status)
   display_stdair ()
   display_airrac ()
   display_rmol ()
+  display_airinv ()
   #
   message (STATUS)
   message (STATUS "Change a value with: cmake -D<Variable>=<Value>" )
