@@ -1,3 +1,7 @@
+2011-10-30:
+- Version 0.1.1
+- Suppressed any support to the GNU Autotools.
+
 2011-10-27:
 - Version 0.1.0
 - Works with StdAir-0.43.3 and RMOL-0.25.1.
