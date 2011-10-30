@@ -49,7 +49,7 @@ http://sourceforge.net/project/showfiles.php?group_id=261633
 Then, as usual:
 * To configure the project, type something like:
   mkdir build && cd build
-  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airinv-0.1.0 \
+  cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airinv-0.1.1 \
    -DWITH_STDAIR_PREFIX=/home/user/dev/deliveries/stdair-stable \
    -DWITH_AIRRAC_PREFIX=/home/user/dev/deliveries/airrac-stable \
    -DWITH_RMOL_PREFIX=/home/user/dev/deliveries/rmol-stable \
