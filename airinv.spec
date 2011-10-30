@@ -9,12 +9,12 @@ Summary:        C++ Simulated Airline Inventory Management System library
 
 Group:          System Environment/Libraries 
 License:        LGPLv2+
-URL:            http://sourceforge.net/projects/%{name}/
+URL:            http://%{name}.sourceforge.net
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:  cmake, python-devel
-BuildRequires:  boost-devel, openmpi-devel, soci-mysql-devel, zeromq-devel
+BuildRequires:  boost-devel, soci-mysql-devel, zeromq-devel
 BuildRequires:  readline-devel, stdair-devel, airrac-devel, rmol-devel
 
 
@@ -43,7 +43,9 @@ programs using %{name}, you will need to install %{name}-devel.
 %package        doc
 Summary:        HTML documentation for the %{name} library
 Group:          Documentation
-%{?fedora:BuildArch:      noarch}
+%if 0%{?fedora} || 0%{?rhel} > 5
+BuildArch:      noarch
+%endif
 BuildRequires:  tex(latex)
 BuildRequires:  doxygen, ghostscript
 
@@ -59,20 +61,19 @@ online (http://%{name}.org).
 
 
 %build
-%configure --disable-static
+%cmake .
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%find_lang %{name}
-
-# Remove unpackaged files from the buildroot
-rm -f $RPM_BUILD_ROOT%{_infodir}/dir
-
 mkdir -p %{mydocs}
 mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/html %{mydocs}
+rm -f %{mydocs}/html/installdox
+
+%check
+ctest
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -110,12 +111,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed May 25 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.3.0-1
-- Upstream integration
-
-* Fri Oct 15 2010 Christophe Lacombe <clacombe@amadeus.com> 0.2.0-1
-- Upstream integration
-
-* Fri Sep 03 2010 Christophe Lacombe <clacombe@amadeus.com> 0.1.0-1
-- First package
-
+* Sun Oct 30 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.0-1
+- First RPM release
