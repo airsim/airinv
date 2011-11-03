@@ -30,10 +30,19 @@ namespace AIRINV {
     static void calculateAvailability (const stdair::Inventory&,
                                        const std::string&,
                                        stdair::TravelSolutionStruct&);
+
+    /** Get yield and bid price information for the given travel solution. */
+    static void getYieldAndBidPrice (const stdair::Inventory&,
+                                       const std::string&,
+                                       stdair::TravelSolutionStruct&);
     
     /** Make a sale with the given travel solution. */
     static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
                       const stdair::ClassCode_T&, const stdair::PartySize_T&);
+    
+    /** Make a cancellation. */
+    static bool cancel (stdair::Inventory&, const std::string& iSegmentDateKey,
+                        const stdair::ClassCode_T&, const stdair::PartySize_T&);
 
     /** Take inventory snapshots. */
     static void takeSnapshots (const stdair::Inventory&,

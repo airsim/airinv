@@ -10,7 +10,7 @@ Ext.define('flightinfo', {
     fields: [
 	{
         name: 'departure_date',
-        type: 'string'
+        type: 'shortdate'
     }, 
 	{
 		name:'airline_code',
@@ -162,43 +162,23 @@ var url="./sample/empty.js";
 var grid_flight;
 var grid_legs;
 var grid_subclasses;
-var store_flights;
-var store_legs;
-var store_subclasses;
-
 
 var idFlight;
 
 function queryBuild(companyCode, flightNumber, date)
 {
 	
-	//url="http://ncevsediri-fed/api/display/inv/" + companyCode + "/" + flightNumber + "/" + date;
-	url="D:/Development%20Workspace/Dreamweaver/DsimUI/browser/sample/datasample.html";
+	url="http://ncevsediri-fed/api/display/inv/" + companyCode + "/" + flightNumber + "/" + date;
+	//url="D:/Development%20Workspace/Dreamweaver/DsimUI/browser/sample/datasample.html";
 	grid_flight.getStore().load({url:url});
 	grid_legs.getStore().load({url:url});
 	grid_subclasses.getStore().load({url:url});
 	//flightURL = queryURL;
 }
 
-//Delete this function when calling Django server
-function tempQuery(jsonContent)
-{
-
-	store_flights = Ext.create('Ext.data.Store', {
-        autoLoad: true,
-        autoSync: true,
-        model: 'flightinfo',
-		reader: myReader
-    });
-	store_flights.loadData(jsonContent);
-	grid_legs.getStore().loadData(jsonContent);
-	grid_subclasses.getStore().loadData(jsonContent);
-	//flightURL = queryURL;
-}
-
 Ext.onReady(function(){
 	
-    store_flights = Ext.create('Ext.data.Store', {
+    var store_flights = Ext.create('Ext.data.Store', {
         autoLoad: true,
         autoSync: true,
         model: 'flightinfo',
@@ -212,13 +192,13 @@ Ext.onReady(function(){
         },    
     });
 	
-	store_legs = Ext.create('Ext.data.Store', {
+	var store_legs = Ext.create('Ext.data.Store', {
         autoLoad: true,
         autoSync: true,
         model: 'legsinfo',
         proxy: {
             type: 'rest',
-            url: 'D:/Development%20Workspace/Dreamweaver/DsimUI/browser/sample/datasample.js',
+            url: url,
             reader: {
                 type: 'json',
                 root: 'flight_date.legs'
@@ -226,7 +206,7 @@ Ext.onReady(function(){
         },    
     });
 	
-	store_subclasses = Ext.create('Ext.data.Store', {
+	var store_subclasses = Ext.create('Ext.data.Store', {
         autoLoad: true,
         autoSync: true,
         model: 'subclasses',
@@ -276,7 +256,7 @@ Ext.onReady(function(){
         store: store_legs,
         columns: [
             {header: "Board Date", width: 80, dataIndex: 'board_date', sortable: true},
-            {header: "Capacity", width: 75, dataIndex: 'capacity', sortable: true},
+            {header: "Capacity", width: 80, dataIndex: 'capacity', sortable: true},
             {header: "Off Date", width: 80, dataIndex: 'off_date', sortable: true},
             {header: "Distance", width: 80, dataIndex: 'distance', sortable: true},
             {header: "Off Point", width: 80, dataIndex: 'off_point', sortable: true},
@@ -290,7 +270,7 @@ Ext.onReady(function(){
         ],
         title: 'Flight Legs',
 		renderTo:'legs-GridDisplay',
-        width:875,
+        width:880,
         height:150,
 		viewConfig: {
 			stripeRows: true
@@ -300,18 +280,18 @@ Ext.onReady(function(){
 	grid_subclasses = new Ext.grid.GridPanel({
         store: store_subclasses,
         columns: [
-            {header: "Flight", width: 100, dataIndex: 'flight', sortable: true},
-            {header: "Segment", width: 80, dataIndex: 'segment', sortable: true},
+            {header: "Flight", width: 60, dataIndex: 'flight', sortable: true},
+            {header: "Segment", width: 70, dataIndex: 'segment', sortable: true},
             {header: "Cabin", width: 60, dataIndex: 'cabin', sortable: true},
-            {header: "FF", width: 40, dataIndex: 'ff', sortable: true},
-            {header: "Subclass", width: 80, dataIndex: 'subclass', sortable: true},
-			{header: "MIN/AU (Prot)", width: 90, dataIndex: 'min/au', sortable: true},
-			{header: "Nego", width: 50, dataIndex: 'nego', sortable: true},
+            {header: "FF", width: 25, dataIndex: 'ff', sortable: true},
+            {header: "Subclass", width: 70, dataIndex: 'subclass', sortable: true},
+			{header: "MIN/AU (Prot)", width: 80, dataIndex: 'min/au', sortable: true},
+			{header: "Nego", width: 40, dataIndex: 'nego', sortable: true},
 			{header: "NS%", width: 40, dataIndex: 'ns%', sortable: true},
 			{header: "OB%", width: 40, dataIndex: 'ob%', sortable: true},
-			{header: "Bookings", width: 60, dataIndex: 'bkgs', sortable: true},
-			{header: "Group Bookings", width: 90, dataIndex: 'grpbks', sortable: true},
-			{header: "Staff Bookings", width: 90, dataIndex: 'stfbkgs', sortable: true},
+			{header: "Bookings", width: 50, dataIndex: 'bkgs', sortable: true},
+			{header: "Group Bookings", width: 80, dataIndex: 'grpbks', sortable: true},
+			{header: "Staff Bookings", width: 80, dataIndex: 'stfbkgs', sortable: true},
 			{header: "WL Bookings", width: 80, dataIndex: 'wlbkgs', sortable: true},
 			{header: "ETB", width: 40, dataIndex: 'etb', sortable: true},
 			{header: "Class AVL", width: 80, dataIndex: 'classavl', sortable: true},
@@ -320,7 +300,7 @@ Ext.onReady(function(){
         ],
         title: 'Subclasses',
 		renderTo:'subclasses-GridDisplay',
-        width:1180,
+        width:1060,
         height:400,
 		viewConfig: {
 			stripeRows: true

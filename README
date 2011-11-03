@@ -23,7 +23,7 @@ http://fr2.rpmfind.net/linux/fedora/releases/16/Everything/)
 Building the library and test binary from Git repository:
 ----------------------------------------------------------------
 The Sourceforge Git repository may be cloned as following:
-git clone ssh://air-sched.git.sourceforge.net/gitroot/air-sched/air-sched airinvgit
+git clone ssh://airinv.git.sourceforge.net/gitroot/airinv/airinv airinvgit
 cd airinvgit
 git checkout trunk
 
@@ -31,7 +31,7 @@ Then, you need the following packages (Fedora/RedHat/CentOS names here,
 but names may vary according to distributions):
   * cmake
   * gcc-c++
-  * stdair-devel
+  * stdair-devel, airrac-devel, rmol-devel
   * boost-devel
   * zeromq-devel
   * readline-devel
@@ -51,6 +51,8 @@ Then, as usual:
   mkdir build && cd build
   cmake -DCMAKE_INSTALL_PREFIX=/home/user/dev/deliveries/airinv-99.99.99 \
    -DWITH_STDAIR_PREFIX=/home/user/dev/deliveries/stdair-stable \
+   -DWITH_AIRRAC_PREFIX=/home/user/dev/deliveries/airrac-stable \
+   -DWITH_RMOL_PREFIX=/home/user/dev/deliveries/rmol-stable \
    -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON ..
 * To build the project, type:
   make
@@ -64,4 +66,5 @@ Then, as usual:
 * To package the binary and the (HTML and PDF) documentation:
   make package
 
-Denis Arnaud (August 2011)
+Denis Arnaud (October 2011)
+

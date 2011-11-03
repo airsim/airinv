@@ -1,20 +1,22 @@
 #
 # Config file for the AirInv package. It defines the following variables:
+#  AIRINV_VERSION      - version of AirInv
+#  AIRINV_BINARY_DIRS  - binary directories for AirInv
 #  AIRINV_INCLUDE_DIRS - include directories for AirInv
 #  AIRINV_LIBRARY_DIRS - library directories for AirInv (normally not used!)
-#  AIRINV_BINARY_DIRS  - binary directories for AirInv (normally not used!)
 #  AIRINV_LIBRARIES    - libraries to link against
 #  AIRINV_EXECUTABLES  - the AirInv binaries/executables
 
 # Tell the user project where to find AirInv headers and libraries
+set (AIRINV_VERSION "@PACKAGE_VERSION@")
+set (AIRINV_BINARY_DIRS "@AIRINV_BIN_DIR@")
 set (AIRINV_INCLUDE_DIRS "@AIRINV_INCLUDE_DIRS@")
 set (AIRINV_LIBRARY_DIRS "@AIRINV_LIB_DIR@")
-set (AIRINV_BINARY_DIRS "@AIRINV_BIN_DIR@")
 
 # Library dependencies for AirInv (contains definitions for the AirInv IMPORTED
 # targets)
 include ("@AIRINV_CMAKE_DIR@/airinv-library-depends.cmake")
 
 # These are the AirInv IMPORTED targets, created by airinv-library-depends.cmake
-set (AIRINV_LIBRARIES airraclib airinvlib)
-set (AIRINV_EXECUTABLES airinv)
+set (AIRINV_LIBRARIES airinvlib)
+set (AIRINV_EXECUTABLES airinv airinv_parseInventory)

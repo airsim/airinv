@@ -5,50 +5,22 @@ Ext.require([
     'Ext.state.*'
 ]);
 
-
-
-/*var grid_flight;
-var grid_legs;
-var grid_subclasses;
-var store_flights;
-var store_legs;
-var store_subclasses;
-*/
-
-var idFlight;
-
-function queryBuild(companyCode, flightNumber, date)
-{
-	
-	//url="http://ncevsediri-fed/api/display/inv/" + companyCode + "/" + flightNumber + "/" + date;
-	//url="D:/Development%20Workspace/Dreamweaver/DsimUI/browser/sample/datasample.html";
-	grid_flight.getStore().load({url:url});
-	grid_legs.getStore().load({url:url});
-	grid_subclasses.getStore().load({url:url});
-	//flightURL = queryURL;
-}
-
-//Delete this function when calling Django server
-/*function tempQuery(jsonContent)
-{
-
-	store_flights = Ext.create('Ext.data.Store', {
-        autoLoad: true,
-        autoSync: true,
-        model: 'flightinfo',
-		reader: myReader
-    });
-	store_flights.loadData(jsonContent);
-	grid_legs.getStore().loadData(jsonContent);
-	grid_subclasses.getStore().loadData(jsonContent);
-	//flightURL = queryURL;
-}*/
-
-Ext.onReady(function(){
-
-	Ext.define('flightinfo', {
+Ext.define('flightinfo', {
     extend: 'Ext.data.Model',
-    fields: ['departure_date','airline_code','flight_number'],
+    fields: [
+	{
+        name: 'departure_date',
+        type: 'shortdate'
+    }, 
+	{
+		name:'airline_code',
+		type:'string'
+	}, 
+	{ 
+		name:'flight_number',
+		type:'string'
+	},
+	],
 	
 	hasMany: {model: 'legsinfo', name: 'legs'}
 });
@@ -183,82 +155,95 @@ Ext.define('subclasses', {
 	belongsTo: 'flightinfo'
 });
 
-	var url="http://ncevsediri-fed/api/display/inv/SV/5/2010-Mar-11";
-    var store_flights = Ext.create('Ext.data.Store', {
-        model: 'flightinfo',
-        proxy: {
-            type: 'rest',
-			method: 'POST',
-            url: url,
-            reader: {
-                type: 'json',
-                root: 'flight_date'
-            }, 
-        }   
+
+
+function queryBuild(companyCode, flightNumber, date)
+{
+	
+	//var urln="http://ncevsediri-fed/api/display/inv/" + companyCode + "/" + flightNumber + "/" + date;
+	url="D:/Development%20Workspace/Dreamweaver/DsimUI/browser/sample/datasample.html";
+	grid_flight.getStore().load({url:url});
+	grid_legs.getStore().load({url:url});
+	grid_subclasses.getStore().load({url:url});
+	//flightURL = queryURL;
+}
+
+Ext.onReady(function(){
+	
+    var store_flights = Ext.create('Ext.data.ArrayStore', {
+        fields: [
+				 {name: 'Departure Date', type: 'date', dateFormat: 'n/j h:ia'},
+				 {name: 'Airline Code'},
+				 {name: 'Flight Number'}
+         ],
+		data: infoFlight;
     });
-	store_flights.load();
 	
 	var store_legs = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        autoSync: true,
         model: 'legsinfo',
         proxy: {
             type: 'rest',
-			method: 'POST',
             url: url,
             reader: {
                 type: 'json',
                 root: 'flight_date.legs'
             }, 
-        }  
+        },    
     });
-	store_legs.load();
 	
 	var store_subclasses = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        autoSync: true,
         model: 'subclasses',
         proxy: {
             type: 'rest',
-			method: 'POST',
             url: url,
             reader: {
                 type: 'json',
                 root: 'flight_date.subclasses'
             }, 
-        }    
-    });
-	store_subclasses.load();
-	
-	var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
-        clicksToEdit: 1
+        },    
     });
 	
+
     // create the grid
-    var grid_flight = new Ext.grid.GridPanel({
+    grid_flight = new Ext.grid.GridPanel({
         store: store_flights,
         columns: [
-            {'header': "Departure Date", 'width': 120, 'dataIndex': 'departure_date', sortable: true},
-            {'header': "Airline Code", 'width': 100, 'dataIndex': 'airline_code', sortable: true},
-            {'header': "Flight Number", 'width': 100, 'dataIndex': 'flight_number', sortable: true}  
+            {header: "Departure Date", width: 120, dataIndex: 'departure_date', sortable: true, flex: 1, field: {allowBlank: false}},
+            {header: "Airline Code", width: 100, dataIndex: 'airline_code', sortable: true},
+            {header: "Flight Number", width: 100, dataIndex: 'flight_number', sortable: true},
+            //{header: "", width: 100, dataIndex: 'legs', sortable: false, renderer: renderSelect},
+            
         ],
         title: 'Found Flights',
 		renderTo:'flights-GridDisplay',
         width:320,
-        height:150
-		/*listeners: {
+        height:150,
+		viewConfig: {
+			stripeRows:true
+		},
+		listeners: {
 			itemclick : function() {
 				var data=grid_flight.getSelectionModel().selected.items[0].data;
 				grid_legs.setTitle('Legs List');
 				store_legs.clearFilter();
+				//store_legs.filter('company_id', data.id);
 				store_legs.load();
 			}
-		}*/	
+		}	
     });
-
+	store_flights.load();
+	
 	
     // create the grid
-    var grid_legs = new Ext.grid.GridPanel({
+    grid_legs = new Ext.grid.GridPanel({
         store: store_legs,
         columns: [
             {header: "Board Date", width: 80, dataIndex: 'board_date', sortable: true},
-            {header: "Capacity", width: 75, dataIndex: 'capacity', sortable: true},
+            {header: "Capacity", width: 80, dataIndex: 'capacity', sortable: true},
             {header: "Off Date", width: 80, dataIndex: 'off_date', sortable: true},
             {header: "Distance", width: 80, dataIndex: 'distance', sortable: true},
             {header: "Off Point", width: 80, dataIndex: 'off_point', sortable: true},
@@ -272,36 +257,41 @@ Ext.define('subclasses', {
         ],
         title: 'Flight Legs',
 		renderTo:'legs-GridDisplay',
-        width:875,
-        height:150
+        width:880,
+        height:150,
+		viewConfig: {
+			stripeRows: true
+		}
     });
 	
-	var grid_subclasses = new Ext.grid.GridPanel({
+	grid_subclasses = new Ext.grid.GridPanel({
         store: store_subclasses,
         columns: [
-            {header: "Flight", width: 100, dataIndex: 'flight', sortable: true},
-            {header: "Segment", width: 120, dataIndex: 'segment', sortable: true},
-            {header: "Cabin", width: 50, dataIndex: 'cabin', sortable: true},
-            {header: "FF", width: 30, dataIndex: 'ff', sortable: true},
+            {header: "Flight", width: 60, dataIndex: 'flight', sortable: true},
+            {header: "Segment", width: 70, dataIndex: 'segment', sortable: true},
+            {header: "Cabin", width: 60, dataIndex: 'cabin', sortable: true},
+            {header: "FF", width: 25, dataIndex: 'ff', sortable: true},
             {header: "Subclass", width: 70, dataIndex: 'subclass', sortable: true},
-			{header: "MIN/AU (Prot)", width: 90, dataIndex: 'min/au', sortable: true},
-			{header: "Nego", width: 40, dataIndex: 'nego', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "NS%", width: 40, dataIndex: 'ns%', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "OB%", width: 40, dataIndex: 'ob%', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Bookings", width: 60, dataIndex: 'bkgs', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Group Bookings", width: 90, dataIndex: 'grpbks', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Staff Bookings", width: 90, dataIndex: 'stfbkgs', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "WL Bookings", width: 80, dataIndex: 'wlbkgs', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "ETB", width: 40, dataIndex: 'etb', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Class AVL", width: 80, dataIndex: 'classavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Rev AVL", width: 70, dataIndex: 'revavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Seg AVL", width: 70, dataIndex: 'segavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
+			{header: "MIN/AU (Prot)", width: 80, dataIndex: 'min/au', sortable: true},
+			{header: "Nego", width: 40, dataIndex: 'nego', sortable: true},
+			{header: "NS%", width: 40, dataIndex: 'ns%', sortable: true},
+			{header: "OB%", width: 40, dataIndex: 'ob%', sortable: true},
+			{header: "Bookings", width: 50, dataIndex: 'bkgs', sortable: true},
+			{header: "Group Bookings", width: 80, dataIndex: 'grpbks', sortable: true},
+			{header: "Staff Bookings", width: 80, dataIndex: 'stfbkgs', sortable: true},
+			{header: "WL Bookings", width: 80, dataIndex: 'wlbkgs', sortable: true},
+			{header: "ETB", width: 40, dataIndex: 'etb', sortable: true},
+			{header: "Class AVL", width: 80, dataIndex: 'classavl', sortable: true},
+			{header: "Rev AVL", width: 80, dataIndex: 'revavl', sortable: true},
+			{header: "Seg AVL", width: 80, dataIndex: 'segavl', sortable: true},
         ],
         title: 'Subclasses',
 		renderTo:'subclasses-GridDisplay',
-        width:1180,
+        width:1060,
         height:400,
-		plugins: [cellEditing]
+		viewConfig: {
+			stripeRows: true
+		}
     });
 }
 )

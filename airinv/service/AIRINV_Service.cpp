@@ -9,6 +9,7 @@
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
 #include <stdair/bom/BomManager.hpp> 
+#include <stdair/bom/BomKeyManager.hpp> 
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
 #include <stdair/bom/FlightDate.hpp>
@@ -264,7 +265,7 @@ namespace AIRINV {
   void AIRINV_Service::
   parseAndLoad (const stdair::Filename_T& iScheduleInputFilename,
                 const stdair::Filename_T& iODInputFilename,
-                const stdair::Filename_T& iYieldInputFilename) {
+                const AIRRAC::YieldFilePath& iYieldFilename) {
 
     // Retrieve the BOM root object.
     assert (_airinvServiceContext != NULL);
@@ -279,7 +280,7 @@ namespace AIRINV {
     // Parse the yield structures.
     AIRRAC::AIRRAC_Service& lAIRRAC_Service =
       lAIRINV_ServiceContext.getAIRRAC_Service();
-    lAIRRAC_Service.parseAndLoad (iYieldInputFilename);
+    lAIRRAC_Service.parseAndLoad (iYieldFilename);
 
     // Update yield values for booking classes and O&D.
     lAIRRAC_Service.updateYields();
@@ -335,7 +336,7 @@ namespace AIRINV {
      */
     RMOL::RMOL_Service& lRMOL_Service= lAIRINV_ServiceContext.getRMOL_Service();
     lRMOL_Service.buildSampleBom();
-
+    
     /**
      * 3. Build the complementary objects/links for the current component (here,
      *    AirSched)
@@ -363,6 +364,11 @@ namespace AIRINV {
      */
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
     InventoryManager::buildSimilarSegmentCabinSets (lBomRoot);
+
+    /**
+     * 3.3. Initialise the bid price vectors.
+     */
+    //    InventoryManager::setDefaultBidPriceVector (lBomRoot);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -516,7 +522,8 @@ namespace AIRINV {
   
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::
-  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution) {
+  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution,
+                         const stdair::PartnershipTechnique& iPartnershipTechnique) {
     
     if (_airinvServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The AirInv service "
@@ -531,8 +538,9 @@ namespace AIRINV {
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
 
     // Delegate the booking to the dedicated command
-    stdair::BasChronometer lAvlChronometer; lAvlChronometer.start();
-    InventoryManager::calculateAvailability (lBomRoot, ioTravelSolution);
+    stdair::BasChronometer lAvlChronometer;
+    lAvlChronometer.start();
+    InventoryManager::calculateAvailability (lBomRoot, ioTravelSolution, iPartnershipTechnique);
     // const double lAvlMeasure = lAvlChronometer.elapsed();
 
     // DEBUG
@@ -582,6 +590,50 @@ namespace AIRINV {
   }
   
   // ////////////////////////////////////////////////////////////////////
+  bool AIRINV_Service::cancel (const std::string& iSegmentDateKey,
+                             const stdair::ClassCode_T& iClassCode,
+                             const stdair::PartySize_T& iPartySize) {
+    bool isCancellationSuccessful = false;
+
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInv service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+
+    // \todo Check that the current AIRINV_Service is actually operating for
+    //       the given airline (inventory key)
+    // Retrieve the corresponding inventory key
+    const stdair::InventoryKey& lInventoryKey =
+      stdair::BomKeyManager::extractInventoryKey (iSegmentDateKey);
+
+    // Retrieve the root of the BOM tree
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service();
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
+
+    // Retrieve the corresponding inventory
+    stdair::Inventory& lInventory = stdair::BomManager::
+      getObject<stdair::Inventory> (lBomRoot, lInventoryKey.toString());
+
+    // Delegate the booking to the dedicated command
+    stdair::BasChronometer lCancellationChronometer;
+    lCancellationChronometer.start();
+    isCancellationSuccessful = InventoryManager::cancel (lInventory,
+                                                         iSegmentDateKey,
+                                                         iClassCode,iPartySize);
+    // const double lCancellationMeasure = lCancellationChronometer.elapsed();
+
+    // DEBUG
+    // STDAIR_LOG_DEBUG ("Booking cancellation: "
+    //                  << lCancellationMeasure << " - "
+    //                  << lAIRINV_ServiceContext.display());
+
+    return isCancellationSuccessful;
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::takeSnapshots (const stdair::AirlineCode_T& iAirlineCode,
                                       const stdair::DateTime_T& iSnapshotTime) {
 
@@ -612,7 +664,8 @@ namespace AIRINV {
   void AIRINV_Service::optimise (const stdair::AirlineCode_T& iAirlineCode,
                                  const stdair::KeyDescription_T& iFDDescription,
                                  const stdair::DateTime_T& iRMEventTime,
-                                 const stdair::ForecastingMethod& iForecastingMethod) {
+                                 const stdair::ForecastingMethod& iForecastingMethod,
+                                 const stdair::PartnershipTechnique& iPartnershipTechnique) {
     if (_airinvServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The AirInv service "
                                                     "has not been initialised");
@@ -635,7 +688,7 @@ namespace AIRINV {
 
     // Optimise the flight-date.
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
-                                               iForecastingMethod);
+                                               iForecastingMethod, iPartnershipTechnique);
 
     // Update the inventory with the new controls.
     if (isOptimised == true) {
