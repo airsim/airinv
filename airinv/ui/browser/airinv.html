@@ -21,67 +21,67 @@
 </head>
 <body>
 <div id="container" style="width:1200px; margin: 0 auto;" >
-	<div id="header" style="background-image:url(assets/images/airsimheader2.png); width:1200px; height:245px">
-		<div align="left" style="vertical-align:bottom; padding-left:10px">
-			<p>&nbsp;</p>
-			<p>&nbsp;</p>
-			<p>&nbsp;</p>
-			<p>&nbsp;</p>
-			<p>&nbsp;</p>
-			<p>&nbsp;</p>
-			<p>&nbsp;</p>
-			<p>Company Code:
-				<input id="tbCompanyCode" type="text" value="SV" />
-				Flight Number:
-				<input id="tbFlightNumber" type="text" value="5"/>
-				Date:
-				<input type="text" id="datepicker" value="2010-Mar-11" />
-				<!--<button id="btnFetch"  onClick="fetch()">Fetch !</button>-->
-				<input name="input" type="submit" value="Fetch!" onclick="fetch()"/>
-			</p>
-		</div>
-	</div>
-	<div align="center" style="padding-left:0px; padding-top:20px; padding-bottom:20px">
-		<table width="100%" border="0" cellpadding="0" align="center" style="padding-left:0px">
-			<tr align="center">
-				<td align="right"><p align="left">&nbsp;</p>
-					<p align="left">&nbsp;</p></td>
-				<td align="right" style="padding-left:0px;"><div id="flights-GridDisplay" style="padding-left:0px;"></div></td>
-				<td align="left"><div id="legs-GridDisplay"></div></td>
-			</tr>
-		</table>
-		<div id="tabs" >
-			<ul>
-				<li><a href="#tabs-2">Inventory</a></li>
-				<li><a href="#tabs-1">Bid-Price Vectors</a></li>
-				<!--<li><a href="#tabs-3">Schedule</a></li>-->
-				<li><a href="#tabs-4">Bkg Pattern</a></li>
-				<li><a href="#tabs-5">DCS Counters</a></li>
-				<li><a href="#tabs-6">Bkg Origin</a></li>
-				<li><a href="#tabs-7">Nesting Structure</a></li>
-				<li><a href="#tabs-8">Nego Space</a></li>
-				<li><a href="#tabs-9">Published N/AVS</a></li>
-			</ul>
-			<div id="tabs-1" style="padding:6px">
-				<div id="bidpricechartcontainer" align="center" style="size:95%"></div>
-			</div>
-			<div id="tabs-2" style="padding:1px; height:auto; width:auto">
-				<div style="width:100%; height:100%;">
-					<div id="subclasses-GridDisplay" style="padding:6px; height:auto; width:auto;"></div>
-				</div>
-			</div>
-			<!--<div id="tabs-3"><img src="assets/images/SQ_Network_2009_Jan.png" width="927" height="600" /></div>-->
-			<div id="tabs-4" style="padding:6px; height:420px; width:1100px">
-				<div id="bookingarrivalchartcontainer" align="center" style="size:95%"></div>
-				<p>&nbsp;</p>
-			</div>
-			<div id="tabs-5"></div>
-			<div id="tabs-6"></div>
-			<div id="tabs-7"></div>
-			<div id="tabs-8"></div>
-			<div id="tabs-9"></div>
-		</div>
-	</div>
+  <div id="header" style="background-image:url(assets/images/airsimheader2.png); width:1200px; height:245px">
+    <div align="left" style="vertical-align:bottom; padding-left:10px">
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>Company Code:
+        <input id="tbCompanyCode" type="text" value="SV" />
+        Flight Number:
+        <input id="tbFlightNumber" type="text" value="5"/>
+        Date:
+        <input type="text" id="datepicker" value="2010-Mar-11" />
+        <!--<button id="btnFetch"  onClick="fetch()">Fetch !</button>-->
+        <input name="input" type="submit" value="Fetch!" onclick="fetch()"/>
+      </p>
+    </div>
+  </div>
+  <div align="center" style="padding-left:0px; padding-top:20px; padding-bottom:20px">
+    <table width="100%" border="0" cellpadding="0" align="center" style="padding-left:0px">
+      <tr align="center">
+        <td align="right"><p align="left">&nbsp;</p>
+          <p align="left">&nbsp;</p></td>
+        <td align="right" style="padding-left:0px;"><div id="flights-GridDisplay" style="padding-left:0px;"></div></td>
+        <td align="left"><div id="legs-GridDisplay"></div></td>
+      </tr>
+    </table>
+    <div id="tabs" >
+      <ul>
+        <li><a href="#tabs-2">Inventory</a></li>
+        <li><a href="#tabs-1">Bid-Price Vectors</a></li>
+        <!--<li><a href="#tabs-3">Schedule</a></li>-->
+        <li><a href="#tabs-4">Bkg Pattern</a></li>
+        <li><a href="#tabs-5">DCS Counters</a></li>
+        <li><a href="#tabs-6">Bkg Origin</a></li>
+        <li><a href="#tabs-7">Nesting Structure</a></li>
+        <li><a href="#tabs-8">Nego Space</a></li>
+        <li><a href="#tabs-9">Published N/AVS</a></li>
+      </ul>
+      <div id="tabs-1" style="padding:6px">
+        <div id="bidpricechartcontainer" align="center" style="size:95%"></div>
+      </div>
+      <div id="tabs-2" style="padding:1px; height:auto; width:auto">
+        <div style="width:100%; height:100%;">
+          <div id="subclasses-GridDisplay" style="padding:6px; height:auto; width:auto;"></div>
+        </div>
+      </div>
+      <!--<div id="tabs-3"><img src="assets/images/SQ_Network_2009_Jan.png" width="927" height="600" /></div>-->
+      <div id="tabs-4" style="padding:6px; height:420px; width:1100px">
+        <div id="bookingarrivalchartcontainer" align="center" style="size:95%"></div>
+        <p>&nbsp;</p>
+      </div>
+      <div id="tabs-5"></div>
+      <div id="tabs-6"></div>
+      <div id="tabs-7"></div>
+      <div id="tabs-8"></div>
+      <div id="tabs-9"></div>
+    </div>
+  </div>
 </div>
 </body>
 <script type="text/javascript">
