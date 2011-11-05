@@ -1,4 +1,3 @@
-
 ##################################################
 ## Set up of a JavaScript-based UI for the whole chain, from the client
 ## to the server, through the Web and application servers.
@@ -26,9 +25,12 @@ midori http://www.sencha.com/products/extjs/download/ext-js-4.0.7/1234
 unzip ext-4.0.7-gpl.zip && rm -f ext-4.0.7-gpl.zip
 ln -s ext-4.0.7-gpl extJS
 # jQueryUI (~1.1 MB)
-mkdir jQueryUI-1.8.16 && ln -s jQueryUI-1.8.16 jQueryUI && cd jQueryUI-1.8.16
-midori http://jqueryui.com
-wget http://jqueryui.com/download/jquery-ui-1.8.16.custom.zip
+mkdir jQueryUI-1.8.16 && ln -s jQueryUI-1.8.16 jQueryUI && cd jQueryUI
+midori http://jqueryui.com/download
+# Select the "redmond" them and click the download button. Save the file
+# under the ${AIRINV_DIR}/airinv/ui/browser/libs/jQueryUI directory.
+# Note: wget http://jqueryui.com/download/jquery-ui-1.8.16.custom.zip
+# would get you the default theme, i.e., "smoothness", instead of "redmond".
 unzip jquery-ui-1.8.16.custom.zip && rm -f jquery-ui-1.8.16.custom.zip
 # Then, potentially create symbolic links for the missing version.
 # To see which versions are required, check:
@@ -38,8 +40,6 @@ unzip jquery-ui-1.8.16.custom.zip && rm -f jquery-ui-1.8.16.custom.zip
 cd ${AIRINV_DIR}/airinv/ui/browser/libs/jQueryUI/js/
 ln -s jquery-1.6.2.min.js jquery-1.5.1.min.js
 ln -s jquery-ui-1.8.16.custom.min.js jquery-ui-1.8.13.custom.min.js 
-cd ${AIRINV_DIR}/airinv/ui/browser/libs/jQueryUI/css/
-ln -s smoothness redmond
 cd ${AIRINV_DIR}/airinv/ui/browser/libs/jQueryUI/css/redmond/
 ln -s jquery-ui-1.8.16.custom.css jquery-ui-1.8.13.custom.css
 
