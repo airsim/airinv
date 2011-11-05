@@ -21,7 +21,7 @@ yum -y install Django django-piston python-zmq zeromq-devel httpd stdair-devel
 cd ${AIRINV_DIR}/airinv/ui/browser/libs
 # extJS (~40 MB)
 midori http://www.sencha.com/products/extjs/download/ext-js-4.0.7/1234
-# Then, save the archive in ${AIRINV_DIR}/airinv/ui/browser/libs/extJS
+# Then, save the archive in ${AIRINV_DIR}/airinv/ui/browser/libs
 unzip ext-4.0.7-gpl.zip && rm -f ext-4.0.7-gpl.zip
 ln -s ext-4.0.7-gpl extJS
 # jQueryUI (~1.1 MB)
