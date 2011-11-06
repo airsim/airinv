@@ -23,7 +23,7 @@ The library covers the following areas:
 - Codeshare and alliances
 
 \section sec_see_also SEE ALSO
-\b airinv(1), \b airinv_parseInventory(1), \b airinv-config(1)
+\b airinv(1), \b airinv_parseInventory(1), \b AirInvServer(1), \b AirInvClient(1), \b airinv-config(1)
 
 
 \section sec_support SUPPORT

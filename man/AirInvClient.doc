@@ -1,0 +1,37 @@
+/*!
+\page AirInvClient
+	  ZeroMQ-based client binary, mainly used to test the server mode of AirInv
+
+\section sec_synopsis SYNOPSIS
+
+<b>AirInvClient</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-f|--for_schedule] [-i|--inventory <path-to-inventory-input-file>] [-s|--schedule <path-to-schedule-input-file>] [-o|--ond <path-to-ond-input-file>]  [-y|--yield <path-to-yield-input-file>] [-t|--protocol <server network protocol>] [-a|--address <server host address>] [-p|--port <server host port>] [-l|--log <path-to-output-log-file>]</tt>
+
+\section sec_description DESCRIPTION
+
+\e AirInvClient is a small program sending and receiving simple JSON-formatted
+   messages to the <a href="http://zeromq.org">ZeroMQ</a>-based server
+  (AirInvServer). The aim of that client is to test that the AirInv server
+  is up and running, and that it receives and sends JSON requests.
+
+\e AirInvClient does not accept any option for now. Do not hesitate 
+   to contribute!
+
+
+\section sec_see_also SEE ALSO
+\b airinv(1), \b AirInvServer(1), \b airinv-config(1), \b airinv-library(3)
+
+
+\section sec_support SUPPORT
+
+Please report any bugs to https://sourceforge.net/apps/trac/airinv/report
+
+
+\section sec_copyright COPYRIGHT
+
+Copyright © 2009-2011 Denis Arnaud
+
+See the COPYING file for more information on the (LGPLv2+) license, or
+directly on Internet:<br>
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+*/
