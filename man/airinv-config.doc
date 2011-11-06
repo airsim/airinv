@@ -52,7 +52,7 @@ macros, that are included with \e AirInv, for GNU autoconf.
     Show where the PDF documentation is located.
 
 \section sec_see_also SEE ALSO
-\b airinv(1), \b airinv_parseInventory(1), \b airinv-library(3)
+\b airinv(1), \b airinv_parseInventory(1), \b AirInvServer(1), \b AirInvClient(1), \b airinv-library(3)
 
 \section sec_copyright COPYRIGHT
 

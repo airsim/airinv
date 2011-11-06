@@ -612,6 +612,8 @@ WARN_LOGFILE           =
 
 INPUT                  = @srcdir@/airinv.doc \
                          @srcdir@/airinv_parseInventory.doc \
+                         @srcdir@/AirInvServer.doc \
+                         @srcdir@/AirInvClient.doc \
                          @srcdir@/airinv-config.doc
 
 # This tag can be used to specify the character encoding of the source files

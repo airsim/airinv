@@ -4,7 +4,7 @@
 
 \section sec_synopsis SYNOPSIS
 
-<b>airinv</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-i|--input <path-to-input>] [-l|--log <path-to-output-log-file>]</tt>
+<b>airinv_parseInventory</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-f|--for_schedule] [-i|--inventory <path-to-inventory-input-file>] [-s|--schedule <path-to-schedule-input-file>] [-o|--ond <path-to-ond-input-file>]  [-y|--yield <path-to-yield-input-file>] [-l|--log <path-to-output-log-file>]</tt>
 
 \section sec_description DESCRIPTION
 
@@ -62,7 +62,7 @@ See the output of the <tt>`airinv --help'</tt> command for default options.
 
 
 \section sec_see_also SEE ALSO
-\b airinv(1), \b airinv-config(1), \b airinv-library(3)
+\b airinv(1), \b AirInvServer(1), \b AirInvClient(1), \b airinv-config(1), \b airinv-library(3)
 
 
 \section sec_support SUPPORT

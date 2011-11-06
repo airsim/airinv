@@ -1,16 +1,21 @@
 /*!
-\page airinv
-	  Command-line interpreter for the C++ Simulated Airline Inventory Management System library
+\page AirInvServer
+	  ZeroMQ-based server binary exposing the AirInv library as a service
 
 \section sec_synopsis SYNOPSIS
 
-<b>airinv</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-f|--for_schedule] [-i|--inventory <path-to-inventory-input-file>] [-s|--schedule <path-to-schedule-input-file>] [-o|--ond <path-to-ond-input-file>]  [-y|--yield <path-to-yield-input-file>] [-l|--log <path-to-output-log-file>]</tt>
+<b>AirInvServer</b> <tt>[--prefix] [-v|--version] [-h|--help] [-b|--builtin] [-f|--for_schedule] [-i|--inventory <path-to-inventory-input-file>] [-s|--schedule <path-to-schedule-input-file>] [-o|--ond <path-to-ond-input-file>]  [-y|--yield <path-to-yield-input-file>] [-t|--protocol <server network protocol>] [-a|--address <server host address>] [-p|--port <server host port>] [-l|--log <path-to-output-log-file>]</tt>
 
 \section sec_description DESCRIPTION
 
-\e airinv is a small program showing how to use the AirInv library.
+\e AirInvServer is a small program wrapping the AirInv library, so as to expose
+   it as a <a href="http://www.zeromq.org">ZeroMQ</a>-based server. That server
+   listens to and answers with JSON-formatted messages. Typically, a
+   <a href="http://www.djangoproject.com">Django</a>-based Web application
+   will use those AirInv services, so as to expose to the end user a clean
+   and light user interface.
 
-\e airinv accepts the following options:
+\e AirInvServer accepts the following options:
 
  \b --prefix<br>
     Show the AirInv installation prefix.
@@ -46,14 +51,23 @@
     Path (absolute or relative) of the (CSV) input file specifying the
     yield rule details.<br>
 
+ \b -t, \b --protocol <server network protocol><br>
+    Server protocol<br>
+
+ \b -a, \b --address <server host address><br>
+    Server address<br>
+
+ \b -p, \b --port <server host port><br>
+    Server port<br>
+
  \b -l, \b --log <path-to-output-log-file><br>
     Path (absolute or relative) of the output log file.<br>
 
-See the output of the <tt>`airinv --help'</tt> command for default options.
+See the output of the <tt>`AirInv --help'</tt> command for default options.
 
 
 \section sec_see_also SEE ALSO
-\b airinv_parseInventory(1), \b AirInvServer(1), \b AirInvClient(1), \b airinv-config(1), \b airinv-library(3)
+\b airinv(1), \b AirInvClient(1), \b airinv-config(1), \b airinv-library(3)
 
 
 \section sec_support SUPPORT
