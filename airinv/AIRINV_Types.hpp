@@ -20,6 +20,33 @@ namespace AIRINV {
 
 
   // ///////// Exceptions ///////////
+
+  /**
+   * The inventory input file can not be parsed.
+   */
+  class InventoryFileParsingFailedException
+    : public stdair::ParsingFileFailedException {
+  public:
+    /**
+     * Constructor.
+     */
+    InventoryFileParsingFailedException (const std::string& iWhat)
+      : stdair::ParsingFileFailedException (iWhat) {}
+  };
+
+  /**
+   * The schedule input file can not be parsed.
+   */
+  class ScheduleFileParsingFailedException
+    : public stdair::ParsingFileFailedException {
+  public:
+    /**
+     * Constructor.
+     */
+    ScheduleFileParsingFailedException (const std::string& iWhat)
+      : stdair::ParsingFileFailedException (iWhat) {}
+  };
+  
   /**
    * Specific exception when some BOM objects can not be found within
    * the inventory.
@@ -31,6 +58,42 @@ namespace AIRINV {
      */
     SegmentDateNotFoundException (const std::string& iWhat)
       : stdair::ParserException (iWhat) {}
+  };
+
+  /**
+   * The inventory input file can not be found or opened.
+   */
+  class InventoryInputFileNotFoundException : public stdair::FileNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    InventoryInputFileNotFoundException (const std::string& iWhat)
+      : stdair::FileNotFoundException (iWhat) {}
+  };
+
+  /**
+   * The schedule input file can not be found or opened.
+   */
+  class ScheduleInputFileNotFoundException : public stdair::FileNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    ScheduleInputFileNotFoundException (const std::string& iWhat)
+      : stdair::FileNotFoundException (iWhat) {}
+  };
+
+  /**
+   * Duplicated flight date object.
+   */
+  class FlightDateDuplicationException : public stdair::ObjectCreationgDuplicationException {
+  public:
+    /**
+     * Constructor.
+     */
+    FlightDateDuplicationException (const std::string& iWhat) 
+      : stdair::ObjectCreationgDuplicationException (iWhat) {} 
   };
 
   /**
