@@ -91,7 +91,7 @@ namespace AIRINV {
       std::ostringstream oMessage;
       oMessage << ioInventory.describeKey() << ", "
                << lFlightDate_ptr->describeKey();
-      throw stdair::ObjectCreationgDuplicationException (oMessage.str());
+      throw FlightDateDuplicationException (oMessage.str());
     }
 
     // Instantiate a fligh-date object with the given key (flight number and

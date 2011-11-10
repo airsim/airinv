@@ -1107,7 +1107,8 @@ namespace AIRINV {
     if (!_startIterator) {
       std::ostringstream oMessage;
       oMessage << "The file " << _filename << " can not be open.";
-      throw stdair::FileNotFoundException (oMessage.str());
+      STDAIR_LOG_ERROR (oMessage.str());
+      throw InventoryInputFileNotFoundException (oMessage.str());
     }
 
     // Create an EOF iterator
@@ -1150,8 +1151,8 @@ namespace AIRINV {
                         << " characters. The input file has "
                         << hasBeenFullyReadStr
                         << "been fully read. Stop point: " << info.stop);
-      throw stdair::ParserException ("Parsing of inventory input file: "
-                                     + _filename + " failed.");
+      throw InventoryFileParsingFailedException ("Parsing of inventory input file: "
+                                                 + _filename + " failed.");
     }
 
     return oResult;

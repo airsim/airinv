@@ -649,7 +649,8 @@ namespace AIRINV {
     if (!_startIterator) {
       std::ostringstream oMessage;
       oMessage << "The file " << _filename << " can not be open." << std::endl;
-      throw stdair::FileNotFoundException (oMessage.str());
+      STDAIR_LOG_ERROR (oMessage.str());
+      throw ScheduleInputFileNotFoundException (oMessage.str());
     }
 
     // Create an EOF iterator
@@ -675,9 +676,11 @@ namespace AIRINV {
 
     // Retrieves whether or not the parsing was successful
     oResult = info.hit;
+
+    const bool isFull = info.full;
       
-    const std::string hasBeenFullyReadStr = (info.full == true)?"":"not ";
-    if (oResult == true) {
+    const std::string hasBeenFullyReadStr = (isFull  == true)?"":"not ";
+    if (oResult == true && isFull == true) {
       STDAIR_LOG_DEBUG ("Parsing of schedule input file: " << _filename
                        << " succeeded: read " << info.length
                        << " characters. The input file has "
@@ -685,12 +688,13 @@ namespace AIRINV {
                        << "been fully read. Stop point: " << info.stop);
         
     } else {
-      // TODO: decide whether to throw an exception
       STDAIR_LOG_ERROR ("Parsing of schedule input file: " << _filename
                        << " failed: read " << info.length
                        << " characters. The input file has "
                        << hasBeenFullyReadStr
                        << "been fully read. Stop point: " << info.stop);
+      throw ScheduleFileParsingFailedException ("Parsing of schedule input file: "
+                                                + _filename + " failed.");
     }
 
     return oResult;

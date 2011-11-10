@@ -7,6 +7,7 @@
 // StdAir
 #include <stdair/basic/BasFileMgr.hpp>
 #include <stdair/bom/BomRoot.hpp>
+#include <stdair/service/Logger.hpp>
 // Airinv
 #include <airinv/command/InventoryParserHelper.hpp>
 #include <airinv/command/InventoryParser.hpp>
@@ -26,7 +27,8 @@ namespace AIRINV {
       std::ostringstream oMessage;
       oMessage << "The inventory input file, '" << iInventoryFilename
                << "', can not be retrieved on the file-system";
-      throw stdair::FileNotFoundException (oMessage.str());
+      STDAIR_LOG_ERROR (oMessage.str());
+      throw InventoryInputFileNotFoundException (oMessage.str());
     }
 
     // Initialise the inventory file parser.
