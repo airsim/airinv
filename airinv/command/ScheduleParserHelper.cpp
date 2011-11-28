@@ -470,11 +470,15 @@ namespace AIRINV {
     FlightPeriodParser::definition<ScannerT>::
     definition (FlightPeriodParser const& self) {
 
-      flight_period_list = *( boost::spirit::classic::comment_p("//")
-                              | boost::spirit::classic::comment_p("/*", "*/")
-                              | flight_period )
+      flight_period_list = *( not_to_parsed | flight_period )
         ;
       
+      not_to_parsed = boost::spirit::classic::lexeme_d[
+        boost::spirit::classic::comment_p("//")
+        | boost::spirit::classic::comment_p("/*", "*/")
+        | boost::spirit::classic::space_p]
+        ;
+
       flight_period = flight_key
         >> +( ';' >> leg )
         >> ';' >> segment_section
@@ -594,6 +598,7 @@ namespace AIRINV {
         
       // BOOST_SPIRIT_DEBUG_NODE (FlightPeriodParser);
       BOOST_SPIRIT_DEBUG_NODE (flight_period_list);
+      BOOST_SPIRIT_DEBUG_NODE (not_to_parsed);
       BOOST_SPIRIT_DEBUG_NODE (flight_period);
       BOOST_SPIRIT_DEBUG_NODE (flight_period_end);
       BOOST_SPIRIT_DEBUG_NODE (flight_key);
@@ -672,7 +677,7 @@ namespace AIRINV {
     // (i.e., including Inventory, FlightDate, LegDate, SegmentDate, etc.)
     boost::spirit::classic::parse_info<iterator_t> info =
       boost::spirit::classic::parse (_startIterator, _endIterator, lFPParser, 
-                            boost::spirit::classic::space_p);
+                            boost::spirit::classic::space_p - boost::spirit::classic::eol_p);
 
     // Retrieves whether or not the parsing was successful
     oResult = info.hit;
