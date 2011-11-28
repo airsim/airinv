@@ -8,7 +8,11 @@
 #include <stdair/stdair_exceptions.hpp>
 // Airinv
 #include <airinv/command/InventoryBuilder.hpp>
+//#define BOOST_SPIRIT_DEBUG
 #include <airinv/command/InventoryParserHelper.hpp>
+
+//
+namespace bsc = boost::spirit::classic;
 
 namespace AIRINV {
 
@@ -867,9 +871,12 @@ namespace AIRINV {
     InventoryParser::definition<ScannerT>::
     definition (InventoryParser const& self) {
 
-      flight_date_list = *( boost::spirit::classic::comment_p("//")
-                            | boost::spirit::classic::comment_p("/*", "*/")
-                            | flight_date )
+      flight_date_list = *( not_to_parsed | flight_date )
+        ;
+      
+      not_to_parsed =
+        bsc::lexeme_d[bsc::comment_p("//") | bsc::comment_p("/*", "*/")]
+        | bsc::eol_p
         ;
       
       flight_date = flight_key
@@ -879,8 +886,7 @@ namespace AIRINV {
                                             self._nbOfFlights)]
         ;
 
-      flight_date_end =
-        boost::spirit::classic::ch_p(';')
+      flight_date_end = bsc::ch_p(';')
         ;
       
       flight_key = date[storeSnapshotDate(self._flightDate)]
@@ -892,34 +898,25 @@ namespace AIRINV {
         ;
 
       airline_code =
-        boost::spirit::classic::lexeme_d[
-                                (airline_code_p)[storeAirlineCode(self._flightDate)]
-                                ]
+        bsc::lexeme_d[(airline_code_p)[storeAirlineCode(self._flightDate)]]
         ;
         
       flight_number =
-        boost::spirit::classic::lexeme_d[
-                                (flight_number_p)[storeFlightNumber(self._flightDate)]
-                                ]
+        bsc::lexeme_d[(flight_number_p)[storeFlightNumber(self._flightDate)]]
         ;
 
       date =
-        boost::spirit::classic::lexeme_d[
-                                (day_p)[boost::spirit::classic::assign_a(self._flightDate._itDay)]
-                                >> (month_p)[boost::spirit::classic::assign_a(self._flightDate._itMonth)]
-                                >> (year_p)[boost::spirit::classic::assign_a(self._flightDate._itYear)]
-                                ]
+        bsc::lexeme_d[(day_p)[bsc::assign_a(self._flightDate._itDay)]
+                      >> (month_p)[bsc::assign_a(self._flightDate._itMonth)]
+                      >> (year_p)[bsc::assign_a(self._flightDate._itYear)]]
         ;
 
       flight_type_code =
-        ( boost::spirit::classic::chseq_p("INT")
-          | boost::spirit::classic::chseq_p("DOM")
-          | boost::spirit::classic::chseq_p("GRD") )
+        ( bsc::chseq_p("INT") | bsc::chseq_p("DOM") | bsc::chseq_p("GRD") )
         ;
 
       flight_visibility_code =
-        ( boost::spirit::classic::chseq_p("HID")
-          | boost::spirit::classic::chseq_p("PSD") )
+        ( bsc::chseq_p("HID") | bsc::chseq_p("PSD") )
         ;
 
       leg_list = +( '/' >> leg )
@@ -942,21 +939,21 @@ namespace AIRINV {
         ;
         
       leg_cabin_details = (cabin_code_p)[storeLegCabinCode(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeSaleableCapacity(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::real_p)[storeAU(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::real_p)[storeUPR(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::real_p)[storeBookingCounter(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::real_p)[storeNAV(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::real_p)[storeGAV(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::ureal_p)[storeACP(self._flightDate)]
-        >> ',' >> (boost::spirit::classic::real_p)[storeETB(self._flightDate)]
+        >> ',' >> (bsc::ureal_p)[storeSaleableCapacity(self._flightDate)]
+        >> ',' >> (bsc::real_p)[storeAU(self._flightDate)]
+        >> ',' >> (bsc::real_p)[storeUPR(self._flightDate)]
+        >> ',' >> (bsc::real_p)[storeBookingCounter(self._flightDate)]
+        >> ',' >> (bsc::real_p)[storeNAV(self._flightDate)]
+        >> ',' >> (bsc::real_p)[storeGAV(self._flightDate)]
+        >> ',' >> (bsc::ureal_p)[storeACP(self._flightDate)]
+        >> ',' >> (bsc::real_p)[storeETB(self._flightDate)]
         ;
         
       time =
-        boost::spirit::classic::lexeme_d[
-            (hours_p)[boost::spirit::classic::assign_a(self._flightDate._itHours)]
-         >> (minutes_p)[boost::spirit::classic::assign_a(self._flightDate._itMinutes)]
-         >> !((seconds_p)[boost::spirit::classic::assign_a(self._flightDate._itSeconds)])
+        bsc::lexeme_d[
+            (hours_p)[bsc::assign_a(self._flightDate._itHours)]
+         >> (minutes_p)[bsc::assign_a(self._flightDate._itMinutes)]
+         >> !((seconds_p)[bsc::assign_a(self._flightDate._itSeconds)])
                                          ]
         ;
       
@@ -964,8 +961,8 @@ namespace AIRINV {
         ;
 
       bucket_details =
-        (boost::spirit::classic::ureal_p)[storeYieldUpperRange(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::real_p)[storeBucketAvaibality(self._flightDate)]
+        (bsc::ureal_p)[storeYieldUpperRange(self._flightDate)]
+        >> ':' >> (bsc::real_p)[storeBucketAvaibality(self._flightDate)]
         >> ':' >> (uint1_3_p)[storeSeatIndex(self._flightDate)];
       
       segment_list = +( '/' >> segment )
@@ -992,7 +989,7 @@ namespace AIRINV {
         ;
       
       segment_cabin_details =
-        (boost::spirit::classic::ureal_p)[storeSegmentCabinBookingCounter(self._flightDate)]
+        (bsc::ureal_p)[storeSegmentCabinBookingCounter(self._flightDate)]
         ;
 
       class_list = +( ',' >> class_key >> '|' >> class_details )
@@ -1007,29 +1004,29 @@ namespace AIRINV {
         ;
 
       class_protection =
-        (boost::spirit::classic::ureal_p)[storeProtection(self._flightDate)]
+        (bsc::ureal_p)[storeProtection(self._flightDate)]
         ;
         
       class_nego =
-        (boost::spirit::classic::ureal_p)[storeNego(self._flightDate)]
+        (bsc::ureal_p)[storeNego(self._flightDate)]
         ;
         
       class_details = (uint1_2_p)[storeSubclassCode(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeCumulatedProtection(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeCumulatedProtection(self._flightDate)]
         >> ':' >> !( parent_subclass_code )
         >> ':' >> !( class_protection )
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeNoShow(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeOverbooking(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeNbOfBkgs(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeNbOfGroupBkgs(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeNbOfPendingGroupBkgs(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeNbOfStaffBkgs(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeNbOfWLBkgs(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::ureal_p)[storeClassETB(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeNoShow(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeOverbooking(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeNbOfBkgs(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeNbOfGroupBkgs(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeNbOfPendingGroupBkgs(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeNbOfStaffBkgs(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeNbOfWLBkgs(self._flightDate)]
+        >> ':' >> (bsc::ureal_p)[storeClassETB(self._flightDate)]
         >> ':' >> !( class_nego )
-        >> ':' >> (boost::spirit::classic::real_p)[storeClassAvailability(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::real_p)[storeSegmentAvailability(self._flightDate)]
-        >> ':' >> (boost::spirit::classic::real_p)[storeRevenueAvailability(self._flightDate)]
+        >> ':' >> (bsc::real_p)[storeClassAvailability(self._flightDate)]
+        >> ':' >> (bsc::real_p)[storeSegmentAvailability(self._flightDate)]
+        >> ':' >> (bsc::real_p)[storeRevenueAvailability(self._flightDate)]
         ;
 
       family_cabin_details =
@@ -1040,6 +1037,7 @@ namespace AIRINV {
 
       // BOOST_SPIRIT_DEBUG_NODE (InventoryParser);
       BOOST_SPIRIT_DEBUG_NODE (flight_date_list);
+      BOOST_SPIRIT_DEBUG_NODE (not_to_parsed);
       BOOST_SPIRIT_DEBUG_NODE (flight_date);
       BOOST_SPIRIT_DEBUG_NODE (flight_date_end);
       BOOST_SPIRIT_DEBUG_NODE (flight_key);
@@ -1076,7 +1074,7 @@ namespace AIRINV {
 
     // //////////////////////////////////////////////////////////////////
     template<typename ScannerT>
-    boost::spirit::classic::rule<ScannerT> const&
+    bsc::rule<ScannerT> const&
     InventoryParser::definition<ScannerT>::start() const {
       return flight_date_list;
     }
@@ -1129,10 +1127,9 @@ namespace AIRINV {
     // Launch the parsing of the file and, thanks to the doEndFlightDate
     // call-back structure, the building of the whole Inventory BOM
     // (i.e., including Inventory, FlightDate, LegDate, SegmentDate, etc.)
-    boost::spirit::classic::parse_info<iterator_t> info =
-      boost::spirit::classic::parse (_startIterator, _endIterator,
-                                     lInventoryParser,
-                                     boost::spirit::classic::space_p);
+    bsc::parse_info<iterator_t> info = bsc::parse (_startIterator, _endIterator,
+                                                   lInventoryParser,
+                                                   bsc::space_p - bsc::eol_p);
 
     // Retrieves whether or not the parsing was successful
     oResult = info.hit;
@@ -1151,8 +1148,8 @@ namespace AIRINV {
                         << " characters. The input file has "
                         << hasBeenFullyReadStr
                         << "been fully read. Stop point: " << info.stop);
-      throw InventoryFileParsingFailedException ("Parsing of inventory input file: "
-                                                 + _filename + " failed.");
+      throw InventoryFileParsingFailedException ("Parsing of inventory input file"
+                                                 ": " + _filename + " failed");
     }
 
     return oResult;

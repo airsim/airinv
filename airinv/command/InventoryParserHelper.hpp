@@ -10,7 +10,6 @@
 #include <stdair/command/CmdAbstract.hpp>
 // Airinv
 #include <airinv/AIRINV_Types.hpp>
-//#define BOOST_SPIRIT_DEBUG
 #include <airinv/basic/BasParserTypes.hpp>
 #include <airinv/bom/FlightDateStruct.hpp>
 
@@ -462,8 +461,8 @@ namespace AIRINV {
         definition (InventoryParser const& self);
         
         // Instantiation of rules
-        boost::spirit::classic::rule<ScannerT> flight_date_list, flight_date,
-          flight_date_end, flight_key, airline_code, flight_number,
+        boost::spirit::classic::rule<ScannerT> flight_date_list, not_to_parsed,
+          flight_date, flight_date_end, flight_key, airline_code, flight_number,
           flight_type_code, flight_visibility_code,
           date, leg_list, leg, leg_key, leg_details,
           leg_cabin_list, leg_cabin_details,
