@@ -475,8 +475,8 @@ namespace AIRINV {
       
       not_to_parsed = boost::spirit::classic::lexeme_d[
         boost::spirit::classic::comment_p("//")
-        | boost::spirit::classic::comment_p("/*", "*/")
-        | boost::spirit::classic::space_p]
+        | boost::spirit::classic::comment_p("/*", "*/")]
+        | boost::spirit::classic::eol_p
         ;
 
       flight_period = flight_key
@@ -499,24 +499,24 @@ namespace AIRINV {
 
       airline_code =
         boost::spirit::classic::lexeme_d[
-                                (airline_code_p)[storeAirlineCode(self._flightPeriod)]
-                                ]
+          (airline_code_p)[storeAirlineCode(self._flightPeriod)]
+                                         ]
         ;
         
       flight_number =
         boost::spirit::classic::lexeme_d[
-                                (flight_number_p)[storeFlightNumber(self._flightPeriod)]
-                                ]
+          (flight_number_p)[storeFlightNumber(self._flightPeriod)]
+                                         ]
         ;
 
       date =
         boost::spirit::classic::lexeme_d[
-                                (year_p)[boost::spirit::classic::assign_a(self._flightPeriod._itYear)]
-                                >> '-'
-                                >> (month_p)[boost::spirit::classic::assign_a(self._flightPeriod._itMonth)]
-                                >> '-'
-                                >> (day_p)[boost::spirit::classic::assign_a(self._flightPeriod._itDay)]
-                                ]
+          (year_p)[boost::spirit::classic::assign_a(self._flightPeriod._itYear)]
+          >> '-'
+          >> (month_p)[boost::spirit::classic::assign_a(self._flightPeriod._itMonth)]
+          >> '-'
+          >> (day_p)[boost::spirit::classic::assign_a(self._flightPeriod._itDay)]
+                                         ]
         ;
 
       dow = boost::spirit::classic::lexeme_d[ dow_p ]
@@ -543,11 +543,11 @@ namespace AIRINV {
         
       time =
         boost::spirit::classic::lexeme_d[
-                                (hours_p)[boost::spirit::classic::assign_a(self._flightPeriod._itHours)]
-                                >> ':'
-                                >> (minutes_p)[boost::spirit::classic::assign_a(self._flightPeriod._itMinutes)]
-                                >> !(':' >> (seconds_p)[boost::spirit::classic::assign_a(self._flightPeriod._itSeconds)])
-                                ]
+          (hours_p)[boost::spirit::classic::assign_a(self._flightPeriod._itHours)]
+          >> ':'
+          >> (minutes_p)[boost::spirit::classic::assign_a(self._flightPeriod._itMinutes)]
+          >> !(':' >> (seconds_p)[boost::spirit::classic::assign_a(self._flightPeriod._itSeconds)])
+                                         ]
         ;
 
       date_offset =
