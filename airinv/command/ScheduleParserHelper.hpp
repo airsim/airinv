@@ -257,8 +257,9 @@ namespace AIRINV {
         definition (FlightPeriodParser const& self);
 
         // Instantiation of rules
-        boost::spirit::classic::rule<ScannerT> flight_period_list, flight_period,
-          flight_period_end, flight_key, airline_code, flight_number,
+        boost::spirit::classic::rule<ScannerT> flight_period_list,
+          not_to_parsed, flight_period, flight_period_end,
+          flight_key, airline_code, flight_number,
           date, dow, time, date_offset,
           leg, leg_key, leg_details, leg_cabin_details,
           segment_section, segment_key, full_segment_cabin_details,
