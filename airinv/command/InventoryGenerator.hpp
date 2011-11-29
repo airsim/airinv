@@ -30,6 +30,7 @@ namespace AIRINV {
   struct LegCabinStruct;
   struct SegmentCabinStruct;
   struct FareFamilyStruct;
+  struct BucketStruct;
   namespace ScheduleParserHelper {
     struct doEndFlight;
   }

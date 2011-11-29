@@ -461,7 +461,8 @@ namespace AIRINV {
         definition (InventoryParser const& self);
         
         // Instantiation of rules
-        boost::spirit::classic::rule<ScannerT> flight_date_list, not_to_parsed,
+        boost::spirit::classic::rule<ScannerT> flight_date_list,
+          not_to_be_parsed,
           flight_date, flight_date_end, flight_key, airline_code, flight_number,
           flight_type_code, flight_visibility_code,
           date, leg_list, leg, leg_key, leg_details,

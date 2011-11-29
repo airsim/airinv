@@ -8,9 +8,9 @@
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
 // AirInv
+#include <airinv/command/InventoryGenerator.hpp>
 // #define BOOST_SPIRIT_DEBUG
 #include <airinv/command/ScheduleParserHelper.hpp>
-#include <airinv/command/InventoryGenerator.hpp>
 
 //
 namespace bsc = boost::spirit::classic;
@@ -474,19 +474,18 @@ namespace AIRINV {
     FlightPeriodParser::definition<ScannerT>::
     definition (FlightPeriodParser const& self) {
 
-      flight_period_list = *( not_to_parsed | flight_period )
+      flight_period_list = *( not_to_be_parsed | flight_period )
         ;
       
-      not_to_parsed =
-        bsc::lexeme_d[bsc::comment_p("//") | bsc::comment_p("/*", "*/")]
-        | bsc::eol_p
+      not_to_be_parsed =
+        bsc::lexeme_d[ bsc::comment_p("//") | bsc::comment_p("/*", "*/")
+                       | bsc::space_p ]
         ;
 
       flight_period = flight_key
         >> +( ';' >> leg )
         >> ';' >> segment_section
-        >> flight_period_end[doEndFlight(self._bomRoot,
-                                         self._flightPeriod)]
+        >> flight_period_end[doEndFlight (self._bomRoot, self._flightPeriod)]
         ;
 
       flight_period_end = bsc::ch_p(';')
@@ -589,7 +588,7 @@ namespace AIRINV {
         
       // BOOST_SPIRIT_DEBUG_NODE (FlightPeriodParser);
       BOOST_SPIRIT_DEBUG_NODE (flight_period_list);
-      BOOST_SPIRIT_DEBUG_NODE (not_to_parsed);
+      BOOST_SPIRIT_DEBUG_NODE (not_to_be_parsed);
       BOOST_SPIRIT_DEBUG_NODE (flight_period);
       BOOST_SPIRIT_DEBUG_NODE (flight_period_end);
       BOOST_SPIRIT_DEBUG_NODE (flight_key);
@@ -617,8 +616,7 @@ namespace AIRINV {
     bsc::rule<ScannerT> const&
     FlightPeriodParser::definition<ScannerT>::start() const {
       return flight_period_list;
-    }
-    
+    }    
   }
 
 
@@ -660,8 +658,7 @@ namespace AIRINV {
     STDAIR_LOG_DEBUG ("Parsing schedule input file: " << _filename);
 
     // Initialise the parser (grammar) with the helper/staging structure.
-    ScheduleParserHelper::FlightPeriodParser lFPParser (_bomRoot, 
-                                                        _flightPeriod);
+    ScheduleParserHelper::FlightPeriodParser lFPParser (_bomRoot, _flightPeriod);
       
     // Launch the parsing of the file and, thanks to the doEndFlight
     // call-back structure, the building of the whole BomRoot BOM

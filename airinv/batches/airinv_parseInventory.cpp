@@ -23,7 +23,7 @@
 /**
  * Default name and location for the log file.
  */
-const std::string K_AIRINV_DEFAULT_LOG_FILENAME ("parseInventory.log");
+const std::string K_AIRINV_DEFAULT_LOG_FILENAME ("airinv_parseInventory.log");
 
 /**
  * Default name and location for the (CSV) input files.
