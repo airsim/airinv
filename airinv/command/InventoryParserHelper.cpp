@@ -871,12 +871,12 @@ namespace AIRINV {
     InventoryParser::definition<ScannerT>::
     definition (InventoryParser const& self) {
 
-      flight_date_list = *( not_to_parsed | flight_date )
+      flight_date_list = *( not_to_be_parsed | flight_date )
         ;
       
-      not_to_parsed =
-        bsc::lexeme_d[bsc::comment_p("//") | bsc::comment_p("/*", "*/")]
-        | bsc::eol_p
+      not_to_be_parsed =
+        bsc::lexeme_d[ bsc::comment_p("//") | bsc::comment_p("/*", "*/")
+                       | bsc::space_p ]
         ;
       
       flight_date = flight_key
@@ -1037,7 +1037,7 @@ namespace AIRINV {
 
       // BOOST_SPIRIT_DEBUG_NODE (InventoryParser);
       BOOST_SPIRIT_DEBUG_NODE (flight_date_list);
-      BOOST_SPIRIT_DEBUG_NODE (not_to_parsed);
+      BOOST_SPIRIT_DEBUG_NODE (not_to_be_parsed);
       BOOST_SPIRIT_DEBUG_NODE (flight_date);
       BOOST_SPIRIT_DEBUG_NODE (flight_date_end);
       BOOST_SPIRIT_DEBUG_NODE (flight_key);
@@ -1078,7 +1078,6 @@ namespace AIRINV {
     InventoryParser::definition<ScannerT>::start() const {
       return flight_date_list;
     }
-    
   }
 
 
@@ -1148,8 +1147,8 @@ namespace AIRINV {
                         << " characters. The input file has "
                         << hasBeenFullyReadStr
                         << "been fully read. Stop point: " << info.stop);
-      throw InventoryFileParsingFailedException ("Parsing of inventory input file"
-                                                 ": " + _filename + " failed");
+      throw InventoryFileParsingFailedException("Parsing of inventory input file"
+                                                ": " + _filename + " failed");
     }
 
     return oResult;
