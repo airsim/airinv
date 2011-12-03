@@ -65,6 +65,12 @@ cd ${AIRINV_DIR}/appserver/django/setup
 ##
 su - ${MY_USER}
 cd ${AIRINV_DIR}/appserver/django/airinv
+# The installation of Django-related database is not mandatory.
+# Change the database connection parameters in settings.py.
+# Be sure that the 'django' database user and 'django' database
+# are created.
+./manage.py syncdb
+#
 ./manage.py runserver localhost:8000
 
 ##
