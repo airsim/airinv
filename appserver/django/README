@@ -14,7 +14,9 @@ MY_HOST=myhost
 ##
 # Required packages (on Fedora/RedHat)
 ##
-yum -y install Django django-piston python-zmq zeromq-devel httpd stdair-devel
+yum -y install httpd phpMyAdmin mysql-server
+yum -y install Django django-piston python-docutils python-simplejson python-zmq
+yum -y install soci-mysql-devel zeromq-devel stdair-devel
 
 ##
 # Mirror for the client-side JavaScript libraries
