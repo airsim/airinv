@@ -402,8 +402,14 @@ operates.
 
 The \c `cmake' script produces an ouput like this:
 
-\verbatim-- Requires Git without specifying any version
-cmake -DCMAKE_INSTALL_PREFIX=/home/dan/dev/deliveries/airinv-99.99.99 -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE:STRING=Debug -DWITH_STDAIR_PREFIX=/home/dan/dev/deliveries/stdair-stable -DINSTALL_DOC:BOOT=ON ..
+\verbatim
+export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=64"
+export INSTALL_BASEDIR=/home/user/dev/deliveries
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_BASEDIR}/airinv-0.5.0 \
+ -DWITH_STDAIR_PREFIX=${INSTALL_BASEDIR}/stdair-stable \
+ -DWITH_AIRRAC_PREFIX=${INSTALL_BASEDIR}/airrac-stable \
+ -DWITH_RMOL_PREFIX=${INSTALL_BASEDIR}/rmol-stable \
+ -DCMAKE_BUILD_TYPE:STRING=Debug -DINSTALL_DOC:BOOL=ON ${LIBSUFFIX_4_CMAKE} ..
 -- The C compiler identification is GNU
 -- The CXX compiler identification is GNU
 -- Check for working C compiler: /usr/lib64/ccache/gcc
@@ -462,9 +468,9 @@ cmake -DCMAKE_INSTALL_PREFIX=/home/dan/dev/deliveries/airinv-99.99.99 -DLIB_SUFF
 -- PACKAGE ........................ : airinv
 -- PACKAGE_NAME ................... : AIRINV
 -- PACKAGE_BRIEF .................. : C++ Simulated Airline Inventory Management System library
--- PACKAGE_VERSION ................ : 99.99.99
--- GENERIC_LIB_VERSION ............ : 99.99.99
--- GENERIC_LIB_SOVERSION .......... : 99.99
+-- PACKAGE_VERSION ................ : 0.5.0
+-- GENERIC_LIB_VERSION ............ : 0.5.0
+-- GENERIC_LIB_SOVERSION .......... : 0.5
 -- 
 -- ----------------------------------
 -- ---     Build Configuration    ---
@@ -501,7 +507,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/home/dan/dev/deliveries/airinv-99.99.99 -DLIB_SUFF
 --  * BUILD_FLAGS ................. : 
 --  * COMPILE_FLAGS ............... : 
 -- CMAKE_MODULE_PATH .............. : /home/dan/dev/sim/airinv/airinvgithub/config/
--- CMAKE_INSTALL_PREFIX ........... : /home/dan/dev/deliveries/airinv-99.99.99
+-- CMAKE_INSTALL_PREFIX ........... : /home/dan/dev/deliveries/airinv-0.5.0
 -- 
 -- * Doxygen:
 --   - DOXYGEN_VERSION .............. : 1.7.4
@@ -512,11 +518,11 @@ cmake -DCMAKE_INSTALL_PREFIX=/home/dan/dev/deliveries/airinv-99.99.99 -DLIB_SUFF
 -- ----------------------------------
 -- --- Installation Configuration ---
 -- ----------------------------------
--- INSTALL_LIB_DIR ................ : /home/dan/dev/deliveries/airinv-99.99.99/lib64
--- INSTALL_BIN_DIR ................ : /home/dan/dev/deliveries/airinv-99.99.99/bin
--- INSTALL_INCLUDE_DIR ............ : /home/dan/dev/deliveries/airinv-99.99.99/include
--- INSTALL_DATA_DIR ............... : /home/dan/dev/deliveries/airinv-99.99.99/share
--- INSTALL_SAMPLE_DIR ............. : /home/dan/dev/deliveries/airinv-99.99.99/share/airinv/samples
+-- INSTALL_LIB_DIR ................ : /home/dan/dev/deliveries/airinv-0.5.0/lib64
+-- INSTALL_BIN_DIR ................ : /home/dan/dev/deliveries/airinv-0.5.0/bin
+-- INSTALL_INCLUDE_DIR ............ : /home/dan/dev/deliveries/airinv-0.5.0/include
+-- INSTALL_DATA_DIR ............... : /home/dan/dev/deliveries/airinv-0.5.0/share
+-- INSTALL_SAMPLE_DIR ............. : /home/dan/dev/deliveries/airinv-0.5.0/share/airinv/samples
 -- INSTALL_DOC .................... : ON
 -- 
 -- ----------------------------------
@@ -524,13 +530,13 @@ cmake -DCMAKE_INSTALL_PREFIX=/home/dan/dev/deliveries/airinv-99.99.99 -DLIB_SUFF
 -- ----------------------------------
 -- CPACK_PACKAGE_CONTACT .......... : Denis Arnaud <denis_arnaud - at - users dot sourceforge dot net>
 -- CPACK_PACKAGE_VENDOR ........... : Denis Arnaud
--- CPACK_PACKAGE_VERSION .......... : 99.99.99
+-- CPACK_PACKAGE_VERSION .......... : 0.5.0
 -- CPACK_PACKAGE_DESCRIPTION_FILE . : /home/dan/dev/sim/airinv/airinvgithub/README
 -- CPACK_RESOURCE_FILE_LICENSE .... : /home/dan/dev/sim/airinv/airinvgithub/COPYING
 -- CPACK_GENERATOR ................ : TBZ2
 -- CPACK_DEBIAN_PACKAGE_DEPENDS ... : 
 -- CPACK_SOURCE_GENERATOR ......... : TBZ2;TGZ
--- CPACK_SOURCE_PACKAGE_FILE_NAME . : airinv-99.99.99
+-- CPACK_SOURCE_PACKAGE_FILE_NAME . : airinv-0.5.0
 -- 
 -- ---------------------------------
 -- ---     External libraries    ---
