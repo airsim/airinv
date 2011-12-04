@@ -14,7 +14,10 @@ MY_HOST=myhost
 ##
 # Required packages (on Fedora/RedHat)
 ##
-yum -y install Django django-piston python-zmq zeromq-devel httpd stdair-devel
+yum -y install httpd phpMyAdmin mysql-server
+yum -y install Django django-piston python-docutils python-simplejson python-zmq
+yum -y install gdal-devel gdal-python proj-devel proj-epsg proj-nad
+yum -y install soci-mysql-devel zeromq-devel stdair-devel
 
 ##
 # Mirror for the client-side JavaScript libraries
@@ -65,6 +68,12 @@ cd ${AIRINV_DIR}/appserver/django/setup
 ##
 su - ${MY_USER}
 cd ${AIRINV_DIR}/appserver/django/airinv
+# The installation of Django-related database is not mandatory.
+# Change the database connection parameters in settings.py.
+# Be sure that the 'django' database user and 'django' database
+# are created.
+./manage.py syncdb
+#
 ./manage.py runserver localhost:8000
 
 ##
