@@ -1,3 +1,10 @@
+* Sun Dec 04 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.1.2
+- [Doc] Added a missing BOM tree (PNG) image. The (PDF) reference manual is now
+successfully generated.
+- [Doc] Fixed a few typos in the README file.
+- [WebApp] Documented a little bit more the Django-based Web application.
+Added a few sample pages/scripts.
+
 * Sun Oct 30 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.1.1
 - Suppressed any support to the GNU Autotools.
 

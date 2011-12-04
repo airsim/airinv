@@ -2,7 +2,7 @@
 %global mydocs __tmp_docdir
 #
 Name:           airinv
-Version:        0.1.1
+Version:        0.1.2
 Release:        1%{?dist}
 
 Summary:        C++ Simulated Airline Inventory Management System library
@@ -111,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec 04 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.2-1
+- Upstream update. Took into account review request (#750099)
+
 * Sun Oct 30 2011 Denis Arnaud <denis.arnaud_fedora@m4x.org> 0.1.1-1
 - First RPM release
 

@@ -1,3 +1,11 @@
+2011-12-04:
+- Version 0.1.2
+- [Doc] Added a missing BOM tree (PNG) image. The (PDF) reference manual is now
+  successfully generated.
+- [Doc] Fixed a few typos in the README file.
+- [WebApp] Documented a little bit more the Django-based Web application.
+  Added a few sample pages/scripts.
+
 2011-10-30:
 - Version 0.1.1
 - Suppressed any support to the GNU Autotools.
