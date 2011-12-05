@@ -88,9 +88,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog COPYING NEWS README
 %{_bindir}/%{name}
 %{_bindir}/%{name}_parseInventory
+%{_bindir}/AirInvClient
+%{_bindir}/AirInvServer
 %{_libdir}/lib%{name}.so.*
 %{_mandir}/man1/%{name}.1.*
 %{_mandir}/man1/%{name}_parseInventory.1.*
+%{_mandir}/man1/AirInvClient.1.*
+%{_mandir}/man1/AirInvServer.1.*
 
 %files devel
 %defattr(-,root,root,-)
