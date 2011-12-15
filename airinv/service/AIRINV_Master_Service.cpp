@@ -297,6 +297,30 @@ namespace AIRINV {
      * \note: Currently, no more things to do by AirRAC at that stage,
      *        as there is no child
      */
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string AIRINV_Master_Service::
+  jsonExport (const stdair::AirlineCode_T& iAirlineCode,
+              const stdair::FlightNumber_T& iFlightNumber) const {
+
+    // Retrieve the AirInv Master service context
+    if (_airinvMasterServiceContext  == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvMasterServiceContext != NULL);
+
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;   
+
+    // Retrieve the slave AirInv (slave) service object from
+    // the (AirInv master) service context
+    AIRINV_Service& lAIRINV_Service =
+      lAIRINV_Master_ServiceContext.getAIRINV_Service();
+
+    // Delegate the JSON export to the dedicated service
+    return lAIRINV_Service.jsonExport (iAirlineCode, iFlightNumber);
   }
 
   // ////////////////////////////////////////////////////////////////////
