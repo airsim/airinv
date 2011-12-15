@@ -369,6 +369,28 @@ namespace AIRINV {
      * 3.3. Initialise the bid price vectors.
      */
     //    InventoryManager::setDefaultBidPriceVector (lBomRoot);
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string AIRINV_Service::
+  jsonExport (const stdair::AirlineCode_T& iAirlineCode,
+              const stdair::FlightNumber_T& iFlightNumber) const {
+
+    // Retrieve the AIRINV service context
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInv service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvServiceContext != NULL);
+
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+  
+    // Retrieve the STDAIR service object from the (AIRINV) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service();
+
+    // Delegate the JSON export to the dedicated service
+    return lSTDAIR_Service.jsonExport (iAirlineCode, iFlightNumber);
   }
 
   // ////////////////////////////////////////////////////////////////////

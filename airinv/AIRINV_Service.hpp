@@ -179,7 +179,22 @@ namespace AIRINV {
                    const stdair::PartnershipTechnique&);
 
   public:
-    // //////////////// Export support methods /////////////////
+    // //////////////// Export support methods /////////////////  
+
+    /**
+     * Recursively dump, in the returned string and in JSON format,
+     * the flight-date list corresponding to the parameters given as 
+     * input.
+     *   
+     * @param const AirlineCode& Airline for which the flight-dates should be
+     *        displayed. If set to "all" (default), all the inventories will
+     *        be displayed. 
+     * @param const FlightNumber_T& Flight number for which all the departure
+     *        dates should be displayed. If set to 0 (the default),
+     *        all the flight numbers will be displayed.
+     */
+    std::string jsonExport (const stdair::AirlineCode_T& iAirlineCode = "all",
+			    const stdair::FlightNumber_T& iFlightNumber = 0) const;
     /**
      * Recursively dump, in the returned string and in JSON format,
      * the flight-date corresponding to the parameters given as input.
