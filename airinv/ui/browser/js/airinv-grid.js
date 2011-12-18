@@ -238,9 +238,9 @@ Ext.define('subclasses', {
             {'header': "Airline Code", 'width': 100, 'dataIndex': 'airline_code', sortable: true},
             {'header': "Flight Number", 'width': 100, 'dataIndex': 'flight_number', sortable: true}  
         ],
-        title: 'Found Flights',
+        //title: 'Found Flights',
 		renderTo:'flights-GridDisplay',
-        width:320,
+        width:315,
         height:150
 		/*listeners: {
 			itemclick : function() {
@@ -270,9 +270,9 @@ Ext.define('subclasses', {
 			{header: "Time Offset", width: 80, dataIndex: 'time_offset', sortable: true},
 			
         ],
-        title: 'Flight Legs',
+        //title: 'Flight Legs',
 		renderTo:'legs-GridDisplay',
-        width:875,
+        width:873,
         height:150
     });
 	
@@ -297,9 +297,9 @@ Ext.define('subclasses', {
 			{header: "Rev AVL", width: 70, dataIndex: 'revavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "Seg AVL", width: 70, dataIndex: 'segavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
         ],
-        title: 'Subclasses',
+        //title: 'Subclasses',
 		renderTo:'subclasses-GridDisplay',
-        width:1180,
+        width:1192,
         height:400,
 		plugins: [cellEditing]
     });
