@@ -373,8 +373,8 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::
-  jsonExport (const stdair::AirlineCode_T& iAirlineCode,
-              const stdair::FlightNumber_T& iFlightNumber) const {
+  jsonExportFlightDateList (const stdair::AirlineCode_T& iAirlineCode,
+			    const stdair::FlightNumber_T& iFlightNumber) const {
 
     // Retrieve the AIRINV service context
     if (_airinvServiceContext == NULL) {
@@ -390,14 +390,15 @@ namespace AIRINV {
       lAIRINV_ServiceContext.getSTDAIR_Service();
 
     // Delegate the JSON export to the dedicated service
-    return lSTDAIR_Service.jsonExport (iAirlineCode, iFlightNumber);
+    return lSTDAIR_Service.jsonExportFlightDateList (iAirlineCode, 
+						     iFlightNumber);
   }
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::
-  jsonExport (const stdair::AirlineCode_T& iAirlineCode,
-              const stdair::FlightNumber_T& iFlightNumber,
-              const stdair::Date_T& iDepartureDate) const {
+  jsonExportFlightDateObjects (const stdair::AirlineCode_T& iAirlineCode,
+			       const stdair::FlightNumber_T& iFlightNumber,
+			       const stdair::Date_T& iDepartureDate) const {
 
     // Retrieve the AIRINV service context
     if (_airinvServiceContext == NULL) {
@@ -413,8 +414,9 @@ namespace AIRINV {
       lAIRINV_ServiceContext.getSTDAIR_Service();
 
     // Delegate the JSON export to the dedicated service
-    return lSTDAIR_Service.jsonExport (iAirlineCode, iFlightNumber,
-                                       iDepartureDate);
+    return lSTDAIR_Service.jsonExportFlightDateObjects (iAirlineCode, 
+							iFlightNumber,
+							iDepartureDate);
   }
   
   // ////////////////////////////////////////////////////////////////////
