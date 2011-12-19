@@ -410,7 +410,9 @@ int main (int argc, char* argv[]) {
 
     // Dump the full details of the flight-date into the JSON-ified flight-date
     const std::string& lFlightDateJSONDump =
-      airinvService.jsonExport (lAirlineCode, lFlightNumber, lDate);
+      airinvService.jsonExportFlightDateObjects (lAirlineCode, 
+						 lFlightNumber, 
+						 lDate);
 
     // DEBUG
     STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");

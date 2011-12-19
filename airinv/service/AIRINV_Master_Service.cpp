@@ -301,8 +301,8 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Master_Service::
-  jsonExport (const stdair::AirlineCode_T& iAirlineCode,
-              const stdair::FlightNumber_T& iFlightNumber) const {
+  jsonExportFlightDateList (const stdair::AirlineCode_T& iAirlineCode,
+			    const stdair::FlightNumber_T& iFlightNumber) const {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext  == NULL) {
@@ -320,14 +320,15 @@ namespace AIRINV {
       lAIRINV_Master_ServiceContext.getAIRINV_Service();
 
     // Delegate the JSON export to the dedicated service
-    return lAIRINV_Service.jsonExport (iAirlineCode, iFlightNumber);
+    return lAIRINV_Service.jsonExportFlightDateList (iAirlineCode, 
+						     iFlightNumber);
   }
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Master_Service::
-  jsonExport (const stdair::AirlineCode_T& iAirlineCode,
-              const stdair::FlightNumber_T& iFlightNumber,
-              const stdair::Date_T& iDepartureDate) const {
+  jsonExportFlightDateObjects (const stdair::AirlineCode_T& iAirlineCode,
+			       const stdair::FlightNumber_T& iFlightNumber,
+			       const stdair::Date_T& iDepartureDate) const {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext == NULL) {
@@ -345,8 +346,9 @@ namespace AIRINV {
       lAIRINV_Master_ServiceContext.getAIRINV_Service();
 
     // Delegate the BOM dump to the dedicated service
-    return lAIRINV_Service.jsonExport (iAirlineCode, iFlightNumber,
-                                       iDepartureDate);
+    return lAIRINV_Service.jsonExportFlightDateObjects (iAirlineCode, 
+							iFlightNumber,
+							iDepartureDate);
   }
 
   // ////////////////////////////////////////////////////////////////////

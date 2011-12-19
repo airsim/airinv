@@ -192,7 +192,7 @@ namespace AIRINV {
      *        dates should be displayed. If set to 0 (the default),
      *        all the flight numbers will be displayed.
      */
-    std::string jsonExport (const stdair::AirlineCode_T& iAirlineCode = "all",
+    std::string jsonExportFlightDateList (const stdair::AirlineCode_T& iAirlineCode = "all",
 			    const stdair::FlightNumber_T& iFlightNumber = 0) const;
 
     /**
@@ -205,9 +205,9 @@ namespace AIRINV {
      * @param const stdair::Date_T& Departure date of the flight to dump.
      * @return std::string Output string in which the BOM tree is JSON-ified.
      */
-    std::string jsonExport (const stdair::AirlineCode_T&,
-                            const stdair::FlightNumber_T&,
-                            const stdair::Date_T& iDepartureDate) const;
+    std::string jsonExportFlightDateObjects (const stdair::AirlineCode_T&,
+					     const stdair::FlightNumber_T&,
+					     const stdair::Date_T& iDepartureDate) const;
 
 
   public:
