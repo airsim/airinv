@@ -369,7 +369,59 @@ namespace AIRINV {
      * 3.3. Initialise the bid price vectors.
      */
     //    InventoryManager::setDefaultBidPriceVector (lBomRoot);
-  } 
+  }   
+
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string AIRINV_Service::jsonHandler (const std::string& lJSONString) const {    
+
+    // Retrieve the AIRINV service context
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInv service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvServiceContext != NULL);
+
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+  
+    // Retrieve the STDAIR service object from the (AIRINV) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service();
+
+    // Extract, from the JSON-ified string an airline code
+    stdair::AirlineCode_T lAirlineCode;
+    lSTDAIR_Service.jsonImportInventoryKey (lFlightDateKeyJSONString,
+					    lAirlineCode);
+
+    // Extract, from the JSON-ified string a flight number and a departure date
+    stdair::FlightNumber_T lFlightNumber;
+    stdair::Date_T lDate;
+    lSTDAIR_Service.jsonImportFlightDateKey (lFlightDateKeyJSONString,
+					     lFlightNumber, lDate);
+
+    // DEBUG
+    STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
+                      << "', flight number = " << lFlightNumber
+                      << "', departure date = '" << lDate << "'");
+
+    // DEBUG: Display the flight-date dump
+    const std::string& lFlightDateCSVDump =
+      airinvService.csvDisplay (lAirlineCode, lFlightNumber, lDate);
+    STDAIR_LOG_DEBUG (std::endl << lFlightDateCSVDump);
+
+    // Dump the full details of the flight-date into the JSON-ified flight-date
+    const std::string& lFlightDateJSONDump =
+      airinvService.jsonExportFlightDateObjects (lAirlineCode, 
+						 lFlightNumber, 
+						 lDate);
+
+    // DEBUG
+    STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");
+
+    // Delegate the JSON export to the dedicated service
+    return lFlightDateJSONDump;
+
+  }
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::
@@ -392,7 +444,7 @@ namespace AIRINV {
     // Delegate the JSON export to the dedicated service
     return lSTDAIR_Service.jsonExportFlightDateList (iAirlineCode, 
 						     iFlightNumber);
-  }
+  } 
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::

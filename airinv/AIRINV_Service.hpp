@@ -179,7 +179,9 @@ namespace AIRINV {
                    const stdair::PartnershipTechnique&);
 
   public:
-    // //////////////// Export support methods /////////////////  
+    // //////////////// Export support methods /////////////////   
+
+    std::string jsonHandler (const std::string&) const;
 
     /**
      * Recursively dump, in the returned string and in JSON format,
