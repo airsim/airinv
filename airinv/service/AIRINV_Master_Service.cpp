@@ -564,6 +564,47 @@ namespace AIRINV {
   }
 
   // ////////////////////////////////////////////////////////////////////
+  bool AIRINV_Master_Service::sell (const stdair::BookingClassID_T& iClassID,
+                                    const stdair::PartySize_T& iPartySize) {
+
+    // Retrieve the AirInv Master service context
+    if (_airinvMasterServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvMasterServiceContext != NULL);
+
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;
+  
+    // Retrieve the corresponding inventory key
+    // const stdair::InventoryKey& lInventoryKey =
+    // stdair::BomKeyManager::extractInventoryKey (iSegmentDateKey);
+
+    // Retrieve the slave AirInv service object from the (AirInv Master)
+    // service context
+    AIRINV_Service& lAIRINV_Service =
+      lAIRINV_Master_ServiceContext.getAIRINV_Service();
+
+    // Delegate the booking to the dedicated command
+    stdair::BasChronometer lSellChronometer;
+    lSellChronometer.start();
+
+    // Delegate the BOM building to the dedicated service
+    const bool hasBeenSaleSuccessful =
+      lAIRINV_Service.sell (iClassID, iPartySize);
+
+    // const double lSellMeasure = lSellChronometer.elapsed();
+
+    // DEBUG
+    // STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
+    //                   << lAIRINV_Master_ServiceContext.display());
+
+    //
+    return hasBeenSaleSuccessful;
+  }
+
+  // ////////////////////////////////////////////////////////////////////
   bool AIRINV_Master_Service::cancel (const std::string& iSegmentDateKey,
                                       const stdair::ClassCode_T& iClassCode,
                                       const stdair::PartySize_T& iPartySize) {
@@ -594,6 +635,47 @@ namespace AIRINV {
     // Delegate the BOM building to the dedicated service
     const bool hasBeenSaleSuccessful =
       lAIRINV_Service.cancel (iSegmentDateKey, iClassCode, iPartySize);
+
+    // const double lCancelMeasure = lCancelChronometer.elapsed();
+
+    // DEBUG
+    // STDAIR_LOG_DEBUG ("Booking cancel: " << lCancelMeasure << " - "
+    //                   << lAIRINV_Master_ServiceContext.display());
+
+    //
+    return hasBeenSaleSuccessful;
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  bool AIRINV_Master_Service::cancel (const stdair::BookingClassID_T& iClassID,
+                                    const stdair::PartySize_T& iPartySize) {
+
+    // Retrieve the AirInv Master service context
+    if (_airinvMasterServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvMasterServiceContext != NULL);
+
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;
+  
+    // Retrieve the corresponding inventory key
+    // const stdair::InventoryKey& lInventoryKey =
+    // stdair::BomKeyManager::extractInventoryKey (iSegmentDateKey);
+
+    // Retrieve the slave AirInv service object from the (AirInv Master)
+    // service context
+    AIRINV_Service& lAIRINV_Service =
+      lAIRINV_Master_ServiceContext.getAIRINV_Service();
+
+    // Delegate the booking to the dedicated command
+    stdair::BasChronometer lCancelChronometer;
+    lCancelChronometer.start();
+
+    // Delegate the BOM building to the dedicated service
+    const bool hasBeenSaleSuccessful =
+      lAIRINV_Service.cancel (iClassID, iPartySize);
 
     // const double lCancelMeasure = lCancelChronometer.elapsed();
 

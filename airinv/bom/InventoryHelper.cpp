@@ -47,6 +47,9 @@ namespace AIRINV {
 
     // Create the map of class/availability for the given segment date.
     stdair::ClassAvailabilityMap_T lClassAvailabilityMap;
+
+    // Create the map of class/object ID for the given segment date.
+    stdair::ClassObjectIDMap_T lClassObjectIDMap;
  
     // DEBUG
     STDAIR_LOG_DEBUG (iFullSegmentDateKey);
@@ -80,15 +83,22 @@ namespace AIRINV {
         const stdair::Availability_T lAvl = lBC_ptr->getSegmentAvailability();
         
         const stdair::ClassCode_T& lClassCode = lBC_ptr->getClassCode();        
-        const bool insertSuccessful = lClassAvailabilityMap.
+        bool insertSuccessful = lClassAvailabilityMap.
           insert (stdair::ClassAvailabilityMap_T::value_type (lClassCode,
                                                               lAvl)).second;
+        assert (insertSuccessful == true);
+
+        stdair::BookingClassID_T lBCID (*lBC_ptr);
+        insertSuccessful = lClassObjectIDMap.
+          insert (stdair::ClassObjectIDMap_T::value_type (lClassCode,
+                                                          lBCID)).second;
         assert (insertSuccessful == true);
       }
     }
 
     //
     ioTravelSolution.addClassAvailabilityMap (lClassAvailabilityMap);
+    ioTravelSolution.addClassObjectIDMap (lClassObjectIDMap);
   }
 
   
@@ -233,7 +243,6 @@ namespace AIRINV {
     ioTravelSolution.addClassYieldMap (lClassYieldMap);
     ioTravelSolution.addClassBpvMap (lClassBpvMap);
   }
-  
 
   // ////////////////////////////////////////////////////////////////////
   bool InventoryHelper::sell (stdair::Inventory& ioInventory, 
@@ -290,12 +299,48 @@ namespace AIRINV {
 
     return hasSaleBeenSuccessful;
   }  
+  
+  // ////////////////////////////////////////////////////////////////////
+  bool InventoryHelper::sell (const stdair::BookingClassID_T& iClassID,
+                              const stdair::PartySize_T& iPartySize) {
+
+    //
+    stdair::BookingClass& lBookingClass = iClassID.getObject();
+
+    // DEBUG
+    // Register the sale in the class.
+    lBookingClass.sell (iPartySize);
+
+    //
+    stdair::FareFamily& lFareFamily =
+      stdair::BomManager::getParent<stdair::FareFamily> (lBookingClass);
+
+    //
+    stdair::SegmentCabin& lSegmentCabin =
+      stdair::BomManager::getParent<stdair::SegmentCabin> (lFareFamily);
+
+    //
+    stdair::SegmentDate& lSegmentDate =
+      stdair::BomManager::getParent<stdair::SegmentDate,
+                                    stdair::SegmentCabin> (lSegmentCabin);
+
+    //
+    stdair::FlightDate& lFlightDate =
+      stdair::BomManager::getParent<stdair::FlightDate,
+                                    stdair::SegmentDate> (lSegmentDate);
+      
+    // Update the commited space of the segment-cabins and the leg-cabins.
+    SegmentCabinHelper::updateFromReservation (lFlightDate, lSegmentCabin,
+                                               iPartySize);
+      
+    return true;
+  }  
 
   // ////////////////////////////////////////////////////////////////////
   bool InventoryHelper::cancel (stdair::Inventory& ioInventory, 
-                              const std::string& iFullSegmentDateKey,
-                              const stdair::ClassCode_T& iClassCode,
-                              const stdair::PartySize_T& iPartySize) {
+                                const std::string& iFullSegmentDateKey,
+                                const stdair::ClassCode_T& iClassCode,
+                                const stdair::PartySize_T& iPartySize) {
     bool hasCancellationBeenSuccessful = false;
 
     // DEBUG
@@ -345,6 +390,39 @@ namespace AIRINV {
     }
 
     return hasCancellationBeenSuccessful;
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  bool InventoryHelper::cancel (const stdair::BookingClassID_T& iClassID,
+                                const stdair::PartySize_T& iPartySize) {
+    stdair::BookingClass& lBookingClass = iClassID.getObject();
+    
+    // Register the cancellation in the class.
+    lBookingClass.cancel (iPartySize);
+
+    //
+    stdair::FareFamily& lFareFamily =
+      stdair::BomManager::getParent<stdair::FareFamily> (lBookingClass);
+
+    //
+    stdair::SegmentCabin& lSegmentCabin =
+      stdair::BomManager::getParent<stdair::SegmentCabin> (lFareFamily);
+
+    //
+    stdair::SegmentDate& lSegmentDate =
+      stdair::BomManager::getParent<stdair::SegmentDate,
+                                    stdair::SegmentCabin> (lSegmentCabin);
+
+    //
+    stdair::FlightDate& lFlightDate =
+      stdair::BomManager::getParent<stdair::FlightDate,
+                                    stdair::SegmentDate> (lSegmentDate);
+      
+    // Update the commited space of the segment-cabins and the leg-cabins.
+    SegmentCabinHelper::updateFromReservation (lFlightDate, lSegmentCabin,
+                                               -iPartySize);
+      
+    return true;
   }
 
   // ////////////////////////////////////////////////////////////////////

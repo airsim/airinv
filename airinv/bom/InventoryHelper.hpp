@@ -8,6 +8,7 @@
 #include <string>
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
+#include <stdair/bom/BomIDTypes.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -40,10 +41,18 @@ namespace AIRINV {
     static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
                       const stdair::ClassCode_T&, const stdair::PartySize_T&);
     
+    /** Make a sale with the given travel solution. */
+    static bool sell (const stdair::BookingClassID_T&,
+                      const stdair::PartySize_T&);
+    
     /** Make a cancellation. */
     static bool cancel (stdair::Inventory&, const std::string& iSegmentDateKey,
                         const stdair::ClassCode_T&, const stdair::PartySize_T&);
 
+    /** Make a cancellation. */
+    static bool cancel (const stdair::BookingClassID_T&,
+                        const stdair::PartySize_T&);
+    
     /** Take inventory snapshots. */
     static void takeSnapshots (const stdair::Inventory&,
                                const stdair::DateTime_T&);
