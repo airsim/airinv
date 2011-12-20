@@ -614,6 +614,23 @@ namespace AIRINV {
   }
   
   // ////////////////////////////////////////////////////////////////////
+  bool AIRINV_Service::sell (const stdair::BookingClassID_T& iClassID,
+                             const stdair::PartySize_T& iPartySize) {
+    bool isSellSuccessful = false;
+
+    // Delegate the booking to the dedicated command
+    stdair::BasChronometer lSellChronometer; lSellChronometer.start();
+    isSellSuccessful = InventoryManager::sell (iClassID, iPartySize);
+    // const double lSellMeasure = lSellChronometer.elapsed();
+
+    // DEBUG
+    // STDAIR_LOG_DEBUG ("Booking sell: " << lSellMeasure << " - "
+    //                  << lAIRINV_ServiceContext.display());
+
+    return isSellSuccessful;
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
   bool AIRINV_Service::cancel (const std::string& iSegmentDateKey,
                              const stdair::ClassCode_T& iClassCode,
                              const stdair::PartySize_T& iPartySize) {
@@ -655,6 +672,23 @@ namespace AIRINV {
     //                  << lAIRINV_ServiceContext.display());
 
     return isCancellationSuccessful;
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  bool AIRINV_Service::cancel (const stdair::BookingClassID_T& iClassID,
+                             const stdair::PartySize_T& iPartySize) {
+    bool isCancelSuccessful = false;
+
+    // Delegate the booking to the dedicated command
+    stdair::BasChronometer lCancelChronometer; lCancelChronometer.start();
+    isCancelSuccessful = InventoryManager::cancel (iClassID, iPartySize);
+    // const double lCancelMeasure = lCancelChronometer.elapsed();
+
+    // DEBUG
+    // STDAIR_LOG_DEBUG ("Booking cancel: " << lCancelMeasure << " - "
+    //                  << lAIRINV_ServiceContext.display());
+
+    return isCancelSuccessful;
   }
   
   // ////////////////////////////////////////////////////////////////////

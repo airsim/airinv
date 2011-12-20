@@ -13,6 +13,7 @@
 #include <stdair/stdair_maths_types.hpp>
 #include <stdair/basic/ForecastingMethod.hpp>
 #include <stdair/basic/PartnershipTechnique.hpp>
+#include <stdair/bom/BomIDTypes.hpp>
 // AirRAC
 #include <airrac/AIRRAC_Types.hpp>
 
@@ -152,6 +153,16 @@ namespace AIRINV {
      */
     bool sell (const std::string& iSegmentDateKey, const stdair::ClassCode_T&,
                const stdair::PartySize_T&);
+
+    /**
+     * Register a booking.
+     *
+     * @param const stdair::BookingClassID_T&
+     * @param const stdair::PartySize_T& Party size.
+     * @return bool Whether or not the sale was successfull
+     */
+    bool sell (const stdair::BookingClassID_T&, const stdair::PartySize_T&);
+    
     /**
      * Register a cancellation.
      *
@@ -159,10 +170,19 @@ namespace AIRINV {
      *                   is made.
      * @param const stdair::ClassCode_T& Class code where the sale is made.
      * @param const stdair::PartySize_T& Party size.
-     * @return bool Whether or not the sale was successfull
+     * @return bool Whether or not the cancellation was successfull
      */
     bool cancel (const std::string& iSegmentDateKey, const stdair::ClassCode_T&,
                  const stdair::PartySize_T&);
+    
+    /**
+     * Register a cancellation.
+     *
+     * @param stdair::BookingClassID_T& 
+     * @param const stdair::PartySize_T& Party size.
+     * @return bool Whether or not the cancellation was successfull
+     */
+    bool cancel (const stdair::BookingClassID_T&, const stdair::PartySize_T&);
 
     /**
      * Take inventory snapshots.

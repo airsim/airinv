@@ -10,6 +10,7 @@
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/bom/RMEventTypes.hpp>
 #include <stdair/basic/PartnershipTechnique.hpp>
+#include <stdair/bom/BomIDTypes.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -78,9 +79,17 @@ namespace AIRINV {
     static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
                       const stdair::ClassCode_T&, const stdair::PartySize_T&);
 
+    /** Register a booking (segment sell). */
+    static bool sell (const stdair::BookingClassID_T&,
+                      const stdair::PartySize_T&);
+
     /** Register a cancellation. */
     static bool cancel (stdair::Inventory&, const std::string& iSegmentDateKey,
                         const stdair::ClassCode_T&, const stdair::PartySize_T&);
+
+    /** Register a cancellation. */
+    static bool cancel (const stdair::BookingClassID_T&,
+                        const stdair::PartySize_T&);
 
     /** Take inventory snapshots. */
     static void takeSnapshots (const stdair::Inventory&,
