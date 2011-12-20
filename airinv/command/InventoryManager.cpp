@@ -672,7 +672,7 @@ namespace AIRINV {
         }
       }
     }
-  }  
+  }   
   
   // ////////////////////////////////////////////////////////////////////
   bool InventoryManager::sell (stdair::Inventory& ioInventory,
@@ -684,6 +684,14 @@ namespace AIRINV {
     return InventoryHelper::sell (ioInventory, iSegmentDateKey,
                                   iClassCode, iPartySize);
   }
+  
+  // ////////////////////////////////////////////////////////////////////
+  bool InventoryManager::sell (const stdair::BookingClassID_T& iClassID,
+                               const stdair::PartySize_T& iPartySize) {
+
+    // Make the sale within the inventory.
+    return InventoryHelper::sell (iClassID, iPartySize);
+  }
 
   // ////////////////////////////////////////////////////////////////////
   bool InventoryManager::cancel (stdair::Inventory& ioInventory,
@@ -691,9 +699,17 @@ namespace AIRINV {
                                  const stdair::ClassCode_T& iClassCode,
                                  const stdair::PartySize_T& iPartySize) {
     
-    // Make the sale within the inventory.
+    // Make the cancellation within the inventory.
     return InventoryHelper::cancel (ioInventory, iSegmentDateKey,
                                     iClassCode, iPartySize);
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  bool InventoryManager::cancel (const stdair::BookingClassID_T& iClassID,
+                                 const stdair::PartySize_T& iPartySize) {
+
+    // Make the cancellation within the inventory.
+    return InventoryHelper::cancel (iClassID, iPartySize);
   }
 
   // ////////////////////////////////////////////////////////////////////
