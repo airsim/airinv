@@ -379,18 +379,21 @@ namespace AIRINV {
   std::string AIRINV_Service::
   jsonHandler (const std::string& lJSONString) const {
    
-    // Extract, from the JSON-ified string an airline code
+    // Extract from the JSON-ified string an airline code
     stdair::AirlineCode_T lAirlineCode;
     stdair::BomJSONImport::jsonImportInventoryKey (lJSONString,
                                                    lAirlineCode);
     
-    // Extract, from the JSON-ified string a flight number 
+    // Extract from the JSON-ified string a flight number 
     stdair::FlightNumber_T lFlightNumber;
     stdair::BomJSONImport::jsonImportFlightNumber (lJSONString,
                                                    lFlightNumber);
 
-    std::string lJSONDump;
-
+    // Extract from the JSON-ified string the JSon command
+    //
+    // TODO:
+    // Define a more robust method to find the command first letter
+    //
     const char iCommand (lJSONString[2]);
     const stdair::JSonCommand lJSonCommand (iCommand);
     const stdair::JSonCommand::EN_JSonCommand& lEN_JSonCommand =
@@ -399,7 +402,7 @@ namespace AIRINV {
     switch (lEN_JSonCommand) {
     case stdair::JSonCommand::FLIGHT_DATE:{
 
-      // Extract, from the JSON-ified string a flight date
+      // Extract from the JSON-ified string a flight date
       stdair::Date_T lDate;
       stdair::BomJSONImport::jsonImportFlightDate (lJSONString,
                                                    lDate);
@@ -409,48 +412,56 @@ namespace AIRINV {
                         << "', flight number = " << lFlightNumber
                         << "', departure date = '" << lDate << "'");
 
-      // DEBUG: Display the flight-date dump
-      const std::string& lFlightDateCSVDump =
+      // DEBUG: Display the flight-date details dump
+      const std::string& lFlightDateDetailsCSVDump =
         csvDisplay (lAirlineCode, lFlightNumber, lDate);
-      STDAIR_LOG_DEBUG (std::endl << lFlightDateCSVDump);
+      STDAIR_LOG_DEBUG (std::endl << lFlightDateDetailsCSVDump);
       
       // Dump the full details of the flight-date into the JSON-ified flight-date
-      const std::string& lFlightDateJSONDump =
+      const std::string& lFlightDateDetailsJSONDump =
         jsonExportFlightDateObjects (lAirlineCode, 
                                      lFlightNumber, 
                                      lDate);
       
       // DEBUG
-      STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");
+      STDAIR_LOG_DEBUG ("Send: '" << lFlightDateDetailsJSONDump << "'");
 
-      return lFlightDateJSONDump;
+      return lFlightDateDetailsJSONDump;
       break;
     }
     case stdair::JSonCommand::LIST:{
-
-      std::cout << "commande list\n";
 
       // DEBUG
       STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
                         << "', flight number = " << lFlightNumber << "'");
 
-      // DEBUG: Display the flight-date dump
+      // DEBUG: Display the flight-date list dump
       const std::string& lFlightDateListCSVDump =
         list (lAirlineCode, lFlightNumber);
       STDAIR_LOG_DEBUG (std::endl << lFlightDateListCSVDump);
 
-      // Dump the full details of the flight-date into the JSON-ified flight-date
-      const std::string& lFlightDateJSONDump =
+      // Dump the full list of the flight-date into the JSON-ified flight-date
+      const std::string& lFlightDateListJSONDump =
         jsonExportFlightDateList (lAirlineCode, lFlightNumber);
+
+      // DEBUG
+      STDAIR_LOG_DEBUG ("Send: '" << lFlightDateListCSVDump << "'");
       
-      return lFlightDateJSONDump;
+      return lFlightDateListJSONDump;
       break;
     }
     default: {
-      assert (false);
+      // Return an Error string
+      std::ostringstream lErrorMessage;
+      lErrorMessage << "Error: The command '" << lJSonCommand.describe()
+                    << "' is not handled by the AirInv service.";
+      return lErrorMessage.str();
       break;
     }
     }
+    assert (false);
+    // Return an Error string
+    std::string lJSONDump ("Error");
     return lJSONDump;
   }
 

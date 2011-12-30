@@ -1068,7 +1068,7 @@ int main (int argc, char* argv[]) {
       std::ostringstream lMyCommandJSONstream;
       lMyCommandJSONstream << "{\"list\":"
                            << "{ \"airline_code\":\"" << lAirlineCode
-			   << "\",\"flight_number\":\"" << lInteractiveFlightNumber
+			   << "\",\"flight_number\":\"" << lFlightNumber
 			   << "\"}}";
 
       const std::string& lFlightDateListJSONStr = 
