@@ -11,6 +11,7 @@
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/basic/ForecastingMethod.hpp>
 #include <stdair/basic/PartnershipTechnique.hpp>
+#include <stdair/basic/JSonCommand.hpp>
 #include <stdair/bom/RMEventTypes.hpp>
 #include <stdair/bom/BomIDTypes.hpp>
 // AirRAC

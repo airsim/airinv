@@ -87,6 +87,8 @@ struct Command_T {
     DISPLAY,
     SELECT,
     SELL,
+    JSON_LIST,
+    JSON_DISPLAY,
     LAST_VALUE
   } Type_T;
 };
@@ -303,6 +305,12 @@ Command_T::Type_T extractCommand (TokenList_T& ioTokenList) {
 
     } else if (lCommand == "sell") {
       oCommandType = Command_T::SELL;
+
+    } else if (lCommand == "json_list") {
+      oCommandType = Command_T::JSON_LIST;
+    
+    } else if (lCommand == "json_display") {
+      oCommandType = Command_T::JSON_DISPLAY;
 
     } else if (lCommand == "quit") {
       oCommandType = Command_T::QUIT;
@@ -855,6 +863,13 @@ int main (int argc, char* argv[]) {
                 << "Display the current flight-date" << std::endl;
       std::cout << " sell" << "\t\t"
                 << "Make a booking on the current flight-date" << std::endl;
+      std::cout << " \nDebug Commands" << std::endl;
+      std::cout << " json_list" << "\t"
+                << "List airlines, flights and departure dates in a JSON format"
+                << std::endl;
+      std::cout << " json_display" << "\t"
+                << "Display the current flight-date in a JSON format"
+                << std::endl;
       std::cout << std::endl;
       break;
     }
@@ -1027,6 +1042,65 @@ int main (int argc, char* argv[]) {
                                   lInteractiveFlightNumber, lInteractiveDate);
       //std::cout << lCSVFlightDateDumpAfter << std::endl;
       STDAIR_LOG_DEBUG (lCSVFlightDateDumpAfter);
+
+      break;
+    }     
+
+      // ////////////////////////////// JSon List ////////////////////////
+
+    case Command_T::JSON_LIST: { 
+
+      //
+      TokenList_T lTokenList = extractTokenListForFlight (lTokenListByReadline);
+
+      stdair::AirlineCode_T lAirlineCode ("all");
+      stdair::FlightNumber_T lFlightNumber (0);
+      // Parse the parameters given by the user, giving default values
+      // in case the user does not specify some (or all) of them
+      parseFlightKey (lTokenList, lAirlineCode, lFlightNumber);
+
+      //
+      const std::string lFlightNumberStr = (lFlightNumber ==0)?" (all)":"";
+      std::cout << "JSON list of flights for "
+                << lAirlineCode << " " << lFlightNumber << lFlightNumberStr
+                << std::endl;
+
+      std::ostringstream lMyCommandJSONstream;
+      lMyCommandJSONstream << "{\"list\":"
+                           << "{ \"airline_code\":\"" << lAirlineCode
+			   << "\",\"flight_number\":\"" << lInteractiveFlightNumber
+			   << "\"}}";
+
+      const std::string& lFlightDateListJSONStr = 
+	airinvService.jsonHandler (lMyCommandJSONstream.str());
+
+      // Display the flight-date JSON string
+      std::cout << lFlightDateListJSONStr << std::endl;
+      STDAIR_LOG_DEBUG (lFlightDateListJSONStr);
+
+      break;
+    } 
+
+      // ////////////////////////////// JSon Display ////////////////////////
+
+    case Command_T::JSON_DISPLAY: {      
+
+      // Construct the JSON command string for the current parameters (current 
+      // airline code, current flight number and current date)
+      std::ostringstream lMyCommandJSONstream; 
+      lMyCommandJSONstream << "{\"flight_date\":" 
+			   << "{ \"departure_date\":\"" << lInteractiveDate
+			   << "\",\"airline_code\":\"" << lInteractiveAirlineCode
+			   << "\",\"flight_number\":\"" << lInteractiveFlightNumber
+			   << "\"}}";
+
+      // Get the flight-date details in a JSON string
+      const std::string& lCSVFlightDateDump =
+        airinvService.jsonHandler (lMyCommandJSONstream.str());
+ 
+      // Display the flight-date JSON string
+      std::cout << lCSVFlightDateDump << std::endl;
+      STDAIR_LOG_DEBUG (lCSVFlightDateDump);
 
       break;
     }

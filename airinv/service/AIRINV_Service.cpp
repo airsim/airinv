@@ -7,6 +7,7 @@
 #include <boost/make_shared.hpp>
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
+#include <stdair/basic/JSonCommand.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
 #include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomKeyManager.hpp> 
@@ -15,6 +16,8 @@
 #include <stdair/bom/FlightDate.hpp>
 #include <stdair/bom/AirlineFeature.hpp>
 #include <stdair/bom/RMEventStruct.hpp>
+#include <stdair/bom/BomJSONImport.hpp>
+#include <stdair/bom/BomJSONExport.hpp>
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
@@ -373,54 +376,82 @@ namespace AIRINV {
 
 
   // ////////////////////////////////////////////////////////////////////
-  std::string AIRINV_Service::jsonHandler (const std::string& lJSONString) const {    
-
-    // Retrieve the AIRINV service context
-    if (_airinvServiceContext == NULL) {
-      throw stdair::NonInitialisedServiceException ("The AirInv service "
-                                                    "has not been initialised");
-    }
-    assert (_airinvServiceContext != NULL);
-
-    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
-  
-    // Retrieve the STDAIR service object from the (AIRINV) service context
-    stdair::STDAIR_Service& lSTDAIR_Service =
-      lAIRINV_ServiceContext.getSTDAIR_Service();
-
+  std::string AIRINV_Service::
+  jsonHandler (const std::string& lJSONString) const {
+   
     // Extract, from the JSON-ified string an airline code
     stdair::AirlineCode_T lAirlineCode;
-    lSTDAIR_Service.jsonImportInventoryKey (lFlightDateKeyJSONString,
-					    lAirlineCode);
-
-    // Extract, from the JSON-ified string a flight number and a departure date
+    stdair::BomJSONImport::jsonImportInventoryKey (lJSONString,
+                                                   lAirlineCode);
+    
+    // Extract, from the JSON-ified string a flight number 
     stdair::FlightNumber_T lFlightNumber;
-    stdair::Date_T lDate;
-    lSTDAIR_Service.jsonImportFlightDateKey (lFlightDateKeyJSONString,
-					     lFlightNumber, lDate);
+    stdair::BomJSONImport::jsonImportFlightNumber (lJSONString,
+                                                   lFlightNumber);
 
-    // DEBUG
-    STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
-                      << "', flight number = " << lFlightNumber
-                      << "', departure date = '" << lDate << "'");
+    std::string lJSONDump;
 
-    // DEBUG: Display the flight-date dump
-    const std::string& lFlightDateCSVDump =
-      airinvService.csvDisplay (lAirlineCode, lFlightNumber, lDate);
-    STDAIR_LOG_DEBUG (std::endl << lFlightDateCSVDump);
+    const char iCommand (lJSONString[2]);
+    const stdair::JSonCommand lJSonCommand (iCommand);
+    const stdair::JSonCommand::EN_JSonCommand& lEN_JSonCommand =
+      lJSonCommand.getCommand();
+    
+    switch (lEN_JSonCommand) {
+    case stdair::JSonCommand::FLIGHT_DATE:{
 
-    // Dump the full details of the flight-date into the JSON-ified flight-date
-    const std::string& lFlightDateJSONDump =
-      airinvService.jsonExportFlightDateObjects (lAirlineCode, 
-						 lFlightNumber, 
-						 lDate);
+      // Extract, from the JSON-ified string a flight date
+      stdair::Date_T lDate;
+      stdair::BomJSONImport::jsonImportFlightDate (lJSONString,
+                                                   lDate);
 
-    // DEBUG
-    STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");
+      // DEBUG
+      STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
+                        << "', flight number = " << lFlightNumber
+                        << "', departure date = '" << lDate << "'");
 
-    // Delegate the JSON export to the dedicated service
-    return lFlightDateJSONDump;
+      // DEBUG: Display the flight-date dump
+      const std::string& lFlightDateCSVDump =
+        csvDisplay (lAirlineCode, lFlightNumber, lDate);
+      STDAIR_LOG_DEBUG (std::endl << lFlightDateCSVDump);
+      
+      // Dump the full details of the flight-date into the JSON-ified flight-date
+      const std::string& lFlightDateJSONDump =
+        jsonExportFlightDateObjects (lAirlineCode, 
+                                     lFlightNumber, 
+                                     lDate);
+      
+      // DEBUG
+      STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");
 
+      return lFlightDateJSONDump;
+      break;
+    }
+    case stdair::JSonCommand::LIST:{
+
+      std::cout << "commande list\n";
+
+      // DEBUG
+      STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
+                        << "', flight number = " << lFlightNumber << "'");
+
+      // DEBUG: Display the flight-date dump
+      const std::string& lFlightDateListCSVDump =
+        list (lAirlineCode, lFlightNumber);
+      STDAIR_LOG_DEBUG (std::endl << lFlightDateListCSVDump);
+
+      // Dump the full details of the flight-date into the JSON-ified flight-date
+      const std::string& lFlightDateJSONDump =
+        jsonExportFlightDateList (lAirlineCode, lFlightNumber);
+      
+      return lFlightDateJSONDump;
+      break;
+    }
+    default: {
+      assert (false);
+      break;
+    }
+    }
+    return lJSONDump;
   }
 
   // ////////////////////////////////////////////////////////////////////

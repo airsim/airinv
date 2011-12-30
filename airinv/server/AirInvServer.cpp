@@ -19,8 +19,6 @@
 // StdAir
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
-#include <stdair/bom/BomJSONImport.hpp>
-#include <stdair/bom/BomJSONExport.hpp>
 #include <stdair/service/Logger.hpp>
 // AirInvServer
 #include <airinv/config/airinv-paths.hpp>
