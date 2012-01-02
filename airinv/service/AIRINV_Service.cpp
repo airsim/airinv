@@ -7,6 +7,7 @@
 #include <boost/make_shared.hpp>
 // StdAir
 #include <stdair/basic/BasChronometer.hpp>
+#include <stdair/basic/JSonCommand.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
 #include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomKeyManager.hpp> 
@@ -15,6 +16,8 @@
 #include <stdair/bom/FlightDate.hpp>
 #include <stdair/bom/AirlineFeature.hpp>
 #include <stdair/bom/RMEventStruct.hpp>
+#include <stdair/bom/BomJSONImport.hpp>
+#include <stdair/bom/BomJSONExport.hpp>
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
@@ -369,7 +372,98 @@ namespace AIRINV {
      * 3.3. Initialise the bid price vectors.
      */
     //    InventoryManager::setDefaultBidPriceVector (lBomRoot);
-  } 
+  }   
+
+
+  // ////////////////////////////////////////////////////////////////////
+  std::string AIRINV_Service::
+  jsonHandler (const std::string& lJSONString) const {
+   
+    // Extract from the JSON-ified string an airline code
+    stdair::AirlineCode_T lAirlineCode;
+    stdair::BomJSONImport::jsonImportInventoryKey (lJSONString,
+                                                   lAirlineCode);
+    
+    // Extract from the JSON-ified string a flight number 
+    stdair::FlightNumber_T lFlightNumber;
+    stdair::BomJSONImport::jsonImportFlightNumber (lJSONString,
+                                                   lFlightNumber);
+
+    // Extract from the JSON-ified string the JSon command
+    //
+    // TODO:
+    // Define a more robust method to find the command first letter
+    //
+    const char iCommand (lJSONString[2]);
+    const stdair::JSonCommand lJSonCommand (iCommand);
+    const stdair::JSonCommand::EN_JSonCommand& lEN_JSonCommand =
+      lJSonCommand.getCommand();
+    
+    switch (lEN_JSonCommand) {
+    case stdair::JSonCommand::FLIGHT_DATE:{
+
+      // Extract from the JSON-ified string a flight date
+      stdair::Date_T lDate;
+      stdair::BomJSONImport::jsonImportFlightDate (lJSONString,
+                                                   lDate);
+
+      // DEBUG
+      STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
+                        << "', flight number = " << lFlightNumber
+                        << "', departure date = '" << lDate << "'");
+
+      // DEBUG: Display the flight-date details dump
+      const std::string& lFlightDateDetailsCSVDump =
+        csvDisplay (lAirlineCode, lFlightNumber, lDate);
+      STDAIR_LOG_DEBUG (std::endl << lFlightDateDetailsCSVDump);
+      
+      // Dump the full details of the flight-date into the JSON-ified flight-date
+      const std::string& lFlightDateDetailsJSONDump =
+        jsonExportFlightDateObjects (lAirlineCode, 
+                                     lFlightNumber, 
+                                     lDate);
+      
+      // DEBUG
+      STDAIR_LOG_DEBUG ("Send: '" << lFlightDateDetailsJSONDump << "'");
+
+      return lFlightDateDetailsJSONDump;
+      break;
+    }
+    case stdair::JSonCommand::LIST:{
+
+      // DEBUG
+      STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
+                        << "', flight number = " << lFlightNumber << "'");
+
+      // DEBUG: Display the flight-date list dump
+      const std::string& lFlightDateListCSVDump =
+        list (lAirlineCode, lFlightNumber);
+      STDAIR_LOG_DEBUG (std::endl << lFlightDateListCSVDump);
+
+      // Dump the full list of the flight-date into the JSON-ified flight-date
+      const std::string& lFlightDateListJSONDump =
+        jsonExportFlightDateList (lAirlineCode, lFlightNumber);
+
+      // DEBUG
+      STDAIR_LOG_DEBUG ("Send: '" << lFlightDateListCSVDump << "'");
+      
+      return lFlightDateListJSONDump;
+      break;
+    }
+    default: {
+      // Return an Error string
+      std::ostringstream lErrorMessage;
+      lErrorMessage << "Error: The command '" << lJSonCommand.describe()
+                    << "' is not handled by the AirInv service.";
+      return lErrorMessage.str();
+      break;
+    }
+    }
+    assert (false);
+    // Return an Error string
+    std::string lJSONDump ("Error");
+    return lJSONDump;
+  }
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::
@@ -392,7 +486,7 @@ namespace AIRINV {
     // Delegate the JSON export to the dedicated service
     return lSTDAIR_Service.jsonExportFlightDateList (iAirlineCode, 
 						     iFlightNumber);
-  }
+  } 
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::
