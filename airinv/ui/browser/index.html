@@ -7,6 +7,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 <meta charset="utf-8">
+<title>Welcome to AirSim</title>
 <link type="text/css" href="js/mylibs/jQueryUI/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-1.5.1.min.js"></script>
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-ui-1.8.13.custom.min.js"></script>
@@ -54,7 +55,7 @@
     </div>
   </header>
   <div id="main" role="main" align="center">
-    <iframe id="contentFrame" name="contentFrame" style="width:1220px; height:1000px; border-style:none" src="airinv.html"></iframe></td>
+    <iframe id="contentFrame" name="contentFrame" style="width:1220px; height:800px; border-style:none" src="airinv.html"></iframe></td>
   </div>
   <footer> </footer>
 </div>
@@ -75,6 +76,7 @@
     });
   </script>-->
 <script>
+	
 	function onLoad()
 	{
 		$(function() {
@@ -86,7 +88,7 @@
                 primary: "ui-icon-gear"
             }});
 		$( "a", ".demo" ).click(function() { return false; });
-	});
+		});
 	}
 	
 	function loadLauncher()
@@ -106,7 +108,7 @@
 			}
 		});
 	}
-	</script>
+</script>
 <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
 <!--[if lt IE 7 ]>
