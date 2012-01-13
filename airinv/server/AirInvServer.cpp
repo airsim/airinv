@@ -19,8 +19,6 @@
 // StdAir
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
-#include <stdair/bom/BomJSONImport.hpp>
-#include <stdair/bom/BomJSONExport.hpp>
 #include <stdair/service/Logger.hpp>
 // AirInvServer
 #include <airinv/config/airinv-paths.hpp>
@@ -387,32 +385,8 @@ int main (int argc, char* argv[]) {
     // DEBUG
     STDAIR_LOG_DEBUG ("Received: '" << lFlightDateKeyJSONString << "'");
 
-    // Extract, from the JSON-ified string an airline code
-    stdair::AirlineCode_T lAirlineCode;
-    stdair::BomJSONImport::jsonImportInventoryKey (lFlightDateKeyJSONString,
-                                                   lAirlineCode);
-
-    // Extract, from the JSON-ified string a flight number and a departure date
-    stdair::FlightNumber_T lFlightNumber;
-    stdair::Date_T lDate;
-    stdair::BomJSONImport::jsonImportFlightDateKey (lFlightDateKeyJSONString,
-                                                    lFlightNumber, lDate);
-
-    // DEBUG
-    STDAIR_LOG_DEBUG ("=> airline code = '" << lAirlineCode
-                      << "', flight number = " << lFlightNumber
-                      << "', departure date = '" << lDate << "'");
-
-    // DEBUG: Display the flight-date dump
-    const std::string& lFlightDateCSVDump =
-      airinvService.csvDisplay (lAirlineCode, lFlightNumber, lDate);
-    STDAIR_LOG_DEBUG (std::endl << lFlightDateCSVDump);
-
-    // Dump the full details of the flight-date into the JSON-ified flight-date
-    const std::string& lFlightDateJSONDump =
-      airinvService.jsonExportFlightDateObjects (lAirlineCode, 
-						 lFlightNumber, 
-						 lDate);
+    const std::string& lFlightDateJSONDump = 
+      airinvService.jsonHandler (lFlightDateKeyJSONString);
 
     // DEBUG
     STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");

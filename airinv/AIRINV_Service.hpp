@@ -11,6 +11,7 @@
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/basic/ForecastingMethod.hpp>
 #include <stdair/basic/PartnershipTechnique.hpp>
+#include <stdair/basic/JSonCommand.hpp>
 #include <stdair/bom/RMEventTypes.hpp>
 #include <stdair/bom/BomIDTypes.hpp>
 // AirRAC
@@ -198,7 +199,9 @@ namespace AIRINV {
                    const stdair::PartnershipTechnique&);
 
   public:
-    // //////////////// Export support methods /////////////////  
+    // //////////////// Export support methods /////////////////   
+
+    std::string jsonHandler (const std::string&) const;
 
     /**
      * Recursively dump, in the returned string and in JSON format,
