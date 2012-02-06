@@ -12,6 +12,8 @@
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/bom/Inventory.hpp>
 #include <stdair/service/ServiceAbstract.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Types.hpp>
 // AirInv
 #include <airinv/AIRINV_Types.hpp>
 
@@ -39,6 +41,13 @@ namespace AIRINV {
      */
     stdair::STDAIR_ServicePtr_T getSTDAIR_ServicePtr() const {
       return _stdairService;
+    }    
+
+    /**
+     * Get the pointer on the SEvMgr service handler.
+     */
+    SEVMGR::SEVMGR_ServicePtr_T getSEVMGR_ServicePtr() const {
+      return _sevmgrService;
     }
 
     /**
@@ -54,6 +63,13 @@ namespace AIRINV {
      */
     const bool getOwnStdairServiceFlag() const {
       return _ownStdairService;
+    }    
+
+    /**
+     * State whether or not RMOL owns the SEVMGR service resources.
+     */
+    const bool getOwnSEVMGRServiceFlag() const {
+      return _ownSEVMGRService;
     }
 
     /**
@@ -73,6 +89,15 @@ namespace AIRINV {
                             const bool iOwnStdairService) {
       _stdairService = ioSTDAIR_ServicePtr;
       _ownStdairService = iOwnStdairService;
+    }  
+
+    /**
+     * Set the pointer on the SEVMGR service handler.
+     */
+    void setSEVMGR_Service (SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_ServicePtr,
+			    const bool iOwnSEVMGRService) {
+      _sevmgrService = ioSEVMGR_ServicePtr; 
+      _ownSEVMGRService = iOwnSEVMGRService;
     }
 
     /**
@@ -131,9 +156,19 @@ namespace AIRINV {
     stdair::STDAIR_ServicePtr_T _stdairService;
 
     /**
-     * State whether or not RMOL owns the STDAIR service resources.
+     * State whether or not AirInv owns the STDAIR service resources.
      */
-    bool _ownStdairService;
+    bool _ownStdairService;  
+
+    /**
+     * Standard event queue (SEvMgr) Service Handler.
+     */
+    SEVMGR::SEVMGR_ServicePtr_T _sevmgrService; 
+
+    /**
+     * State whether or not AirInv owns the SEVMGR service resources.
+     */
+    bool _ownSEVMGRService;  
 
 
   private:

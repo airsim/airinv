@@ -24,7 +24,6 @@
 #include <stdair/bom/TravelSolutionStruct.hpp>
 #include <stdair/bom/FareOptionStruct.hpp>
 #include <stdair/bom/EventStruct.hpp>
-#include <stdair/bom/EventQueue.hpp>
 #include <stdair/bom/SnapshotStruct.hpp>
 #include <stdair/bom/RMEventStruct.hpp>
 #include <stdair/factory/FacBomManager.hpp>
@@ -32,6 +31,8 @@
 #include <stdair/service/Logger.hpp>
 #include <stdair/bom/FareFamily.hpp> // Contains the definition of FareFamilyList_T
 #include <stdair/bom/BookingClass.hpp> //
+// SEvMgr
+#include <sevmgr/SEVMGR_Service.hpp>
 // AirInv
 #include <airinv/AIRINV_Types.hpp>
 #include <airinv/bom/BomRootHelper.hpp>
@@ -1052,9 +1053,9 @@ namespace AIRINV {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void InventoryManager::initSnapshotEvents (const stdair::Date_T& iStartDate,
-                                             const stdair::Date_T& iEndDate,
-                                             stdair::EventQueue& ioQueue) {
+  void InventoryManager::initSnapshotEvents (SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_ServicePtr,
+					     const stdair::Date_T& iStartDate,
+                                             const stdair::Date_T& iEndDate) {
     const stdair::Duration_T lTimeZero (0, 0, 0);
     const stdair::Duration_T lOneDayDuration (24, 0, 0);
     const stdair::DateTime_T lBeginSnapshotTime (iStartDate, lTimeZero);
@@ -1079,11 +1080,11 @@ namespace AIRINV {
        case, the date-time stamp is altered for the newly added event,
        so that the unicity on the date-time stamp can be guaranteed.
     */
-    ioQueue.addEvent (lEventStruct);
+    ioSEVMGR_ServicePtr->addEvent (lEventStruct);
     ++lNbOfSnapshots;
     }
 
-    ioQueue.addStatus (stdair::EventType::SNAPSHOT, lNbOfSnapshots);
+    ioSEVMGR_ServicePtr->addStatus (stdair::EventType::SNAPSHOT, lNbOfSnapshots);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -1132,7 +1133,7 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
-  addRMEventsToEventQueue (stdair::EventQueue& ioQueue,
+  addRMEventsToEventQueue (SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_ServicePtr,
                            stdair::RMEventList_T& ioRMEventList) {
     // Browse the RM event list and add them to the queue.
     for (stdair::RMEventList_T::iterator itRMEvent = ioRMEventList.begin();
@@ -1141,10 +1142,10 @@ namespace AIRINV {
       stdair::RMEventPtr_T lRMEventPtr =
         boost::make_shared<stdair::RMEventStruct> (lRMEvent);
       stdair::EventStruct lEventStruct (stdair::EventType::RM, lRMEventPtr);
-      ioQueue.addEvent (lEventStruct);
+      ioSEVMGR_ServicePtr->addEvent (lEventStruct);
     }
 
     // Update the status of RM events within the event queue.
-    ioQueue.updateStatus (stdair::EventType::RM, ioRMEventList.size());
+    ioSEVMGR_ServicePtr->updateStatus (stdair::EventType::RM, ioRMEventList.size());
   }
 }

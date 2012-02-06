@@ -16,6 +16,8 @@
 #include <stdair/bom/BomIDTypes.hpp>
 // AirRAC
 #include <airrac/AIRRAC_Types.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Types.hpp>
 
 /// Forward declarations
 namespace stdair {
@@ -82,10 +84,28 @@ namespace AIRINV {
      * itself being initialised by another library service such as
      * SIMCRS_Service).
      *
-     * @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.
-     * @param const stdair::Filename_T& Filename of the input inventory file.
+     * @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.  
      */
     AIRINV_Service (stdair::STDAIR_ServicePtr_T);
+
+    /**
+     * Constructor.
+     *
+     * The initAirinvService() method is called; see the corresponding
+     * documentation for more details.
+     *
+     * Moreover, as no reference on any output stream is given, it is
+     * assumed that the StdAir log service has already been initialised
+     * with the proper log output stream by some other methods in the
+     * calling chain (for instance, when the AIRINV_Master_Service is
+     * itself being initialised by another library service such as
+     * SIMCRS_Service).
+     *
+     * @param stdair::STDAIR_ServicePtr_T Reference on the STDAIR service.  
+     * @param stdair::SEVMGR_ServicePtr_T Reference on the SEVMGR service.
+     */
+    AIRINV_Service (stdair::STDAIR_ServicePtr_T,
+		    SEVMGR::SEVMGR_ServicePtr_T);
 
     /**
      * Parse the inventory dump and load it into memory.
@@ -328,7 +348,12 @@ namespace AIRINV {
     /**
      * Initialise the AIRRAC service (including the log service).
      */
-    void initAIRRACService();
+    void initAIRRACService(); 
+
+    /**
+     * Initialise the SEvMgr service.
+     */
+    void initSEVMGRService();
     
     /**
      * Attach the STDAIR service (holding the log and database services) to
@@ -339,7 +364,15 @@ namespace AIRINV {
      *        resources.
      */
     void addStdAirService (stdair::STDAIR_ServicePtr_T,
-                           const bool iOwnStdairService);
+                           const bool iOwnStdairService); 
+
+    /**
+     * Attach the SEVMGR service to the AIRINV_Service.
+     *
+     * @param SEVMGR::SEVMGR_ServicePtr_T Reference on the SEVMGR service.
+     */
+    void addSEVMGRService (SEVMGR::SEVMGR_ServicePtr_T,
+			   const bool iOwnSEVMGRService);
     
     /**
      * Initialise the (AIRINV) service context (i.e., the

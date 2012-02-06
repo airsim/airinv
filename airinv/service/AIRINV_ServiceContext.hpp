@@ -15,6 +15,8 @@
 #include <rmol/RMOL_Types.hpp>
 // AIRRAC
 #include <airrac/AIRRAC_Types.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Types.hpp>
 // AirInv
 #include <airinv/AIRINV_Types.hpp>
 
@@ -78,8 +80,30 @@ namespace AIRINV {
       assert (_airracService != NULL);
       return *_airracService;
     }
-    
 
+    /**
+     * Get the pointer on the SEvMgr service handler.
+     */
+    SEVMGR::SEVMGR_ServicePtr_T getSEVMGR_ServicePtr() const {
+      return _sevmgrService;
+    }
+
+    /**
+     * Get the SEvMgr service handler.
+     */
+    SEVMGR::SEVMGR_Service& getSEVMGR_Service() const {
+      assert (_sevmgrService != NULL);
+      return *_sevmgrService;
+    } 
+
+    /**
+     * State whether or not AIRINV owns the SEVMGR service resources.
+     */
+    const bool getOwnSEVMGRServiceFlag() const {
+      return _ownSEVMGRService;
+    }
+
+   
   private:
     // ///////////////// Setters ///////////////////
     /**
@@ -110,8 +134,16 @@ namespace AIRINV {
      */
     void setAIRRAC_Service (AIRRAC::AIRRAC_ServicePtr_T ioAIRRAC_ServicePtr) {
       _airracService = ioAIRRAC_ServicePtr;
-    }
+    }  
 
+    /**
+     * Set the pointer on the SEVMGR service handler.
+     */
+    void setSEVMGR_Service (SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_ServicePtr,
+			    const bool iOwnSEVMGRService) {
+      _sevmgrService = ioSEVMGR_ServicePtr; 
+      _ownSEVMGRService = iOwnSEVMGRService;
+    }
 
   private:
     // //////////////////// Display Methods /////////////////////
@@ -173,6 +205,16 @@ namespace AIRINV {
      * Standard Airline (RMOL) Service Handler.
      */
     RMOL::RMOL_ServicePtr_T _rmolService;
+
+    /**
+     * Standard event queue (SEvMgr) Service Handler.
+     */
+    SEVMGR::SEVMGR_ServicePtr_T _sevmgrService; 
+
+    /**
+     * State whether or not AIRINV owns the SEVMGR service resources.
+     */
+    bool _ownSEVMGRService;
 
     /**
      * Standart Airline Yield service Handler.
