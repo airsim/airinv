@@ -94,7 +94,7 @@ cat > configure << _EOF
 # The Hudson/Jenkins-based CI build-server often builds any simulator-related
 # projects with the same set up of options:
 # ./configure --with-stdair=/opt/stdair --with-airrac=/opt/airrac
-#   --with-rmol=/opt/rmol
+#   --with-rmol=/opt/rmol --with-sevmgr=/opt/sevmgr
 #
 _EOF
 
@@ -116,6 +116,7 @@ PREFIX_OPTION=""
 STDAIR_OPTION=""
 AIRRAC_OPTION=""
 RMOL_OPTION=""
+SEVMGR_OPTION=""
 DOC_OPTION="${DOC_OPTION}"
 RM_OPTION="rm -rf build"
 BUILD_DIR_OPTION="${BUILD_DIR_OPTION}"
@@ -126,7 +127,7 @@ do
   then
     echo ""
     echo "Usage:"
-    echo "    \$0 [--prefix=<install_dir>] [--with-stdair=<stdair_install_dir>] [--with-airrac=<airrac_install_dir>] [--with-rmol=<rmol_install_dir>] [--with-doc|--without-doc] [-n|-N|--norm] [-b|--buildir]"
+    echo "    \$0 [--prefix=<install_dir>] [--with-stdair=<stdair_install_dir>] [--with-airrac=<airrac_install_dir>] [--with-rmol=<rmol_install_dir>] [--with-sevmgr=<sevmgr_install_dir>] [--with-doc|--without-doc] [-n|-N|--norm] [-b|--buildir]"
     echo "      --with-doc/--without-doc : Force the (resp. non) generation of the documentation" 
     echo "      -n/-N/--norm             : Do not remove/clean older potential 'build' sub-directory" 
     echo "      -b/-B/--buildir          : Do the build in a dedicated 'build' sub-directory, rather than in-place" 
@@ -177,6 +178,18 @@ then
 _EOF
 fi
 #
+if [ "${PROJECT_NAME}" != "sevmgr" ]
+then
+	cat >> configure << _EOF
+  IS_OPTION_SEVMGR=\`echo "\${opt_elem}" | grep "^--with-sevmgr="\`
+  if [ "\${IS_OPTION_SEVMGR}" != "" ]
+  then
+    SEVMGR_DIR=\`echo "\${opt_elem}" | sed -e "s/^--with-sevmgr=\(.*\)\$/\1/"\`
+    SEVMGR_OPTION="-DWITH_SEVMGR_PREFIX=\${SEVMGR_DIR}"
+  fi
+_EOF
+fi
+#
 cat >> configure << _EOF
   IS_OPTION_W_DOC=\`echo "\${opt_elem}" | grep "^--with-doc"\`
   if [ "\${IS_OPTION_W_DOC}" != "" ]
@@ -210,7 +223,7 @@ fi
 BUILD_OPTION="-DCMAKE_BUILD_TYPE:STRING=Debug"
 
 #
-CMAKE_CMD="cmake \${PREFIX_OPTION} \${STDAIR_OPTION} \${AIRRAC_OPTION} \${RMOL_OPTION} \${LIB_OPTION} \${BUILD_OPTION} \${DOC_OPTION} \${SOURCE_DIR}"
+CMAKE_CMD="cmake \${PREFIX_OPTION} \${STDAIR_OPTION} \${AIRRAC_OPTION} \${RMOL_OPTION} \${SEVMGR_OPTION} \${LIB_OPTION} \${BUILD_OPTION} \${DOC_OPTION} \${SOURCE_DIR}"
 
 # Trace on
 set -x
