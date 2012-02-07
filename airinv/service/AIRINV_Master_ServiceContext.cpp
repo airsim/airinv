@@ -12,7 +12,8 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Master_ServiceContext::AIRINV_Master_ServiceContext()
-   : _ownStdairService (false) {
+    : _ownStdairService (false),
+      _ownSEVMGRService (true) {
   }
 
   // //////////////////////////////////////////////////////////////////////

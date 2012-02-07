@@ -11,6 +11,8 @@
 #include <stdair/bom/RMEventTypes.hpp>
 #include <stdair/basic/PartnershipTechnique.hpp>
 #include <stdair/bom/BomIDTypes.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Types.hpp>
 
 // Forward declarations
 namespace stdair {
@@ -38,16 +40,16 @@ namespace AIRINV {
 
   private:
     /** Initialise the snapshot events for the inventories. */
-    static void initSnapshotEvents (const stdair::Date_T&, 
-                                    const stdair::Date_T&,
-                                    stdair::EventQueue&);
+    static void initSnapshotEvents (SEVMGR::SEVMGR_ServicePtr_T,
+				    const stdair::Date_T&, 
+                                    const stdair::Date_T&);
     
     /** Initialise the RM events for the inventories. */
     static void initRMEvents (const stdair::Inventory&, stdair::RMEventList_T&,
                               const stdair::Date_T&, const stdair::Date_T&);
 
     /** Add the RM events to the event queue. */
-    static void addRMEventsToEventQueue (stdair::EventQueue&,
+    static void addRMEventsToEventQueue (SEVMGR::SEVMGR_ServicePtr_T,
                                          stdair::RMEventList_T&);
     
     /** Compute the availability for the given travel solution. */

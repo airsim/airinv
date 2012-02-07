@@ -12,18 +12,21 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_ServiceContext::AIRINV_ServiceContext()
-    : _ownStdairService (false), _airlineCode (DEFAULT_AIRLINE_CODE) {
+    : _ownStdairService (false), _ownSEVMGRService (true), 
+      _airlineCode (DEFAULT_AIRLINE_CODE) {
   }
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_ServiceContext::
   AIRINV_ServiceContext (const stdair::AirlineCode_T& iAirlineCode)
-    : _ownStdairService (false), _airlineCode (iAirlineCode) {
+    : _ownStdairService (false), _ownSEVMGRService (true), 
+      _airlineCode (iAirlineCode) {
   }
 
   // //////////////////////////////////////////////////////////////////////
   AIRINV_ServiceContext::AIRINV_ServiceContext (const AIRINV_ServiceContext&)
-    : _ownStdairService (false), _airlineCode (DEFAULT_AIRLINE_CODE) {
+    : _ownStdairService (false), _ownSEVMGRService (true), 
+      _airlineCode (DEFAULT_AIRLINE_CODE) {
   }
 
   // //////////////////////////////////////////////////////////////////////
