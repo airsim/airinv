@@ -20,7 +20,7 @@
 #include <stdair/bom/LegCabin.hpp>
 #include <stdair/bom/FareFamily.hpp>
 #include <stdair/bom/BookingClass.hpp>
-#include <stdair/bom/GuillotineBlock.hpp>
+#include <stdair/bom/SegmentSnapshotTable.hpp>
 #include <stdair/bom/TravelSolutionStruct.hpp>
 #include <stdair/bom/FareOptionStruct.hpp>
 #include <stdair/bom/EventStruct.hpp>
@@ -982,26 +982,26 @@ namespace AIRINV {
       }
     }
 
-    // Initialise the guillotine blocks.
-    stdair::GuillotineNumber_T lGuillotineNumber = 1;
+    // Initialise the segment data table.
+    stdair::TableID_T lTableID = 1;
     for (SimilarSegmentCabinSetMap_T::const_iterator itSSCS = lSSCSM.begin();
-         itSSCS != lSSCSM.end(); ++itSSCS, ++lGuillotineNumber) {
+         itSSCS != lSSCSM.end(); ++itSSCS, ++lTableID) {
       const DepartureDateSegmentCabinMap_T& lDDSCMap = itSSCS->second;
 
-      buildGuillotineBlock (ioInventory, lGuillotineNumber, lDDSCMap);
+      buildSegmentSnapshotTable (ioInventory, lTableID, lDDSCMap);
     }    
   }
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
-  buildGuillotineBlock (stdair::Inventory& ioInventory,
-                        const stdair::GuillotineNumber_T& iGuillotineNumber,
+  buildSegmentSnapshotTable (stdair::Inventory& ioInventory,
+                        const stdair::TableID_T& iTableID,
                         const DepartureDateSegmentCabinMap_T& iDDSCMap) {
-    // Build an empty guillotine block.
-    const stdair::GuillotineBlockKey lKey (iGuillotineNumber);
-    stdair::GuillotineBlock& lGuillotineBlock =
-      stdair::FacBom<stdair::GuillotineBlock>::instance().create (lKey);
-    stdair::FacBomManager::addToListAndMap (ioInventory, lGuillotineBlock);
+    // Build an empty segment data table.
+    const stdair::SegmentSnapshotTableKey lKey (iTableID);
+    stdair::SegmentSnapshotTable& lSegmentSnapshotTable =
+      stdair::FacBom<stdair::SegmentSnapshotTable>::instance().create (lKey);
+    stdair::FacBomManager::addToListAndMap (ioInventory, lSegmentSnapshotTable);
 
     // Build the value type index map.
     DepartureDateSegmentCabinMap_T::const_iterator itDDSC = iDDSCMap.begin();
@@ -1042,13 +1042,13 @@ namespace AIRINV {
         insert (stdair::SegmentCabinIndexMap_T::value_type (lCurrentSC_ptr,
                                                             lBlockNumber));
 
-      // Added the guillotine to the segment-cabin.
-      lCurrentSC_ptr->setGuillotineBlock (lGuillotineBlock);
+      // Added the data table to the segment-cabin.
+      lCurrentSC_ptr->setSegmentSnapshotTable (lSegmentSnapshotTable);
     }
 
-    // Initialise the guillotine block.
-    lGuillotineBlock.initSnapshotBlocks(lSegmentCabinIndexMap,
-                                        lValueTypeIndexMap);
+    // Initialise the segment data table.
+    lSegmentSnapshotTable.initSnapshotBlocks(lSegmentCabinIndexMap,
+                                             lValueTypeIndexMap);
   }
 
   // ////////////////////////////////////////////////////////////////////

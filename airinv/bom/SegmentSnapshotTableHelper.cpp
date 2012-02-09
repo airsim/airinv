@@ -12,30 +12,30 @@
 #include <stdair/bom/SegmentCabin.hpp>
 #include <stdair/bom/FareFamily.hpp>
 #include <stdair/bom/BookingClass.hpp>
-#include <stdair/bom/GuillotineBlock.hpp>
+#include <stdair/bom/SegmentSnapshotTable.hpp>
 #include <stdair/service/Logger.hpp>
 // AirInv
 #include <airinv/basic/BasConst_Curves.hpp>
-#include <airinv/bom/GuillotineBlockHelper.hpp>
+#include <airinv/bom/SegmentSnapshotTableHelper.hpp>
 #include <airinv/bom/FlightDateHelper.hpp>
 #include <airinv/bom/SegmentCabinHelper.hpp>
 
 namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
-  void GuillotineBlockHelper::
-  takeSnapshots (stdair::GuillotineBlock& ioGuillotineBlock,
+  void SegmentSnapshotTableHelper::
+  takeSnapshots (stdair::SegmentSnapshotTable& ioSegmentSnapshotTable,
                  const stdair::DateTime_T& iSnapshotTime) {
     // Retrieve the segment-cabin index and take the snapshots for
     // each segment-cabin.
     const stdair::SegmentCabinIndexMap_T& lSegmentCabinIndexMap =
-      ioGuillotineBlock.getSegmentCabinIndexMap();
+      ioSegmentSnapshotTable.getSegmentCabinIndexMap();
     for (stdair::SegmentCabinIndexMap_T::const_iterator itSCIdx =
            lSegmentCabinIndexMap.begin();
          itSCIdx != lSegmentCabinIndexMap.end(); ++itSCIdx) {
       const stdair::SegmentCabin* lSC_ptr = itSCIdx->first;
       assert (lSC_ptr != NULL);
-      const stdair::BlockNumber_T& lSCIdx = itSCIdx->second;
+      const stdair::SegmentDataID_T& lSCIdx = itSCIdx->second;
 
       const stdair::Date_T& lSnapshotDate = iSnapshotTime.date();
       
@@ -49,28 +49,28 @@ namespace AIRINV {
       
       if (lDTD >= 0 && lDTD <= stdair::DEFAULT_MAX_DTD) {
         SegmentCabinHelper::updateAvailabilities (*lSC_ptr);
-        takeSnapshots (ioGuillotineBlock, lDTD, *lSC_ptr, lSCIdx);
-        registerProductAndPriceOrientedBookings (ioGuillotineBlock,
+        takeSnapshots (ioSegmentSnapshotTable, lDTD, *lSC_ptr, lSCIdx);
+        registerProductAndPriceOrientedBookings (ioSegmentSnapshotTable,
                                                  lDTD, *lSC_ptr, lSCIdx);
       }
     }
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void GuillotineBlockHelper::
-  takeSnapshots (stdair::GuillotineBlock& ioGuillotineBlock,
+  void SegmentSnapshotTableHelper::
+  takeSnapshots (stdair::SegmentSnapshotTable& ioSegmentSnapshotTable,
                  const stdair::DTD_T& iDTD,
                  const stdair::SegmentCabin& iSegmentCabin,
-                 const stdair::BlockNumber_T iSegmentCabinIdx) {
+                 const stdair::SegmentDataID_T iSegmentCabinIdx) {
 
     // Extract the views for the corresponding DTD and segment-cabin.
-    stdair::SegmentCabinDTDSnapshotView_T lBookingView = ioGuillotineBlock.
+    stdair::SegmentCabinDTDSnapshotView_T lBookingView = ioSegmentSnapshotTable.
       getSegmentCabinDTDBookingSnapshotView (iSegmentCabinIdx,
                                              iSegmentCabinIdx, iDTD);
-    stdair::SegmentCabinDTDSnapshotView_T lCancellationView = ioGuillotineBlock.
+    stdair::SegmentCabinDTDSnapshotView_T lCancellationView = ioSegmentSnapshotTable.
       getSegmentCabinDTDCancellationSnapshotView (iSegmentCabinIdx,
                                                   iSegmentCabinIdx, iDTD);
-    stdair::SegmentCabinDTDSnapshotView_T lAvailabilityView = ioGuillotineBlock.
+    stdair::SegmentCabinDTDSnapshotView_T lAvailabilityView = ioSegmentSnapshotTable.
       getSegmentCabinDTDAvailabilitySnapshotView (iSegmentCabinIdx,
                                                   iSegmentCabinIdx, iDTD);
     
@@ -78,9 +78,10 @@ namespace AIRINV {
     std::ostringstream lSCMapKey;
     lSCMapKey << stdair::DEFAULT_SEGMENT_CABIN_VALUE_TYPE
               << iSegmentCabin.describeKey();    
-    const stdair::BlockIndex_T& lCabinIdx =
-      ioGuillotineBlock.getBlockIndex (lSCMapKey.str());
+    const stdair::ClassIndex_T& lCabinIdx =
+      ioSegmentSnapshotTable.getClassIndex (lSCMapKey.str());
     lAvailabilityView[lCabinIdx] = iSegmentCabin.getAvailabilityPool();
+    lBookingView[lCabinIdx] = iSegmentCabin.getCommittedSpace();
     
 
     // Browse the booking class list
@@ -92,8 +93,8 @@ namespace AIRINV {
       assert (lBookingClass_ptr != NULL);
 
       // Retrieve the block index of the booking class.
-      const stdair::BlockIndex_T& lIdx =
-        ioGuillotineBlock.getBlockIndex (lBookingClass_ptr->describeKey());
+      const stdair::ClassIndex_T& lIdx =
+        ioSegmentSnapshotTable.getClassIndex (lBookingClass_ptr->describeKey());
 
       // DEBUG
       // STDAIR_LOG_DEBUG ("Taking snapshot for "
@@ -112,26 +113,25 @@ namespace AIRINV {
   }
 
   // ////////////////////////////////////////////////////////////////////
-  void GuillotineBlockHelper::registerProductAndPriceOrientedBookings
-  (stdair::GuillotineBlock& ioGuillotineBlock, const stdair::DTD_T& iDTD,
+  void SegmentSnapshotTableHelper::registerProductAndPriceOrientedBookings
+  (stdair::SegmentSnapshotTable& ioSegmentSnapshotTable, const stdair::DTD_T& iDTD,
    const stdair::SegmentCabin& iSegmentCabin,
-   const stdair::BlockNumber_T iSegmentCabinIdx) {
+   const stdair::SegmentDataID_T iSegmentCabinIdx) {
 
     // Extract the views for the corresponding DTD and segment-cabin.
     stdair::SegmentCabinDTDRangeSnapshotView_T lRangeBookingView =
-      ioGuillotineBlock.getSegmentCabinDTDRangeBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD, iDTD + 1);
+      ioSegmentSnapshotTable.getSegmentCabinDTDRangeBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD, iDTD + 1);
     stdair::SegmentCabinDTDRangeSnapshotView_T lRangeCancellationView =
-      ioGuillotineBlock.getSegmentCabinDTDRangeCancellationSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD, iDTD + 1);
-    stdair::SegmentCabinDTDSnapshotView_T lProductAndPriceOrientedBookingView =
-      ioGuillotineBlock.getSegmentCabinDTDProductAndPriceOrientedBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD);
+      ioSegmentSnapshotTable.getSegmentCabinDTDRangeCancellationSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD, iDTD + 1);
+    stdair::SegmentCabinDTDSnapshotView_T lProductOrientedGrossBookingView =
+      ioSegmentSnapshotTable.getSegmentCabinDTDProductOrientedGrossBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD);
+    stdair::SegmentCabinDTDSnapshotView_T lPriceOrientedGrossBookingView =
+      ioSegmentSnapshotTable.getSegmentCabinDTDPriceOrientedGrossBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD);
+    stdair::SegmentCabinDTDSnapshotView_T lProductOrientedNetBookingView =
+      ioSegmentSnapshotTable.getSegmentCabinDTDProductOrientedNetBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD);
+    stdair::SegmentCabinDTDSnapshotView_T lPriceOrientedNetBookingView =
+      ioSegmentSnapshotTable.getSegmentCabinDTDPriceOrientedNetBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD);
     
-    // Retrieve the block index of the segment-cabin.
-    std::ostringstream lSCMapKey;
-    lSCMapKey << stdair::DEFAULT_SEGMENT_CABIN_VALUE_TYPE
-              << iSegmentCabin.describeKey();    
-    const stdair::BlockIndex_T& lCabinIdx =
-      ioGuillotineBlock.getBlockIndex (lSCMapKey.str());
-
     // Retrieve the lowest class and treat the number of gross
     // bookings of this class the price oriented bookings.
     const stdair::BookingClassList_T& lBCList =
@@ -142,8 +142,8 @@ namespace AIRINV {
     assert (lLowestClass_ptr != NULL);
 
     // Retrieve the block index of the booking class.
-    const stdair::BlockIndex_T& lClassIdx =
-      ioGuillotineBlock.getBlockIndex (lLowestClass_ptr->describeKey());
+    const stdair::ClassIndex_T& lClassIdx =
+      ioSegmentSnapshotTable.getClassIndex (lLowestClass_ptr->describeKey());
 
     // Compute the number of gross bookings for this class.
     const stdair::NbOfBookings_T lNbOfNetBkgs = 
@@ -152,8 +152,9 @@ namespace AIRINV {
       lRangeCancellationView[lClassIdx][0]-lRangeCancellationView[lClassIdx][1];
     const stdair::NbOfBookings_T lNbOfGrossBkgs = lNbOfNetBkgs + lNbOfCx;
 
-    // Write this number of bookings to the price-oriented value.
-    lProductAndPriceOrientedBookingView[lCabinIdx] = lNbOfGrossBkgs;
+    // Write these numbern of bookings to the price-oriented value.
+    lPriceOrientedGrossBookingView[lClassIdx] = lNbOfGrossBkgs;
+    lPriceOrientedNetBookingView[lClassIdx] = lNbOfNetBkgs;
 
     // Retrieve the lowest yield.
     const stdair::Yield_T& lLowestYield = lLowestClass_ptr->getYield();
@@ -163,10 +164,6 @@ namespace AIRINV {
     if (lLowestClass_ptr->getSegmentAvailability() >= 1.0) {
       noLowerClassAvl = false;
     }
-
-    // Retrieve the FRAT5 coefficient and compute the sell-up coef.
-    const double lFRAT5Coef = getFRAT5Coefficient (iDTD);
-    const double lSellUpCoef = -log(0.5) / (lFRAT5Coef - 1); 
     
     // Browse the booking class list
     for (; itBC != lBCList.rend(); ++itBC) {
@@ -178,8 +175,8 @@ namespace AIRINV {
       assert (lYield > lLowestYield);
       
       // Retrieve the block index of the booking class.
-      const stdair::BlockIndex_T& lIdx =
-        ioGuillotineBlock.getBlockIndex (lBookingClass_ptr->describeKey());
+      const stdair::ClassIndex_T& lIdx =
+        ioSegmentSnapshotTable.getClassIndex (lBookingClass_ptr->describeKey());
 
       // Compute the number of gross bookings for this class.
       const stdair::NbOfBookings_T lNetBkgs = 
@@ -192,12 +189,11 @@ namespace AIRINV {
       // will be considered product-oriented. Otherwise, they will be
       // considered price-oriented
       if (noLowerClassAvl == false) {
-        lProductAndPriceOrientedBookingView[lIdx] = lGrossBkgs;
+        lProductOrientedGrossBookingView[lIdx] = lGrossBkgs;
+        lProductOrientedNetBookingView[lIdx] = lNetBkgs;
       } else {
-        // Convert the bookings to Q-equivalent bookings.
-        const stdair::NbOfBookings_T lQEquiBkgs =
-          lGrossBkgs / exp ((1.0 - lYield/lLowestYield) * lSellUpCoef);
-        lProductAndPriceOrientedBookingView[lCabinIdx] += lQEquiBkgs;
+        lPriceOrientedGrossBookingView[lIdx] = lGrossBkgs;
+        lPriceOrientedNetBookingView[lIdx] = lNetBkgs;
         
         if (lBookingClass_ptr->getSegmentAvailability() >= 1.0) {
           noLowerClassAvl = false;
@@ -205,29 +201,5 @@ namespace AIRINV {
       }
     }
   }
-
-  // ////////////////////////////////////////////////////////////////////
-  double GuillotineBlockHelper::getFRAT5Coefficient (const stdair::DTD_T& iDTD){
-    FRAT5Curve_T::const_iterator itFRAT5 =
-      DEFAULT_PICKUP_FRAT5_CURVE.lower_bound (iDTD);
-    assert (itFRAT5 != DEFAULT_PICKUP_FRAT5_CURVE.end());
-
-    if (itFRAT5 == DEFAULT_PICKUP_FRAT5_CURVE.begin()) {
-      return itFRAT5->second;
-    }
-    
-    assert (itFRAT5 != DEFAULT_PICKUP_FRAT5_CURVE.begin());
-    FRAT5Curve_T::const_iterator itNextFRAT5 = itFRAT5; --itNextFRAT5;
-
-    const stdair::DTD_T& lPrevDTD = itFRAT5->first;
-    const stdair::DTD_T& lNextDTD = itNextFRAT5->first;
-    const double& lPrevFRAT5 = itFRAT5->second;
-    const double& lNextFRAT5 = itNextFRAT5->second;
-    assert (lPrevDTD > lNextDTD);
-
-    double oFRAT5 = lPrevFRAT5
-      + (iDTD - lNextDTD) * (lNextFRAT5 - lPrevFRAT5) / (lPrevDTD - lNextDTD);
-
-    return oFRAT5;
-  }
+  
 }
