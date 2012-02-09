@@ -81,9 +81,15 @@ namespace AIRINV {
   void SegmentCabinHelper::
   buildPseudoBidPriceVector (stdair::SegmentCabin& ioSegmentCabin) {
     // Retrieve the segment-cabin capacity.
-    const stdair::Availability_T& lAvlPool=ioSegmentCabin.getAvailabilityPool();
-    const unsigned int lAvlPoolInt =
-      static_cast<unsigned int> (lAvlPool);
+    const stdair::Availability_T& lAvlPool =
+      ioSegmentCabin.getAvailabilityPool();
+    unsigned int lAvlPoolInt;
+    if (lAvlPool < 0) {
+      lAvlPoolInt = 0;
+    } else {
+      assert (lAvlPool >= 0);
+      lAvlPoolInt = static_cast<unsigned int> (lAvlPool);
+    }
     stdair::BidPriceVector_T lPseudoBidPriceVector (lAvlPoolInt, 0.0);
 
     // Browse the leg-cabin list.

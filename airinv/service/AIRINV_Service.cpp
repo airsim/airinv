@@ -25,6 +25,8 @@
 #include <rmol/RMOL_Service.hpp>
 // AirRAC
 #include <airrac/AIRRAC_Service.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Service.hpp>
 // AirInv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
@@ -67,7 +69,10 @@ namespace AIRINV {
     initRMOLService();
 
     // Initalise the AIRRAC service.
-    initAIRRACService();
+    initAIRRACService();  
+
+    // Initalise the SEvMgr service.
+    initSEVMGRService();
     
     // Initialise the (remaining of the) context
     initAirinvService();
@@ -94,14 +99,19 @@ namespace AIRINV {
     initRMOLService();
 
     // Initalise the AIRRAC service.
-    initAIRRACService();
+    initAIRRACService(); 
+
+    // Initalise the SEVMGR service.
+    initSEVMGRService();
     
     // Initialise the (remaining of the) context
     initAirinvService();
-  }
+  } 
+
   // //////////////////////////////////////////////////////////////////////
   AIRINV_Service::
   AIRINV_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr)
+
     : _airinvServiceContext (NULL) {
 
     // Initialise the service context
@@ -116,8 +126,41 @@ namespace AIRINV {
     initRMOLService();
     
     // Initalise the AIRRAC service.
-    initAIRRACService();
+    initAIRRACService();  
+
+    // Initalise the SEVMGR service.
+    initSEVMGRService(); 
+
+    // Initialise the (remaining of the) context
+    initAirinvService();
     
+  }
+  
+  // //////////////////////////////////////////////////////////////////////
+  AIRINV_Service::
+  AIRINV_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr,
+		  SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_Service_ptr)
+
+    : _airinvServiceContext (NULL) {
+
+    // Initialise the service context
+    initServiceContext();
+    
+    // Store the STDAIR service object within the (AIRINV) service context
+    // \note AirInv does not own the STDAIR service resources here.
+    const bool doesNotOwnStdairService = false;
+    addStdAirService (ioSTDAIR_Service_ptr, doesNotOwnStdairService);
+
+    //Add the SEvMgr service to the TRADEMGEN service context. 
+    const bool doesNotOwnSEVMGRService = false;
+    addSEVMGRService (ioSEVMGR_Service_ptr, doesNotOwnSEVMGRService);
+    
+    // Initalise the RMOL service.
+    initRMOLService();
+    
+    // Initalise the AIRRAC service.
+    initAIRRACService();  
+
     // Initialise the (remaining of the) context
     initAirinvService();
     
@@ -156,6 +199,20 @@ namespace AIRINV {
     // Store the STDAIR service object within the (AIRINV) service context
     lAIRINV_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr,
                                               iOwnStdairService);
+  }
+
+ // ////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::
+  addSEVMGRService (SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_Service_ptr,
+		    const bool iOwnSEVMGRService) { 
+
+    // Retrieve the Airinv service context
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+
+    // Store the STDAIR service object within the (TRADEMGEN) service context
+    lAIRINV_ServiceContext.setSEVMGR_Service (ioSEVMGR_Service_ptr, 
+					      iOwnSEVMGRService);
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -241,6 +298,34 @@ namespace AIRINV {
     
     // Store the AIRRAC service object within the (AIRINV) service context
     lAIRINV_ServiceContext.setAIRRAC_Service (lAIRRAC_Service_ptr);
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::initSEVMGRService() {
+
+    // Retrieve the AIRINV service context   
+    assert (_airinvServiceContext != NULL);
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = 
+      *_airinvServiceContext;
+ 
+    // Retrieve the StdAir service context
+    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
+      lAIRINV_ServiceContext.getSTDAIR_ServicePtr();
+
+    /**
+     * Initialise the SEvMgr service handler.
+     *
+     * \note The (Boost.)Smart Pointer keeps track of the references
+     *       on the Service object, and deletes that object when it is
+     *       no longer referenced (e.g., at the end of the process).
+     */
+    SEVMGR::SEVMGR_ServicePtr_T lSEVMGR_Service_ptr = 
+      boost::make_shared<SEVMGR::SEVMGR_Service> (lSTDAIR_Service_ptr);
+    
+    // Store the SEvMgr service object within the (TraDemGen) service context
+    const bool doesOwnSEVMGRService = true;
+    lAIRINV_ServiceContext.setSEVMGR_Service (lSEVMGR_Service_ptr,
+					      doesOwnSEVMGRService);
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -836,7 +921,7 @@ namespace AIRINV {
                                                     "has not been initialised");
     }
     assert (_airinvServiceContext != NULL);
-    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext; 
 
     // TODO: Retrieve the corresponding inventory.
     stdair::STDAIR_Service& lSTDAIR_Service =

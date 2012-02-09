@@ -10,11 +10,12 @@
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/basic/EventType.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
-#include <stdair/bom/EventQueue.hpp>
 #include <stdair/bom/SnapshotStruct.hpp>
 #include <stdair/bom/RMEventStruct.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/STDAIR_Service.hpp>
+// SEvMgr
+#include <sevmgr/SEVMGR_Service.hpp>
 // AirInv
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvMasterServiceContext.hpp>
@@ -80,7 +81,7 @@ namespace AIRINV {
 
     // Initialise the (remaining of the) context
     initSlaveAirinvService();
-  }
+  } 
 
   // ////////////////////////////////////////////////////////////////////
   AIRINV_Master_Service::
@@ -93,7 +94,29 @@ namespace AIRINV {
     // Store the STDAIR service object within the (AIRINV) service context
     // \note AirInv does not own the STDAIR service resources here.
     const bool doesNotOwnStdairService = false;
-    addStdAirService (ioSTDAIR_Service_ptr, doesNotOwnStdairService);
+    addStdAirService (ioSTDAIR_Service_ptr, doesNotOwnStdairService); 
+    
+    // Initialise the (remaining of the) context
+    initSlaveAirinvService();
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  AIRINV_Master_Service::
+  AIRINV_Master_Service (stdair::STDAIR_ServicePtr_T ioSTDAIR_Service_ptr,
+			 SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_Service_ptr)
+    : _airinvMasterServiceContext (NULL) {
+
+    // Initialise the service context
+    initServiceContext();
+
+    // Store the STDAIR service object within the (AIRINV) service context
+    // \note AirInv does not own the STDAIR service resources here.
+    const bool doesNotOwnStdairService = false;
+    addStdAirService (ioSTDAIR_Service_ptr, doesNotOwnStdairService); 
+
+    //Add the SEvMgr service to the TRADEMGEN service context. 
+    const bool doesNotOwnSEVMGRService = false;
+    addSEVMGRService (ioSEVMGR_Service_ptr, doesNotOwnSEVMGRService);
     
     // Initialise the (remaining of the) context
     initSlaveAirinvService();
@@ -133,6 +156,21 @@ namespace AIRINV {
     // Store the STDAIR service object within the (AIRINV) service context
     lAIRINV_Master_ServiceContext.setSTDAIR_Service (ioSTDAIR_Service_ptr,
                                                      iOwnStdairService);
+  } 
+
+// ////////////////////////////////////////////////////////////////////
+  void AIRINV_Master_Service::
+  addSEVMGRService (SEVMGR::SEVMGR_ServicePtr_T ioSEVMGR_Service_ptr,
+		    const bool iOwnSEVMGRService)  {  
+
+    // Retrieve the AirInv Master service context
+    assert (_airinvMasterServiceContext != NULL);
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;
+
+    // Store the STDAIR service object within the (TRADEMGEN) service context
+    lAIRINV_Master_ServiceContext.setSEVMGR_Service (ioSEVMGR_Service_ptr,
+						     iOwnSEVMGRService);
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -181,7 +219,7 @@ namespace AIRINV {
     // Retrieve the StdAir service
     stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
       lAIRINV_Master_ServiceContext.getSTDAIR_ServicePtr();
-    assert (lSTDAIR_Service_ptr != NULL);
+    assert (lSTDAIR_Service_ptr != NULL); 
 
     /**
      * Initialise the AirInv service handler.
@@ -192,8 +230,20 @@ namespace AIRINV {
      *
      * \note Each Airinv slave service has its own StdAir Service.
      */
-    AIRINV_ServicePtr_T lAIRINV_Service_ptr =
-      boost::make_shared<AIRINV_Service> (lSTDAIR_Service_ptr);
+    AIRINV_ServicePtr_T lAIRINV_Service_ptr;
+    const bool ownSEVMGRService = 
+      lAIRINV_Master_ServiceContext.getOwnSEVMGRServiceFlag();
+    if (ownSEVMGRService == false) { 
+      // Retrieve the SEVMGR service
+      SEVMGR::SEVMGR_ServicePtr_T lSEVMGR_Service_ptr =
+	lAIRINV_Master_ServiceContext.getSEVMGR_ServicePtr();
+      assert (lSEVMGR_Service_ptr != NULL);
+      lAIRINV_Service_ptr = boost::make_shared<AIRINV_Service> (lSTDAIR_Service_ptr, 
+								lSEVMGR_Service_ptr);
+    } else {
+      lAIRINV_Service_ptr = boost::make_shared<AIRINV_Service> (lSTDAIR_Service_ptr);
+    }
+    assert (lAIRINV_Service_ptr != NULL);
 
     // Store the AIRINV service object within the AIRINV Master service context.
     lAIRINV_Master_ServiceContext.setAIRINV_Service (lAIRINV_Service_ptr);
@@ -487,18 +537,15 @@ namespace AIRINV {
     assert (_airinvMasterServiceContext != NULL);
 
     AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
-      *_airinvMasterServiceContext;
-    
-    // Retrieve the StdAir service context
-    stdair::STDAIR_ServicePtr_T lSTDAIR_Service_ptr =
-      lAIRINV_Master_ServiceContext.getSTDAIR_ServicePtr();
-    assert (lSTDAIR_Service_ptr != NULL);
+      *_airinvMasterServiceContext; 
 
-    // Retrieve the event queue object instance
-    stdair::EventQueue& lQueue = lSTDAIR_Service_ptr->getEventQueue();
+    // Retrieve the pointer on the SEvMgr service context
+    SEVMGR::SEVMGR_ServicePtr_T lSEVMGR_Service_ptr =
+      lAIRINV_Master_ServiceContext.getSEVMGR_ServicePtr();
+    assert (lSEVMGR_Service_ptr != NULL);
 
     // Initialise the snapshot events
-    InventoryManager::initSnapshotEvents (iStartDate, iEndDate, lQueue);
+    InventoryManager::initSnapshotEvents (lSEVMGR_Service_ptr, iStartDate, iEndDate);
 
     // \todo Browse the list of inventories and itinialise the RM events of
     //       each inventory.
@@ -507,10 +554,11 @@ namespace AIRINV {
     // service context
     AIRINV_Service& lAIRINV_Service =
       lAIRINV_Master_ServiceContext.getAIRINV_Service();
-    lQueue.addStatus (stdair::EventType::RM, 0);
+    lSEVMGR_Service_ptr->addStatus (stdair::EventType::RM, 0);
     stdair::RMEventList_T lRMEventList =
       lAIRINV_Service.initRMEvents (iStartDate, iEndDate);
-    InventoryManager::addRMEventsToEventQueue (lQueue, lRMEventList);
+    assert (lRMEventList.empty() == false);
+    InventoryManager::addRMEventsToEventQueue (lSEVMGR_Service_ptr, lRMEventList);
   }
 
   // ////////////////////////////////////////////////////////////////////
