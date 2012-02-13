@@ -109,13 +109,13 @@ namespace AIRINV {
     static void createDirectAccesses (stdair::SegmentDate&);
 
 
-    /** Build the similar segment-cabin sets and the corresponding guillotine
-        blocks for snapshots and other data. */
+    /** Build the similar segment-cabin sets and the corresponding 
+        snapshot tables and other data. */
     static void buildSimilarSegmentCabinSets (const stdair::BomRoot&);
     static void buildSimilarSegmentCabinSets (stdair::Inventory&);
-    static void buildGuillotineBlock (stdair::Inventory&,
-                                      const stdair::GuillotineNumber_T&,
-                                      const DepartureDateSegmentCabinMap_T&);
+    static void buildSegmentSnapshotTable (stdair::Inventory&,
+                                           const stdair::TableID_T&,
+                                           const DepartureDateSegmentCabinMap_T&);
 
 
     /** Bid price vectors initialisation */
