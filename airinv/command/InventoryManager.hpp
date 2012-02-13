@@ -114,7 +114,7 @@ namespace AIRINV {
     static void buildSimilarSegmentCabinSets (const stdair::BomRoot&);
     static void buildSimilarSegmentCabinSets (stdair::Inventory&);
     static void buildSegmentSnapshotTable (stdair::Inventory&,
-                                           const stdair:::TableID_T&,
+                                           const stdair::TableID_T&,
                                            const DepartureDateSegmentCabinMap_T&);
 
 
