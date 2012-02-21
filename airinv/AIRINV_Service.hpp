@@ -221,6 +221,14 @@ namespace AIRINV {
   public:
     // //////////////// Export support methods /////////////////   
 
+    /**
+     * Dispatch the JSon command string to the right JSon Service, according
+     * to the JSon command type.
+     *
+     * @param std::string& Input string which contained the JSon command string.
+     * @return std::string Output string in which the asking objects are
+     *         logged/dumped in a JSon format.
+     */
     std::string jsonHandler (const std::string&) const;
 
     /**
