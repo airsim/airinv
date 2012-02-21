@@ -67,7 +67,7 @@ def main():
     jsonActionString = json.dumps (jsonAction)
 
     #  Socket to talk to server
-    print "Connecting to hello world server..."
+    print "Connecting to AirInv server..."
     context = zmq.Context()
     socket = context.socket (zmq.REQ)
     socket.connect ("tcp://localhost:5555")
