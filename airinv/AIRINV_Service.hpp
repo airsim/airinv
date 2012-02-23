@@ -24,6 +24,7 @@ namespace stdair {
   class AirlineFeatureSet;
   class STDAIR_Service;
   class Inventory;
+  class JSONString;
   struct TravelSolutionStruct;
   struct BasLogParams;
   struct BasDBParams;
@@ -225,11 +226,12 @@ namespace AIRINV {
      * Dispatch the JSon command string to the right JSon Service, according
      * to the JSon command type.
      *
-     * @param std::string& Input string which contained the JSon command string.
+     * @param const stdair::JSONString& Input string which contained the JSon
+     *        command string.
      * @return std::string Output string in which the asking objects are
      *         logged/dumped in a JSon format.
      */
-    std::string jsonHandler (const std::string&) const;
+    std::string jsonHandler (const stdair::JSONString&) const;
 
     /**
      * Recursively dump, in the returned string and in JSON format,

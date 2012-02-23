@@ -7,6 +7,7 @@
 // Boost
 #include <boost/make_shared.hpp>
 // StdAir
+#include <stdair/stdair_json.hpp>
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/basic/EventType.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
@@ -351,7 +352,7 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Master_Service::
-  jsonHandler (const std::string& lJSONString) const {
+  jsonHandler (const stdair::JSONString& lJSONString) const {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext == NULL) {

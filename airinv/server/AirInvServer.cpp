@@ -20,6 +20,7 @@
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/stdair_json.hpp>
 // AirInvServer
 #include <airinv/config/airinv-paths.hpp>
 #include <airinv/AIRINV_Master_Service.hpp>
@@ -379,20 +380,21 @@ int main (int argc, char* argv[]) {
   while (true) {
 
     // Wait for next request from client, which is expected to give
-    // the JSON-ified details of the requested flight-date
-    const std::string& lFlightDateKeyJSONString = s_recv (socket);
+    // a JSON-ified command.
+    const std::string& lReceivedString = s_recv (socket);
 
     // DEBUG
-    STDAIR_LOG_DEBUG ("Received: '" << lFlightDateKeyJSONString << "'");
-
-    const std::string& lFlightDateJSONDump = 
-      airinvService.jsonHandler (lFlightDateKeyJSONString);
+    STDAIR_LOG_DEBUG ("Received: '" << lReceivedString << "'");
+    
+    const stdair::JSONString lJSONCommandString (lReceivedString);
+    const std::string& lJSONDump = 
+      airinvService.jsonHandler (lJSONCommandString);
 
     // DEBUG
-    STDAIR_LOG_DEBUG ("Send: '" << lFlightDateJSONDump << "'");
+    STDAIR_LOG_DEBUG ("Send: '" << lJSONDump << "'");
 
-    // Send back the flight-date details to the client
-    s_send (socket, lFlightDateJSONDump);
+    // Send back the answer details to the client
+    s_send (socket, lJSONDump);
   }
 
   return 0;

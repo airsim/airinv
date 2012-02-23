@@ -24,6 +24,7 @@
 namespace stdair {
   class AirlineFeatureSet;
   class Inventory;
+  class JSONString;
   class STDAIR_Service;
   struct BasLogParams;
   struct BasDBParams;
@@ -221,8 +222,16 @@ namespace AIRINV {
   public:
 
     // //////////////// Export support methods /////////////////   
-
-    std::string jsonHandler (const std::string&) const;
+    /**
+     * Dispatch the JSon command string to the right JSon Service, according
+     * to the JSon command type.
+     *
+     * @param const stdair::JSONString& Input string which contained the JSon
+     *        command string.
+     * @return std::string Output string in which the asking objects are
+     *         logged/dumped in a JSon format.
+     */
+    std::string jsonHandler (const stdair::JSONString&) const;
 
     /**
      * Recursively dump, in the returned string and in JSON format,
@@ -237,7 +246,7 @@ namespace AIRINV {
      *        all the flight numbers will be displayed.
      */
     std::string jsonExportFlightDateList (const stdair::AirlineCode_T& iAirlineCode = "all",
-			    const stdair::FlightNumber_T& iFlightNumber = 0) const;
+                                          const stdair::FlightNumber_T& iFlightNumber = 0) const;
 
     /**
      * Recursively dump, in the returned string and in JSON format,
