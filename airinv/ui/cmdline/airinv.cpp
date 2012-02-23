@@ -18,6 +18,7 @@
 #include <stdair/basic/BasLogParams.hpp>
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/service/Logger.hpp>
+#include <stdair/stdair_json.hpp>
 // AirInv
 #include <airinv/AIRINV_Master_Service.hpp>
 #include <airinv/config/airinv-paths.hpp>
@@ -1070,9 +1071,10 @@ int main (int argc, char* argv[]) {
                            << "{ \"airline_code\":\"" << lAirlineCode
 			   << "\",\"flight_number\":\"" << lFlightNumber
 			   << "\"}}";
-
+      
+      const stdair::JSONString lJSONCommandString (lMyCommandJSONstream.str());
       const std::string& lFlightDateListJSONStr = 
-	airinvService.jsonHandler (lMyCommandJSONstream.str());
+	airinvService.jsonHandler (lJSONCommandString);
 
       // Display the flight-date JSON string
       std::cout << lFlightDateListJSONStr << std::endl;
@@ -1095,8 +1097,9 @@ int main (int argc, char* argv[]) {
 			   << "\"}}";
 
       // Get the flight-date details in a JSON string
+      const stdair::JSONString lJSONCommandString (lMyCommandJSONstream.str());
       const std::string& lCSVFlightDateDump =
-        airinvService.jsonHandler (lMyCommandJSONstream.str());
+        airinvService.jsonHandler (lJSONCommandString);
  
       // Display the flight-date JSON string
       std::cout << lCSVFlightDateDump << std::endl;

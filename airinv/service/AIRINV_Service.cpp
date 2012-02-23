@@ -6,6 +6,7 @@
 // Boost
 #include <boost/make_shared.hpp>
 // StdAir
+#include <stdair/stdair_json.hpp>
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/basic/JSonCommand.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
@@ -462,7 +463,7 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::
-  jsonHandler (const std::string& iJSONString) const {
+  jsonHandler (const stdair::JSONString& iJSONString) const {
 
     //
     // Extract from the JSON-ified string the command
@@ -522,7 +523,7 @@ namespace AIRINV {
       stdair::Date_T lDate;
       const bool hasDateBeenRetrieved =
         stdair::BomJSONImport::jsonImportFlightDate (iJSONString,
-                                                       lDate);
+                                                     lDate);
 
       if (hasDateBeenRetrieved == false) {
         // Return an error JSON-ified string
