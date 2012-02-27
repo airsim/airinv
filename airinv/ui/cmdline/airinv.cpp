@@ -19,11 +19,11 @@
 #include <stdair/basic/BasDBParams.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/stdair_json.hpp>
+// GNU Readline Wrapper
+#include <stdair/ui/cmdline/SReadline.hpp>
 // AirInv
 #include <airinv/AIRINV_Master_Service.hpp>
 #include <airinv/config/airinv-paths.hpp>
-// GNU Readline Wrapper
-#include <airinv/ui/cmdline/SReadline.hpp>
 
 // //////// Constants //////
 /**
