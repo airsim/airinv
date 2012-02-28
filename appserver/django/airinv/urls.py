@@ -12,4 +12,3 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^sim/airinv/admin/', include (admin.site.urls)),
 )
-

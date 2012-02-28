@@ -57,6 +57,13 @@ body {
 .tabs{
 	font: 85% Verdana, Arial, Helvetica, sans-serif;
 }
+table /*Firefox table border fix*/
+{
+	border-style: solid;
+	border-color: #ffffff;
+	border: 0;
+	border-collapse: separate;
+}
 </style>
 </head>
 
@@ -80,8 +87,8 @@ body {
   <div id="effect" class="ui-widget-content ui-corner-all" align="left" style="width:1200px; height:172px;">
       <h3 class="ui-widget-header ui-corner-all">Flights & Legs</h3>
   <div align="center" style="padding:0px; width:1200px;">
-    <table width="100%" border="None" cellpadding="0" align="center">
-      <tr align="center">
+    <table width="100%" cellpadding="0" align="center">
+      <tr align="center" >
         <td align="right"><p align="left">&nbsp;</p>
           <p align="left">&nbsp;</p></td>
         <td align="left"><div id="flights-GridDisplay"></div></td>
@@ -120,12 +127,54 @@ body {
 </div>
 
 <script type="text/javascript">
+	var serverURL = "http://ncevsediri-fed/api/display/inv/";
 	var invJSON;
 	function onLoad()
 	{
-		$.getJSON("http://ncevsediri-fed/api/display/inv/SV/5/2010-Mar-11", function(data) {
+		document.getElementById('flights-GridDisplay').innerHTML = "No flight found."
+		document.getElementById('subclasses-GridDisplay').innerHTML = "No subclasses found.";
+		document.getElementById('cabins-GridDisplay').innerHTML = "No cabins found.";
+		
+		$.getJSON(serverURL + "SV/5/2010-Mar-11", function(data) {
 		initGrids(data);
 		});
+	}
+	
+	function fetch()
+	{
+		document.getElementById('flights-GridDisplay').innerHTML = "";
+		document.getElementById('segments-GridDisplay').innerHTML = "";
+		document.getElementById('legs-GridDisplay').innerHTML = "";
+		document.getElementById('subclasses-GridDisplay').innerHTML = "";
+		document.getElementById('cabins-GridDisplay').innerHTML = "";
+		
+		var companyCode=document.getElementById('tbCompanyCode').value.toUpperCase();
+		var flightNumber=document.getElementById('tbFlightNumber').value;
+		var date=document.getElementById('datepicker').value;
+		
+		$.getJSON(serverURL + companyCode + "/" + flightNumber + "/" + date, function(data) {
+			if(data.error != null)
+			{
+				document.getElementById('flights-GridDisplay').innerHTML = "No flight found."
+				document.getElementById('subclasses-GridDisplay').innerHTML = "No subclasses found.";
+				document.getElementById('cabins-GridDisplay').innerHTML = "No cabins found.";
+				
+				$(function() {
+					$( "#errordialog" ).dialog({
+					show: "blind",
+					modal: true,
+					position: "top"
+				});
+					$( "#opener" ).click(function() {
+					$( "#errordialog" ).dialog( "open" );
+					return false;
+					});
+				});
+			}else{
+					initGrids(data);
+				}
+		});
+			
 	}
 	
 	function initGrids(tmpData)
@@ -133,7 +182,7 @@ body {
 		invJSON = tmpData;
 		
 		
-		//filters
+		//filters to come
 		
 		
 		loadGrids(invJSON);
@@ -165,21 +214,14 @@ body {
 	});
 
 
-	function fetch()
-	{
-		var companyCode=document.getElementById('tbCompanyCode').value;
-		var flightNumber=document.getElementById('tbFlightNumber').value;
-		var date=document.getElementById('datepicker').value;
-		//In js/airinv-grid
-		
-		queryBuild(companyCode, flightNumber, date)
-		
-	}
+	
 	
 	$(function() {
 		$( "#tabs" ).tabs();
 	});
 </script>
 </body>
-
 </html>
+<div id="errordialog" title="Oops..." style="font-size:85%; display:none;">
+	<p>The flight you are looking for could not be found. Please check your inputs.</p>
+</div>
