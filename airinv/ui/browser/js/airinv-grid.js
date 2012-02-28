@@ -204,6 +204,8 @@ function loadGrids(rawJSON)
     
      grid_segments.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
 		
+		console.log("Segment selected is: " + selectedRecord[0].data.segment);
+		
 		var $tabs = $('#tabs').tabs();		
 		$tabs.tabs('select', 0); // switch to first tab
 		loadSubclasses(segs);
@@ -219,15 +221,15 @@ function loadGrids(rawJSON)
         store: store_legs,
         columns: [
             {header: "Board Date", width: 80, dataIndex: 'board_date', sortable: true},
-            {header: "Capacity", width: 65, dataIndex: 'capacity', sortable: true},
             {header: "Off Date", width: 80, dataIndex: 'off_dDate', sortable: true},
-            {header: "Distance", width: 70, dataIndex: 'distance', sortable: true},
+            {header: "Board Point", width: 80, dataIndex: 'board_point', sortable: true},
             {header: "Off Point", width: 80, dataIndex: 'off_point', sortable: true},
+            {header: "Distance", width: 70, dataIndex: 'distance', sortable: true},
+            {header: "Capacity", width: 65, dataIndex: 'capacity', sortable: true},
 			{header: "Board Time", width: 80, dataIndex: 'board_time', sortable: true},
 			{header: "Elapsed Time", width: 80, dataIndex: 'elapsed_time', sortable: true},
 			{header: "Date Offset", width: 80, dataIndex: 'date_offset', sortable: true},
 			{header: "Off Time", width: 80, dataIndex: 'off_time', sortable: true},
-			{header: "Board Point", width: 80, dataIndex: 'board_point', sortable: true},
 			{header: "Time Offset", width: 80, dataIndex: 'time_offset', sortable: true},
 			
         ],
@@ -239,6 +241,9 @@ function loadGrids(rawJSON)
     
     grid_legs.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
 		
+		console.log("Leg selected is: " + selectedRecord[0].data.board_point +" to " + selectedRecord[0].data.off_point);
+		
+		var displayLeg = selectedRecord[0].data.board_point;
 		var $tabs = $('#tabs').tabs();		
 		$tabs.tabs('select', 1); // switch to second tab
 		loadCabins(cabs);
@@ -249,8 +254,6 @@ function loadGrids(rawJSON)
 			alert(rowIndex);
 			}*/
 	});
-
-// Same function until no selection
 }
 
 function loadSubclasses(segs)
@@ -275,11 +278,9 @@ function loadSubclasses(segs)
 	var grid_subclasses = new Ext.grid.GridPanel({
 		store: store_subclasses,
 		columns: [
-			{header: "Class", width: 100, dataIndex: 'class_code', sortable: true},
-			//{header: "Segment", width: 120, dataIndex: 'segment', sortable: true},
-			{header: "Cabin", width: 50, dataIndex: 'cabin_code', sortable: true},
-			{header: "FF", width: 30, dataIndex: 'ff', sortable: true},
-			//{header: "Subclass", width: 70, dataIndex: 'subclass', sortable: true},
+			{header: "Class Code", width: 90, dataIndex: 'class_code', sortable: true},
+			{header: "Cabin Code", width: 90, dataIndex: 'cabin_code', sortable: true},
+			{header: "Family Code", width: 90, dataIndex: 'family_code', sortable: true},
 			{header: "MIN/AU (Prot)", width: 90, dataIndex: 'min_au_prot', sortable: true},
 			{header: "Nego", width: 40, dataIndex: 'nego', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "NS%", width: 40, dataIndex: 'ns%', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
@@ -287,11 +288,11 @@ function loadSubclasses(segs)
 			{header: "Bookings", width: 60, dataIndex: 'bkgs', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "Group Bookings", width: 90, dataIndex: 'grp_bks_pdg', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "Staff Bookings", width: 90, dataIndex: 'stf_bkgs', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "WL Bookings", width: 80, dataIndex: 'wlbkgs', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
+			{header: "WL Bookings", width: 80, dataIndex: 'wl_bkgs', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "ETB", width: 40, dataIndex: 'etb', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Class AVL", width: 80, dataIndex: 'classavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Rev AVL", width: 70, dataIndex: 'revavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Seg AVL", width: 70, dataIndex: 'segavl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
+			{header: "Class AVL", width: 80, dataIndex: 'class_avl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
+			{header: "Rev AVL", width: 70, dataIndex: 'rev_avl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
+			{header: "Seg AVL", width: 70, dataIndex: 'seg_avl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 		],
 		//title: 'Subclasses',
 		renderTo:'subclasses-GridDisplay',
@@ -324,20 +325,20 @@ function loadCabins(cabs)
 	var grid_cabins = new Ext.grid.GridPanel({
 		store: store_cabins,
 		columns: [
-			{header: "Avl", width: 90, dataIndex: 'Avl', sortable: true},
-			{header: "Code", width: 110, dataIndex: 'code', sortable: true},
-			{header: "Offed_Cap", width: 40, dataIndex: 'offed_cap', sortable: true},
+			{header: "Avl", width: 50, dataIndex: 'avl', sortable: true},
+			{header: "Code", width: 50, dataIndex: 'code', sortable: true},
+			{header: "Offed_Cap", width: 70, dataIndex: 'offed_cap', sortable: true},
 			{header: "SS", width: 30, dataIndex: 'ss', sortable: true},
 			{header: "GAV", width: 50, dataIndex: 'gav', sortable: true},
 			{header: "Phy_Cap", width: 80, dataIndex: 'phy_cap', sortable: true},
 			{header: "ETB", width: 40, dataIndex: 'etb', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "ACP", width: 40, dataIndex: 'acp', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "AU", width: 40, dataIndex: 'au', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Comm_Space", width: 60, dataIndex: 'comm_space', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
+			{header: "Comm_Space", width: 80, dataIndex: 'comm_space', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "Rgd_Adj", width: 80, dataIndex: 'rgd_adj', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "WL", width: 90, dataIndex: 'wl', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "Group", width: 80, dataIndex: 'group', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
-			{header: "Bid Price", width: 40, dataIndex: 'bid_price', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
+			{header: "Bid Price", width: 60, dataIndex: 'bid_price', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "Nav", width: 80, dataIndex: 'nav', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "UPR", width: 70, dataIndex: 'upr', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},
 			{header: "Av_Pool", width: 70, dataIndex: 'av_pool', sortable: true, type: 'int',field: {xtype: 'numberfield',allowBlank: false,minValue: 0,maxValue: 100}},

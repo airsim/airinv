@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
 from api.handlers import AirInvHandler
+from api.getters import AirlineGetter
 
 class CsrfExemptResource (Resource):
 	"""Work around for the Cross-site request forgery (CSRF) issue
@@ -15,9 +16,11 @@ class CsrfExemptResource (Resource):
 
 # 
 display_resource = CsrfExemptResource (AirInvHandler)
-
+get_airline_list = CsrfExemptResource (AirlineGetter)
 #
+
 urlpatterns = patterns ('',
 	(r'^display/inv(?:/(?P<airlineCodeURL>\w{2,3}))?(?:/(?P<flightNumberURL>\d{1,4}))?(?:/(?P<departureDateURL>\d{2,4}-\w{3}-\d{1,2}))?$', display_resource),
+	(r'^get/getairlinelist/$', get_airline_list),
 )
 
