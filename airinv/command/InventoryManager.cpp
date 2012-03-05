@@ -995,8 +995,8 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
   buildSegmentSnapshotTable (stdair::Inventory& ioInventory,
-                        const stdair::TableID_T& iTableID,
-                        const DepartureDateSegmentCabinMap_T& iDDSCMap) {
+			     const stdair::TableID_T& iTableID,
+			     const DepartureDateSegmentCabinMap_T& iDDSCMap) {
     // Build an empty segment data table.
     const stdair::SegmentSnapshotTableKey lKey (iTableID);
     stdair::SegmentSnapshotTable& lSegmentSnapshotTable =
@@ -1083,6 +1083,7 @@ namespace AIRINV {
     ++lNbOfSnapshots;
     }
 
+    // Update the status of snap shots within the event queue.
     ioSEVMGR_ServicePtr->addStatus (stdair::EventType::SNAPSHOT, lNbOfSnapshots);
   }
 
@@ -1144,7 +1145,9 @@ namespace AIRINV {
       ioSEVMGR_ServicePtr->addEvent (lEventStruct);
     }
 
-    // Update the status of RM events within the event queue.
-    ioSEVMGR_ServicePtr->updateStatus (stdair::EventType::RM, ioRMEventList.size());
+    // Update the status of RM events within the event queue. 
+    const stdair::Count_T lRMEventListSize = ioRMEventList.size();
+    ioSEVMGR_ServicePtr->updateStatus (stdair::EventType::RM, lRMEventListSize);  
+
   }
 }
