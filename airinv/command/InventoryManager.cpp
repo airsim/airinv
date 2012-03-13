@@ -26,11 +26,12 @@
 #include <stdair/bom/EventStruct.hpp>
 #include <stdair/bom/SnapshotStruct.hpp>
 #include <stdair/bom/RMEventStruct.hpp>
-#include <stdair/bom/FareFamily.hpp> // Contains the definition of FareFamilyList_T
-#include <stdair/bom/BookingClass.hpp> //
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/factory/FacBom.hpp>
-#include <stdair/service/Logger.hpp>// SEvMgr
+#include <stdair/service/Logger.hpp>
+#include <stdair/bom/FareFamily.hpp> // Contains the definition of FareFamilyList_T
+#include <stdair/bom/BookingClass.hpp> //
+// SEvMgr
 #include <sevmgr/SEVMGR_Service.hpp>
 // AirInv
 #include <airinv/AIRINV_Types.hpp>
@@ -1010,14 +1011,14 @@ namespace AIRINV {
     
     // Browse the booking class list and build the value type for the classes
     // as well as for the cabin (Q-equivalent).
-    stdair::ClassIndexMap_T lClassIndexMap;
-    stdair::ClassIndex_T lClassIndex = 0;
+    stdair::ValueTypeIndexMap_T lValueTypeIndexMap;
+    stdair::BlockIndex_T lBlockIndex = 0;
     std::ostringstream lSCMapKey;
     lSCMapKey << stdair::DEFAULT_SEGMENT_CABIN_VALUE_TYPE
               << lSegmentCabin_ptr->describeKey();
-    lClassIndexMap.insert (stdair::ClassIndexMap_T::
-                               value_type (lSCMapKey.str(), lClassIndex));
-    ++lClassIndex;
+    lValueTypeIndexMap.insert (stdair::ValueTypeIndexMap_T::
+                               value_type (lSCMapKey.str(), lBlockIndex));
+    ++lBlockIndex;
     
     // Browse the booking class list
     const stdair::BookingClassList_T& lBCList =
@@ -1026,21 +1027,21 @@ namespace AIRINV {
          itBC != lBCList.end(); ++itBC) {
       const stdair::BookingClass* lBookingClass_ptr = *itBC;
       assert (lBookingClass_ptr != NULL);
-      lClassIndexMap.
-        insert (stdair::ClassIndexMap_T::
-                value_type(lBookingClass_ptr->describeKey(),lClassIndex));
-      ++lClassIndex;
+      lValueTypeIndexMap.
+        insert (stdair::ValueTypeIndexMap_T::
+                value_type(lBookingClass_ptr->describeKey(),lBlockIndex));
+      ++lBlockIndex;
     }
 
     // Build the segment-cabin index map
     stdair::SegmentCabinIndexMap_T lSegmentCabinIndexMap;
-    stdair::SegmentDataID_T lSegmentDataID = 0;
-    for (; itDDSC != iDDSCMap.end(); ++itDDSC, ++lSegmentDataID) {
+    stdair::BlockNumber_T lBlockNumber = 0;
+    for (; itDDSC != iDDSCMap.end(); ++itDDSC, ++lBlockNumber) {
       stdair::SegmentCabin* lCurrentSC_ptr = itDDSC->second;
       assert (lCurrentSC_ptr != NULL);
       lSegmentCabinIndexMap.
         insert (stdair::SegmentCabinIndexMap_T::value_type (lCurrentSC_ptr,
-                                                            lSegmentDataID));
+                                                            lBlockNumber));
 
       // Added the data table to the segment-cabin.
       lCurrentSC_ptr->setSegmentSnapshotTable (lSegmentSnapshotTable);
@@ -1048,7 +1049,7 @@ namespace AIRINV {
 
     // Initialise the segment data table.
     lSegmentSnapshotTable.initSnapshotBlocks(lSegmentCabinIndexMap,
-                                             lClassIndexMap);
+                                             lValueTypeIndexMap);
   }
 
   // ////////////////////////////////////////////////////////////////////
