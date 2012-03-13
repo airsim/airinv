@@ -7,6 +7,8 @@
 		<link type="text/css" href="js/mylibs/jQueryUI/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-1.5.1.min.js"></script>
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-ui-1.8.13.custom.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/mylibs/extJS/resources/css/ext-all.css" />
+<script type="text/javascript" src="js/airsimbean.js"></script>
         
         <script>
 		var apiPath = 'js/mylibs/timeline/';
@@ -37,10 +39,12 @@ body {
 	text-align: left;
 }
 .oneColElsCtrHdr #header {
+	
 	/*	background-image:url(assets/images/airinvheader1.png); */
 	padding: 0px;
 }
 .oneColElsCtrHdr #header h1 {
+	
 	margin: 0;
 	padding: 0px;/*3D Made in Vivi! YEAH! ou pas!*//*text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);*/
 }
@@ -56,8 +60,18 @@ body {
 	margin: 0;
 	padding: 0px;
 }
-
-</style></head>
+.tabs{
+	font: 85% Verdana, Arial, Helvetica, sans-serif;
+}
+table /*Firefox table border fix*/
+{
+	border-style: solid;
+	border-color: #ffffff;
+	border: 0;
+	border-collapse: separate;
+}
+</style>
+</head>
 
 <body class="oneColElsCtrHdr" onload="onLoad();" onresize="onResize();">
 
@@ -75,41 +89,89 @@ body {
   </div>-->
   
   <div id="mainContent">
- 
-    <div id="effect" class="ui-widget-content ui-corner-all" style="width:795px; height:280px;">
-	<h3 class="ui-widget-header ui-corner-all">Simulation Period</h3>
-    <table width="98%" border="0" cellpadding="2">
+	<table width="100%" border="0" cellpadding="2">
+     <tr>
+        <td width="50%">    	
+    <div id="effect" class="ui-widget-content ui-corner-all" style="width:420px; height:225px;">
+	<p class="ui-widget-header ui-corner-all" style="padding:0px;">Simulation Period</p>
+	<div style="font-size:95%; padding-left:2px; padding-top:5px;">
+    <table width="100%" border="0" cellpadding="2">
       <tr>
-        <td width="40%">Start Date
+        <td width="50%" align="center">Start Date
     	<div id="startDatepicker" value="2010-Mar-11"></div></td>
-        <td width="60%">End Date
+        <td width="50%" align="center">End Date
         <div id="endDatepicker" value="2010-Mar-11"></div></td>
       </tr>
     </table>
     </div>
 	</div>
-   
-   <div id="effect" class="ui-widget-content ui-corner-all" style="width:795px; height:450px; padding:0px;">
+   </td>
+   <td width="50%">
+   <div id="effect" class="ui-widget-content ui-corner-all" style="width:372px; height:225px;">
+	<p class="ui-widget-header ui-corner-all" style="padding:0px;">Parameters</p>
+			<div style="font-size:95%; padding-left:5px;">
+				<br><br>
+			 <p> 
+			 <label style="padding-right:10px;">Random Seed (int)</label>
+				<input type="text" id="tbRandomSeed" style="padding-left:5px;"/>
+			  
+			  </p>
+			  <br>
+			  <p> 
+			  <label>Set Number of Runs
+				<select id="listNumberOfRuns">
+				  <option> </option>
+				  <option>1</option>
+				  <option>2</option>
+				  <option>3</option>
+				  <option>4</option>
+				  <option>5</option>
+				  <option>6</option>
+				  <option>7</option>
+				  <option>8</option>
+				  <option>9</option>
+				</select>
+			  </label>
+			  </p>
+			  <br>
+			  <p>
+			  <label>Demand Generation
+				<select id="listDemandGeneration">
+				  <option> </option>
+				  <option value="1">Statistics Order</option>
+				  <option value="2">Poisson Process</option>
+				</select>
+			  </label> 
+			  </p>
+			  <div class="demo" align="center" style="padding-top:15px;"><p><input name="input" type="submit" value="Set Default Values" onclick="setDefault()"/></p></div>
+			 </div>
+		</div>
+	</td>
+	</table>
+	
+   <br>
+   <div id="effect" class="ui-widget-content ui-corner-all" style="width:795px; height:400px; padding:0px;">
     <h3 class="ui-widget-header ui-corner-all">Breakpoints</h3>
-    
-     
+    <div style="font-size:95%";>
+     <div style="padding:5px;">
 <table width="98%" border="0" cellpadding="2">
         <tr>
-          <td width="40%"> <div id="breakpointDatepicker" value="2010-Mar-11"></div></td>
+          <td width="30%"> <div id="breakpointDatepicker" value="2010-Mar-11"></div></td>
           <td width="60%"><p>
             Name: </br>
-            <input type="text" id="breakpointName" value="Breakpoint" style="width:300px"/>
+            <input type="text" id="breakpointName" value="Breakpoint 1" style="width:300px"/>
             </p>
+            <br>
             <p>Description: </br>
             <input type="text" id="breakpointDescription" value="Simulation will pause on the following date" style="width:300px"/></p>
-            <div class="demo"><p><input name="input" type="submit" value="Add Breakpoint" onclick="addBreakpoint()"/></p></div>
+            <div class="demo" style="padding-left:80px; padding-top:10px;"><p><input name="input" type="submit" value="Add Breakpoint" onclick="addBreakpoint()"/></p></div>
 			</td>
         </tr>
       </table>
 	  </br>
     <div id="breakpoint-timeline" style="height: 150px; border: 1px solid #aaa"></div>
     </div>
-	
+	</div>
 	<!-- end #mainContent --></div>
   </div>
 
@@ -125,6 +187,7 @@ var eventSource;
 
 function onLoad() 
 {
+	
 	$(function() {
 		$( "input:submit, a, button", ".demo" ).button({icons: {
                 primary: "ui-icon-gear"
@@ -137,7 +200,7 @@ eventSource = new Timeline.DefaultEventSource();
     Timeline.createBandInfo({
         width:          "70%",
 		eventSource: eventSource,
-		//date:           "Jun 28 2006 00:00:00 GMT",
+		date:           "Mar 01 2009 00:00:00 GMT",
         intervalUnit:   Timeline.DateTime.MONTH, 
         intervalPixels: 100,
 		
@@ -145,7 +208,7 @@ eventSource = new Timeline.DefaultEventSource();
     Timeline.createBandInfo({
 		eventSource:    eventSource,
         width:          "30%",
-		//date:           "Jun 28 2006 00:00:00 GMT",
+		date:           "Mar 01 2009 00:00:00 GMT",
         intervalUnit:   Timeline.DateTime.YEAR, 
         intervalPixels: 200,
 		
@@ -166,6 +229,14 @@ function onResize() {
     }
 }
 
+function setDefault()
+{
+	document.getElementById("tbRandomSeed").value = 120765987;
+	document.getElementById("listNumberOfRuns").value = 1;
+	document.getElementById("listDemandGeneration").value = 1;
+}
+
+var bpNumber = 1;
 
 function addBreakpoint()
 {
@@ -177,10 +248,18 @@ function addBreakpoint()
 		start: new Date(bpDate), //IMPORTANT: change string to Date type
 		instant : true, 
 		text : bpName, 
-		description : bpDescription 
+		description : bpDescription,
+		image : "./img/images/AirSimNoBgSmall.png"
 	}); 
     eventSource.add(evt);
 	tl.paint();
+		
+	parent.bpArrayTemp = parent.bpArrayTemp + '{"' + bpName + '":"' + bpDate + '"},';
+	
+	console.log(bpArrayTemp);
+	
+	bpNumber = bpNumber+1;
+	document.getElementById("breakpointName").value = "Breakpoint " + bpNumber;
 }
 
 
@@ -191,12 +270,14 @@ $(function()
 										changeYear: true,
 										//showButtonPanel: true,
 										dateFormat: "yy-M-d",
+										defaultDate: new Date(2009, 01, 01)
 									  });
 		$( "#endDatepicker" ).datepicker({
 										changeMonth: true,
 										changeYear: true,
 										//showButtonPanel: true,
 										dateFormat: "yy-M-d",
+										defaultDate: new Date(2012, 02, 02)
 									  });
 		
 		$( "#breakpointDatepicker" ).datepicker({
@@ -204,6 +285,9 @@ $(function()
 										changeYear: true,
 										//showButtonPanel: true,
 										dateFormat: "yy-M-d",
+										defaultDate: new Date(2009, 02, 01),
+										minDate: new Date(2009, 01, 01),
+										maxDate: new Date(2012, 02, 02)
 									  });
 	});
 
