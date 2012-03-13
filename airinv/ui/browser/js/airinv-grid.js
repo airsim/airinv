@@ -258,6 +258,7 @@ function loadGrids(rawJSON)
 
 function loadSubclasses(segs)
 {
+	document.getElementById('subclasses-GridDisplay').innerHTML = "";
 	var store_subclasses = Ext.create('Ext.data.Store', {
         model: 'subclassesinfo',
         proxy: {
@@ -304,7 +305,7 @@ function loadSubclasses(segs)
 
 function loadCabins(cabs)
 {
-    
+    document.getElementById('cabins-GridDisplay').innerHTML = "";
     var store_cabins = Ext.create('Ext.data.Store', {
         model: 'cabinsinfo',
         proxy: {

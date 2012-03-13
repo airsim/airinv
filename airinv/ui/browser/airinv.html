@@ -7,6 +7,7 @@
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-ui-1.8.13.custom.min.js"></script>
 <link rel="stylesheet" type="text/css" href="js/mylibs/extJS/resources/css/ext-all.css" />
 <!--<link rel="stylesheet" type="text/css" href="js/mylibs/extJS/resources/css/grid.css" />-->
+<script type="text/javascript" src="js/airsimbean.js"></script>
 <script type="text/javascript" src="js/airlineautocomplete.js"></script>
 <script type="text/javascript" src="js/mylibs/extJS/bootstrap.js"></script>
 <script type="text/javascript" src="js/mylibs/extJS/ext-all-debug.js"></script>
@@ -127,7 +128,7 @@ table /*Firefox table border fix*/
 </div>
 
 <script type="text/javascript">
-	var serverURL = "http://ncevsediri-fed/api/display/inv/";
+	//var serverURL = "http://ncevsediri-fed/api/display/inv/";
 	var invJSON;
 	function onLoad()
 	{
@@ -158,21 +159,24 @@ table /*Firefox table border fix*/
 				document.getElementById('flights-GridDisplay').innerHTML = "No flight found."
 				document.getElementById('subclasses-GridDisplay').innerHTML = "No subclasses found.";
 				document.getElementById('cabins-GridDisplay').innerHTML = "No cabins found.";
-				
+
 				$(function() {
-					$( "#errordialog" ).dialog({
+					$( "#notfounddialog" ).dialog({
 					show: "blind",
 					modal: true,
 					position: "top"
 				});
 					$( "#opener" ).click(function() {
-					$( "#errordialog" ).dialog( "open" );
+					$( "#notfounddialog" ).dialog( "open" );
 					return false;
 					});
 				});
 			}else{
 					initGrids(data);
+					document.getElementById('subclasses-GridDisplay').innerHTML = "Select a segment to display cabins";
+					document.getElementById('cabins-GridDisplay').innerHTML = "Select a leg to display cabins";
 				}
+		
 		});
 			
 	}
@@ -222,6 +226,9 @@ table /*Firefox table border fix*/
 </script>
 </body>
 </html>
-<div id="errordialog" title="Oops..." style="font-size:85%; display:none;">
+<div id="notfounddialog" title="Oops..." style="font-size:85%; header-size:80%; display:none;">
 	<p>The flight you are looking for could not be found. Please check your inputs.</p>
+</div>
+<div id="timeoutdialog" title="Oops..." style="font-size:85%; header-size:80%; display:none;">
+	<p>The AirSim server is not responding. Please check your network configuration.</p>
 </div>
