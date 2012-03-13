@@ -1,5 +1,5 @@
-#ifndef __AIRINV_BOM_SEGMENTSNAPSHOTTABLEHELPER_HPP
-#define __AIRINV_BOM_SEGMENTSNAPSHOTTABLEHELPER_HPP
+#ifndef __AIRINV_BOM_GUILLOTINEBLOCKHELPER_HPP
+#define __AIRINV_BOM_GUILLOTINEBLOCKHELPER_HPP
 
 // //////////////////////////////////////////////////////////////////////
 // Import section
@@ -11,7 +11,7 @@
 
 // Forward declarations
 namespace stdair {
-  class SegmentSnapshotTable;
+  class GuillotineBlock;
   class SegmentCabin;
 }
 
@@ -19,25 +19,27 @@ namespace AIRINV {
   
   /** Class representing the actual business functions for
       an airline inventory. */
-  class SegmentSnapshotTableHelper {
+  class GuillotineBlockHelper {
   public:
     // ////////// Business Methods /////////
     /** Take inventory snapshots. */
-    static void takeSnapshots (stdair::SegmentSnapshotTable&,
+    static void takeSnapshots (stdair::GuillotineBlock&,
                                const stdair::DateTime_T&);
   private:
     // ////////// Helpers for business methods. //////////
     /** Take the snapshots for the given segment-cabin. */
-    static void takeSnapshots (stdair::SegmentSnapshotTable&,
-                               const stdair::DTD_T&,
+    static void takeSnapshots (stdair::GuillotineBlock&, const stdair::DTD_T&,
                                const stdair::SegmentCabin&,
-                               const stdair::SegmentDataID_T);
+                               const stdair::BlockNumber_T);
 
     /** Register the product and price oriented bookings. */
     static void registerProductAndPriceOrientedBookings 
-    (stdair::SegmentSnapshotTable&, const stdair::DTD_T&,
-     const stdair::SegmentCabin&, const stdair::SegmentDataID_T);
+    (stdair::GuillotineBlock&, const stdair::DTD_T&,
+     const stdair::SegmentCabin&, const stdair::BlockNumber_T);
+
+    /** Retrieve the FRAT5 coefficient given the DTD. */
+    static double getFRAT5Coefficient (const stdair::DTD_T&);
   };
 
 }
-#endif // __AIRINV_BOM_SEGMENTSNAPSHOTTABLEHELPER_HPP
+#endif // __AIRINV_BOM_GUILLOTINEBLOCKHELPER_HPP

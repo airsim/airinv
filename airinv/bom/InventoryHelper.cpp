@@ -12,14 +12,14 @@
 #include <stdair/bom/SegmentCabin.hpp>
 #include <stdair/bom/FareFamily.hpp>
 #include <stdair/bom/BookingClass.hpp>
-#include <stdair/bom/SegmentSnapshotTable.hpp>
+#include <stdair/bom/GuillotineBlock.hpp>
 #include <stdair/bom/TravelSolutionStruct.hpp>
 #include <stdair/service/Logger.hpp>
 #include <stdair/bom/LegCabin.hpp>
 // AirInv
 #include <airinv/bom/InventoryHelper.hpp>
 #include <airinv/bom/FlightDateHelper.hpp>
-#include <airinv/bom/SegmentSnapshotTableHelper.hpp>
+#include <airinv/bom/GuillotineBlockHelper.hpp>
 #include <airinv/bom/SegmentCabinHelper.hpp>
 
 namespace AIRINV {
@@ -430,15 +430,14 @@ namespace AIRINV {
                                       const stdair::DateTime_T& iSnapshotTime) {
     // Browse the guillotine block list and take the snapshots for
     // each guillotine.
-    const stdair::SegmentSnapshotTableList_T& lSegmentSnapshotTableList =
-      stdair::BomManager::getList<stdair::SegmentSnapshotTable> (iInventory);
-    for (stdair::SegmentSnapshotTableList_T::const_iterator itGB =
-           lSegmentSnapshotTableList.begin();
-         itGB != lSegmentSnapshotTableList.end(); ++itGB) {
-      stdair::SegmentSnapshotTable* lSegmentSnapshotTable_ptr = *itGB;
+    const stdair::GuillotineBlockList_T& lGuillotineBlockList =
+      stdair::BomManager::getList<stdair::GuillotineBlock> (iInventory);
+    for (stdair::GuillotineBlockList_T::const_iterator itGB =
+           lGuillotineBlockList.begin();
+         itGB != lGuillotineBlockList.end(); ++itGB) {
+      stdair::GuillotineBlock* lGuillotineBlock_ptr = *itGB;
 
-      SegmentSnapshotTableHelper::takeSnapshots(*lSegmentSnapshotTable_ptr,
-                                                iSnapshotTime);
+      GuillotineBlockHelper::takeSnapshots(*lGuillotineBlock_ptr,iSnapshotTime);
     }    
   }
 }
