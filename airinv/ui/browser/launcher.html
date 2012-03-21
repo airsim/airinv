@@ -113,13 +113,13 @@ table /*Firefox table border fix*/
 				<br><br>
 			 <p> 
 			 <label style="padding-right:10px;">Random Seed (int)</label>
-				<input type="text" id="tbRandomSeed" style="padding-left:5px;"/>
+				<input type="text" id="tbRandomSeed" style="padding-left:5px;" onchange="saveParameters()"/>
 			  
 			  </p>
 			  <br>
 			  <p> 
 			  <label>Set Number of Runs
-				<select id="listNumberOfRuns">
+				<select id="listNumberOfRuns" onchange="saveParameters()">
 				  <option> </option>
 				  <option>1</option>
 				  <option>2</option>
@@ -136,7 +136,7 @@ table /*Firefox table border fix*/
 			  <br>
 			  <p>
 			  <label>Demand Generation
-				<select id="listDemandGeneration">
+				<select id="listDemandGeneration" onchange="saveParameters()">
 				  <option> </option>
 				  <option value="1">Statistics Order</option>
 				  <option value="2">Poisson Process</option>
@@ -164,7 +164,7 @@ table /*Firefox table border fix*/
             <br>
             <p>Description: </br>
             <input type="text" id="breakpointDescription" value="Simulation will pause on the following date" style="width:300px"/></p>
-            <div class="demo" style="padding-left:80px; padding-top:10px;"><p><input name="input" type="submit" value="Add Breakpoint" onclick="addBreakpoint()"/></p></div>
+            <div class="demo" style="padding-left:80px; padding-top:10px;"><p><input name="input" id="addBpButton" type="submit" value="Add Breakpoint" onclick="addBreakpoint()"/></p></div>
 			</td>
         </tr>
       </table>
@@ -234,6 +234,7 @@ function setDefault()
 	document.getElementById("tbRandomSeed").value = 120765987;
 	document.getElementById("listNumberOfRuns").value = 1;
 	document.getElementById("listDemandGeneration").value = 1;
+	saveParameters();
 }
 
 var bpNumber = 1;
@@ -253,13 +254,27 @@ function addBreakpoint()
 	}); 
     eventSource.add(evt);
 	tl.paint();
-		
-	parent.bpArrayTemp = parent.bpArrayTemp + '{"' + bpName + '":"' + bpDate + '"},';
 	
-	console.log(bpArrayTemp);
+	parent.numberOfBreakpoints = bpNumber;
 	
+	parent.bpArrayTemp = parent.bpArrayTemp + '{"' + "Breakpoint" + '":"' + bpDate + '"},';	//put back bpName
 	bpNumber = bpNumber+1;
 	document.getElementById("breakpointName").value = "Breakpoint " + bpNumber;
+	
+	
+	if(bpNumber >= 150)
+	{
+		alert("Cannot add more breakpoints");
+		document.getElementById("addBpButton").disabled = true;
+	}
+}
+
+function saveParameters()
+{
+	parent.simulationStartEndDates = document.getElementById("startDatepicker").value + " to " + document.getElementById("endDatepicker").value;
+	parent.randomSeed =  document.getElementById("tbRandomSeed").value;
+	parent.numberOfRuns =  document.getElementById("listNumberOfRuns").value;
+	parent.demandGenerationType =  document.getElementById("listDemandGeneration").value;
 }
 
 

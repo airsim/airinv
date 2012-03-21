@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Next Single Event</title>
+<title>Next Events</title>
+<script type="text/javascript" src="js/airsimbean.js"></script>
 <link type="text/css" href="js/mylibs/jQueryUI/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="js/mylibs/extJS/resources/css/ext-all.css" />
 <link rel="stylesheet" type="text/css" href="js/mylibs/extJS/resources/css/grid.css" />
@@ -68,10 +69,10 @@ body {
 
       <br />
       <div style="padding-left:5px;">
-      <input type="submit" name="btnBeginSim" id="btnBeginSim" value="<< Previous Breakpoint" disabled="disabled"/>
+      <!--<input type="submit" name="btnBeginSim" id="btnBeginSim" value="<< Previous Breakpoint" disabled="disabled"/>
       <input type="submit" name="btnBeginSim" id="btnBeginSim" value="< Previous Event" disabled="disabled"/>
-      <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Next Event >"  onClick="window.open('')"/>
-      <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Next Breakpoint >>"  onClick="window.open('')"/>
+      <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Next Event >"  onClick="window.open('')"/>-->
+      <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Next Breakpoint >>"  onClick="goToNextBreakPoint()"/>
       <br />
       <div id="breakpoint-timeline" style="width: 1190px; height: 130px; border: 1px solid #aaa;"></div>
       </div>
@@ -79,14 +80,11 @@ body {
     <!-- end #header -->
   </div>
   <div id="mainContent">
-    <div id="effect" class="ui-widget-content ui-corner-all" style="width:1195px; height:172px;">
-      <h3 class="ui-widget-header ui-corner-all">Booking Request</h3>
-      <div id="bkgRequest"></div>
+    <div id="effect" class="ui-widget-content ui-corner-all" style="width:1195px; height:423px;">
+      <h3 class="ui-widget-header ui-corner-all">Booking Events</h3>
+      <div id="bkgEvents"></div>
     </div>
   </div>
-  <div id="effect" class="ui-widget-content ui-corner-all" style="width:1195px; height:172px; padding:0px;">
-    <h3 class="ui-widget-header ui-corner-all">Travel Solutions</h3>
-    <div id="solList"></div>
     <!-- end #mainContent -->
   </div>
 </div>
@@ -98,9 +96,12 @@ body {
 
 var tli;
 var eventSource;
-
+var listOfBreak_Points;
+var bandInfos;
 function onLoad() 
 {
+	listOfBreak_Points = JSON.parse(parent.bpArrayTemp);
+	
 	$(function() {
 		$( "input:submit, a, button", ".demo" ).button({icons: {
                 primary: "ui-icon-gear"
@@ -115,52 +116,77 @@ function onLoad()
 		$( "a", ".demo" ).click(function() { return false; });
 	});
 
-eventSource = new Timeline.DefaultEventSource();
-  var bandInfos = [
-    Timeline.createBandInfo({
-        width:          "70%",
-		eventSource: eventSource,
-		date:           "Mar 20 2011 00:00:00 GMT",
-        intervalUnit:   Timeline.DateTime.MONTH, 
-        intervalPixels: 100,
-		
-    }),
-    Timeline.createBandInfo({
-		eventSource:    eventSource,
-        width:          "30%",
-		date:           "Mar 20 2011 00:00:00 GMT",
-        intervalUnit:   Timeline.DateTime.YEAR, 
-        intervalPixels: 200,
-		
-    })
-  ];
-  bandInfos[1].syncWith = 0;
-  bandInfos[1].highlight = true;
-  tli = Timeline.create(document.getElementById("breakpoint-timeline"), bandInfos);
-drawevent();	
-}
-
-	function drawevent()
-	{
-	var evt = new Timeline.DefaultEventSource.Event ({ 
-		start: new Date("2011-Mar-20"), //IMPORTANT: change string to Date type
-		instant : true, 
-		text : "Breakpoint", 
-		description : "Simulation is paused on this date" 
-	}); 
-    eventSource.add(evt);
-	tli.paint();
+	eventSource = new Timeline.DefaultEventSource();
+	  bandInfos = [
+		Timeline.createBandInfo({
+			width:          "70%",
+			eventSource: eventSource,
+			date:           "Mar 20 2011 00:00:00 GMT",
+			intervalUnit:   Timeline.DateTime.MONTH, 
+			intervalPixels: 100,
+			date: new Date(listOfBreak_Points.break_point[0].Breakpoint)
+			
+		}),
+		Timeline.createBandInfo({
+			eventSource:    eventSource,
+			width:          "30%",
+			date:           "Mar 20 2011 00:00:00 GMT",
+			intervalUnit:   Timeline.DateTime.YEAR, 
+			intervalPixels: 200,
+			date: new Date(listOfBreak_Points.break_point[0].Breakpoint)
+			
+		})
+	  ];
+	  bandInfos[1].syncWith = 0;
+	  bandInfos[1].highlight = true;
+	  tli = Timeline.create(document.getElementById("breakpoint-timeline"), bandInfos);
+	  drawevent();	
 	}
 	
-var resizeTimerID = null;
-function onResize() {
-    if (resizeTimerID == null) {
-        resizeTimerID = window.setTimeout(function() {
-            resizeTimerID = null;
-            tl.layout();
-        }, 500);
-    }
-}
+	function drawevent()
+	{
+		
+		for (var i in listOfBreak_Points.break_point) 
+		{
+			//console.log(listOfBreak_Points.break_point[i]);
+			
+			var evt = new Timeline.DefaultEventSource.Event ({ 
+			start: new Date(listOfBreak_Points.break_point[i].Breakpoint), //IMPORTANT: change string to Date type
+			instant : true, 
+			text : "Breakpoint", 
+			description : "Simulation is paused on this date",
+			image : "./img/images/AirSimNoBgSmall.png"
+			});
+	
+			eventSource.add(evt);
+			tli.paint();
+		} 
+		refreshBookingEvents();
+	}
+
+	var resizeTimerID = null;
+	function onResize() {
+		if (resizeTimerID == null) {
+			resizeTimerID = window.setTimeout(function() {
+				resizeTimerID = null;
+				tli.layout();
+			}, 500);
+		}
+	}
+	
+	function goToNextBreakPoint()
+	{
+		document.getElementById("bkgEvents").innerHTML = '';
+		$.getJSON(parent.serverURL + 'controls/run/', function(data) {
+			if(data.done != "2012-Apr-27") //Date when sim is finished to avoid displaying blank grid
+			{
+				tli.getBand(0).date = data.done; //does not seem to work
+				refreshBookingEvents();
+			}else{
+				alert("Simulation is finished");
+			}
+		});
+	}
 
 
 

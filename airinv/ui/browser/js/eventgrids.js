@@ -5,11 +5,43 @@ Ext.require([
     'Ext.state.*'
 ]);
 
-Ext.onReady(function() {
-	Ext.QuickTips.init();
-    Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
-	
-    var bkgRequest = [
+Ext.define('eventsinfo', {
+	extend: 'Ext.data.Model',
+	fields: [
+	{name:'wtp', type: 'float'}, 
+	{name:'cha', type:'string'}, 
+	{name:'dep_date', type: 'shortdate'},
+	{name:'event_type', type:'string'},
+	{name:'dep_time', type:'string'}, 
+	{name:'pax', type:'int'},
+	{name:'time_stamp', type:'longdate'},
+	{name:'des', type:'string'},
+	{name:'pos', type:'string'},	
+	{name:'adv_purchase', type:'int'},
+	{name:'pref_carriers', type:'string'},
+	{name:'cancel_date', type:'string'},
+	{name:'bkg_date', type:'string'},
+	{name:'cab', type:'string'},
+	{name:'org', type:'string'},
+	{name:'return_time', type:'string'},
+	{name:'return_date', type:'string'},
+	{name:'stay_duration', type:'string'}
+	]	
+});
+
+
+
+Ext.QuickTips.init();
+Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
+
+var url = "http://ncevsediri-fed/api/get/events/";
+
+
+function refreshBookingEvents()
+{
+
+	/*
+	var bkgRequest = [
 						['20-Mar-11, 08:15:37','NYC','IEV','Business','3','NYC','In/Off', 2000,'20-Mar-11','60 days','20-Jun-11','30-Jun-11','10 days','25-Apr-11','8AM','10PM','BA, AA']
 					 ];
 	
@@ -18,101 +50,50 @@ Ext.onReady(function() {
 					  ['true', 'AA56/JFK-KBP/Y', '20-Jun-11', 'AA57/KBP-JFK/Y','30-Jun-11', 700],
 					  ['false', 'SV5/JFK-KBP/Q', '20-Jun-11', 'SV6/KBP-JFK/Q','30-Jun-11', 800]
 				  ];
-			
-	var bkgStore = Ext.create('Ext.data.ArrayStore', {
-    	fields: [
-           {name: 'BkgDelta', type:'String'},
-           {name: 'Orig', type:'String'},
-           {name: 'Dest', type:'String'},
-		   {name: 'Cabin', type:'String'},
-		   {name: 'PSize', type:'String'},
-		   {name: 'POS', type:'String'},
-		   {name: 'Channel', type:'String'},
-		   {name: 'WTP', type:'String'},
-		   {name: 'BkgDate', type:'String'},
-		   {name: 'AdvPur', type:'String'},
-		   {name: 'DDate', type:'String'},
-		   {name: 'RDate', type:'String'},
-		   {name: 'Length', type:'String'},
-		   {name: 'WCancel', type:'String'},
-		   {name: 'PDT', type:'String'},
-		   {name: 'PRT', type:'String'},
-		   {name: 'PCarrier', type:'String'}
-        ],
-    	    data: bkgRequest
-		});			
-			
-	var bkgGrid = Ext.create('Ext.grid.Panel', {
-        store: bkgStore,
-		stateful: true,
-        columns: [
-            {'header': "Time-Stamp", 'width': 120, 'dataIndex': 'BkgDelta'},
-            {'header': "ORG", 'width': 40, 'dataIndex': 'Orig'},
-            {'header': "DES", 'width': 40, 'dataIndex': 'Dest'},
-			{'header': "CAB", 'width': 70, 'dataIndex': 'Cabin'},
-			{'header': "Pax #", 'width': 50, 'dataIndex': 'PSize'},
-			{'header': "POS", 'width': 50, 'dataIndex': 'POS'},
-			{'header': "CHA", 'width': 50, 'dataIndex': 'Channel'},
-			{'header': "WTP", 'width': 65, 'dataIndex': 'WTP', 'renderer' : 'usMoney'}, //currency format
-			{'header': "Bkg. Date", 'width': 70, 'dataIndex': 'BkgDate'},
-			{'header': "Adv. Purchase", 'width': 80, 'dataIndex': 'AdvPur'},
-			{'header': "Dep. Date", 'width': 70, 'dataIndex': 'DDate'},
-			{'header': "Return Date", 'width': 70, 'dataIndex': 'RDate'},
-			{'header': "Len. of Stay", 'width': 70, 'dataIndex': 'Length'},
-			{'header': "Cancel?", 'width': 70, 'dataIndex': 'WCancel'},
-			{'header': "Pref. Dep. Time", 'width': 100, 'dataIndex': 'PDT'},
-			{'header': "Pref. Return Time", 'width': 100, 'dataIndex': 'PRT'},
-			{'header': "Pref. Carriers", 'width': 80, 'dataIndex': 'PCarrier'},
-			
-        ],
-		renderTo:'bkgRequest',
-		
-        width:1193,
-        height:150,
-		viewConfig: {
-            stripeRows: true
-        }
-		});
+	*/
 	
-	
-	var solStore = Ext.create('Ext.data.ArrayStore', {
-        fields: [
-		   {name: 'selected', type:'boolean'},
-           {name: 'outboundpath'},
-		   {name: 'DDate'},
-           {name: 'inboundpath'},
-		   {name: 'RDate'},
-           {name: 'Price'}
-        ],
-        	data: solList
-		});	
-		
-		
-		function selectionColor(val) {
-        if (val == true) {
-            return '<span style="color:green;">' + val + '</span>';
-        } else if (val == false) {
-            return '<span style="color:red;">' + val + '</span>';
-        }
-        	return val;
-    	}
-	
-		var solGrid = Ext.create('Ext.grid.Panel', {
-        store: solStore,
-		stateful: true,
-        columns: [
-			{'header': "Selected", 'width': 70, 'dataIndex': 'selected', renderer:selectionColor},
-            {'header': "Outbound Path", 'width': 200, 'dataIndex': 'outboundpath'},
-			{'header': "Dep. Date", 'width': 120, 'dataIndex': 'DDate'},
-            {'header': "Inbound Path", 'width': 200, 'dataIndex': 'inboundpath'},
-			{'header': "Ret. Date", 'width': 100, 'dataIndex': 'RDate'},
-            {'header': "Price", 'width': 100, 'dataIndex': 'Price', 'renderer' : 'usMoney'}  
-        ],
-		renderTo:'solList',
-        width:1193,
-        height:150,
-		viewConfig: {
-            stripeRows: true
-        }
-		});
+	var store_events = Ext.create('Ext.data.Store', {
+		model: 'eventsinfo',
+		proxy: {
+			type: 'rest',
+			method: 'POST',
+			url: url,
+			reader: {
+				type: 'json',
+				root: 'events'
+			}, 
+		}   
 	});
+	store_events.load();
+	
+	var bkgGrid = Ext.create('Ext.grid.Panel', {
+		store: store_events,
+		stateful: true,
+		columns: [
+			{'header': "Time-Stamp", 'width': 180, 'dataIndex': 'time_stamp'},
+			{'header': "D. Date", 'width': 100, 'dataIndex': 'dep_date'},
+			{'header': "R. Date", 'width': 100, 'dataIndex': 'return_date'},
+			{'header': "Orig.", 'width': 40, 'dataIndex': 'org'},
+			{'header': "Dest.", 'width': 70, 'dataIndex': 'des'},
+			{'header': "Pref. Carrier", 'width': 50, 'dataIndex': 'pref_carriers'},
+			{'header': "Channel", 'width': 50, 'dataIndex': 'cha'},
+			{'header': "WTP", 'width': 80, 'dataIndex': 'wtp',  'renderer' : 'usMoney'},
+			{'header': "Bkg Date", 'width': 100, 'dataIndex': 'bkg_date',},
+			{'header': "Cancel?", 'width': 70, 'dataIndex': 'cancel_date'},
+			{'header': "Adv. Purchase", 'width': 80, 'dataIndex': 'adv_purchase'},			
+			{'header': "Stay D.", 'width': 70, 'dataIndex': 'stay_duration'},
+			{'header': "D. Time", 'width': 100, 'dataIndex': 'dep_time'},
+			{'header': "R. Time", 'width': 100, 'dataIndex': 'return_time'},			
+		],
+		renderTo:'bkgEvents',
+		
+		width:1193,
+		height:400,
+		viewConfig: {
+			stripeRows: true
+		}
+		});
+	
+
+}
+

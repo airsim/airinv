@@ -14,12 +14,13 @@
 <script type="text/javascript" src="js/mylibs/Highcharts/highcharts.js"></script>
 <script type="text/javascript" src="js/mylibs/Highcharts//modules/exporting.js"></script>
 <script type="text/javascript" src="js/airinv-grid.js"></script>
+<script type="text/javascript" src="js/showall-grid.js"></script>
 <script type="text/javascript" src="js/bidprice-chart.js"></script>
 <script type="text/javascript" src="js/bookingarrival-chart.js"></script>
 
 <style type="text/css">
 body {
-	font: 100% Verdana, Arial, Helvetica, sans-serif;
+	font: 92% Verdana, Arial, Helvetica, sans-serif;
 	background: #FFFFFF;
 	margin: 0;
 	padding: 0px;
@@ -69,19 +70,20 @@ table /*Firefox table border fix*/
 </head>
 
 <body onLoad="onLoad()">
-<div id="container" style="width:1200px; padding-left:10px" >
+<div id="container" style="width:1200px; padding-left:10px; font: 100% Verdana, Arial, Helvetica, sans-serif;" >
   
 <div id="effect" class="ui-widget-content ui-corner-all" align="left" style="width:1200px; height:58px; padding:0px;">
     <h3 class="ui-widget-header ui-corner-all">Search Inventory</h3>    
     <div align="left" id="effect" class="demo" style="vertical-align:bottom; padding-top:5px; padding-left:5px; padding-bottom:5px;">
       <p>Company Code:
-        <input id="tbCompanyCode" type="text" value="SV" onKeyPress="if(enter_pressed(event)){ setDefaultSelection(); }"/>
+        <input id="tbCompanyCode" type="text" value="SQ"/>
         Flight Number:
-        <input id="tbFlightNumber" type="text" value="5"/>
+        <input id="tbFlightNumber" type="text" value="12"/>
         Date:
-        <input type="text" id="datepicker" value="2010-Mar-11" />
+        <input type="text" id="datepicker" value="2009-Apr-06" />
         <!--<button id="btnFetch"  onClick="fetch()">Fetch !</button>-->
         <input name="input" type="submit" value="Fetch!" onclick="fetch()"/>
+        <input name="input" type="submit" value="Show All Available" onclick="showAll()"/>
       </p>
     </div>
   </div>
@@ -128,7 +130,7 @@ table /*Firefox table border fix*/
 </div>
 
 <script type="text/javascript">
-	//var serverURL = "http://ncevsediri-fed/api/display/inv/";
+	var serverURL = "http://ncevsediri-fed/api/display/inv/";
 	var invJSON;
 	function onLoad()
 	{
@@ -181,6 +183,42 @@ table /*Firefox table border fix*/
 			
 	}
 	
+	function showAll()
+	{
+		document.getElementById('allinvgrid').innerHTML = '';
+		
+		$("#dialog-allinv").dialog({
+			resizable: false,
+			width:280,
+			height:540,
+			modal: false,
+			position: "top",
+			show: "blind",
+			buttons: {
+				Close:function() {$( this ).dialog( "close" );}
+				}
+		});	
+		showAllGrid();
+		//populateShowAll(); WILL BE USED LATER FOR FILTERING
+		
+	}
+
+	/*function populateShowAll()
+	{
+		document.getElementById('allinvgrid').innerHTML = '';
+		
+		$.getJSON("http://ncevsediri-fed/api/get/getairlinelist/", function(data) {
+			$.each(data.inventories[0].airline_code, function(i, option) {
+            document.getElementById('ddlSelectedAirline').options[i] = new Option(data.inventories[0].airline_code);
+            var e = document.getElementById("ddlSelectedAirline");
+			var strAirline = e.options[e.selectedIndex].text;
+            //Check good data... Might not work
+            showAllGrid();
+			});
+		});
+	
+	}*/
+	
 	function initGrids(tmpData)
 	{
 		invJSON = tmpData;
@@ -226,9 +264,12 @@ table /*Firefox table border fix*/
 </script>
 </body>
 </html>
-<div id="notfounddialog" title="Oops..." style="font-size:85%; header-size:80%; display:none;">
+<div id="notfounddialog" title="Oops..." style="font:.5em; display:none;">
 	<p>The flight you are looking for could not be found. Please check your inputs.</p>
 </div>
-<div id="timeoutdialog" title="Oops..." style="font-size:85%; header-size:80%; display:none;">
+<div id="timeoutdialog" title="Oops..." style="font-size:.7em; display:none;">
 	<p>The AirSim server is not responding. Please check your network configuration.</p>
 </div>
+<div id="dialog-allinv" title="All Inventory" style="display:none; font:.5em;">
+	<div id="allinvgrid"></div>
+</div>	
