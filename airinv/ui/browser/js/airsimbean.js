@@ -1,4 +1,8 @@
 var gl_IsSimRunning = false;
 var bpArrayTemp = '';
-var serverURL = "http://ncevsediri-fed/api/display/inv/";
+var numberOfBreakpoints;
+var simulationStartEndDates;
+var randomSeed;
+var numberOfRuns;
+var demandGenerationType;
 

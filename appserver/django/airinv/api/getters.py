@@ -32,4 +32,24 @@ class AirlineGetter (BaseHandler):
 		return message
 		print 'Message: ', message
 
+class EventsGetter (BaseHandler):	
+	def read (self, request):
+
+		# Compose a JSON Python object 
+		jsonAction = json.dumps ({"event_list":{"event_type":"all"}})
+		print 'JSON serialised request: ', jsonAction
+
+		# print 'Sending request ', request, '...'
+		socket.send_unicode (jsonAction)
+
+		# Receive the response from the airinv server,
+		# formatted in JSON as well
+		jsonMessage = socket.recv()
+		message = json.loads (jsonMessage)	
+		
+		
+		print 'Received reply ', request, '[', jsonMessage, ']'	
+		return message
+		print 'Message: ', message
+
 	
