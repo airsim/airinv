@@ -19,7 +19,7 @@ $(document).ready(function() {
             enabled: false
         },
       title: {
-         text: 'Booking Pattern'
+         text: 'Booking Patterns'
       },
       subtitle: {
          text: 'Per Cabin'
@@ -45,11 +45,7 @@ $(document).ready(function() {
       }, 
       tooltip: {
 		 shared: true,
-         crosshairs: true,
-         formatter: function() {
-            return ''+
-                this.x +': '+ Highcharts.numberFormat(this.y, 0, ',') +' bookings';
-         }
+         crosshairs: true
       },
       plotOptions: {
          area: {
