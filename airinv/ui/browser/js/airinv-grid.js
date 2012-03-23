@@ -210,23 +210,26 @@ function loadGrids(rawJSON)
     
      grid_segments.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
 		
-		selectedSegment = selectedRecord[0].data.segment;
-		console.log("Segment selected is: " + selectedSegment);
-		
-		var $tabs = $('#tabs').tabs();		
-		$tabs.tabs('select', 0); // switch to first tab
-		
-		
-		for (var i in rawJSON.flight_date.segments)
+		if(selectedRecord[0] != undefined)
 		{
-			if(rawJSON.flight_date.segments[i].segment == selectedSegment)
-			{	
-				tempSegs = rawJSON.flight_date.segments[i];
-				console.log(tempSegs);
+			selectedSegment = selectedRecord[0].data.segment;
+			console.log("Segment selected is: " + selectedSegment);
+			
+			var $tabs = $('#tabs').tabs();		
+			$tabs.tabs('select', 0); // switch to first tab
+			
+			
+			for (var i in rawJSON.flight_date.segments)
+			{
+				if(rawJSON.flight_date.segments[i].segment == selectedSegment)
+				{	
+					tempSegs = rawJSON.flight_date.segments[i];
+					console.log(tempSegs);
+				}
 			}
+			
+			loadSubclasses(tempSegs);
 		}
-		
-		loadSubclasses(tempSegs);
 	});
     
     var grid_legs = new Ext.grid.GridPanel({
@@ -253,26 +256,29 @@ function loadGrids(rawJSON)
     
     grid_legs.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
 		
-		selectedLegBoard = selectedRecord[0].data.board_point;
-		selectedLegOff = selectedRecord[0].data.off_point;
-		
-		console.log("Leg selected is: " + selectedLegBoard +" to " + selectedLegOff);
-		
-		var displayLeg = selectedRecord[0].data.board_point;
-		var $tabs = $('#tabs').tabs();		
-		$tabs.tabs('select', 1); // switch to second tab
-		
-		
-		for (var i in rawJSON.flight_date.legs)
+		if(selectedRecord[0] != undefined)
 		{
-			if(rawJSON.flight_date.legs[i].board_point == selectedLegBoard && rawJSON.flight_date.legs[i].off_point == selectedLegOff)
-			{	
-				tempCabs = rawJSON.flight_date.legs[i];
-				console.log(tempCabs);
+			selectedLegBoard = selectedRecord[0].data.board_point;
+			selectedLegOff = selectedRecord[0].data.off_point;
+			
+			console.log("Leg selected is: " + selectedLegBoard +" to " + selectedLegOff);
+			
+			var displayLeg = selectedRecord[0].data.board_point;
+			var $tabs = $('#tabs').tabs();		
+			$tabs.tabs('select', 1); // switch to second tab
+			
+			
+			for (var i in rawJSON.flight_date.legs)
+			{
+				if(rawJSON.flight_date.legs[i].board_point == selectedLegBoard && rawJSON.flight_date.legs[i].off_point == selectedLegOff)
+				{	
+					tempCabs = rawJSON.flight_date.legs[i];
+					console.log(tempCabs);
+				}
 			}
+			
+			loadCabins(tempCabs);
 		}
-		
-		loadCabins(tempCabs);
 	});
 }
 
