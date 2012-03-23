@@ -211,7 +211,7 @@ var serverURL = "http://ncevsediri-fed/api/";
 						$( "#radioSched" ).button( "refresh" );
 						$( "#radioSimrun" ).button( "refresh");  
 						
-						$.getJSON(serverURL + 'controls/run/', function(data) {});
+						$.getJSON(serverURL + 'controls/run/', function(data) {currentBreakpoint = data.done;});
 						document.getElementById('radioSimrun').click();
 						alert("Simulation launched!");
 						$( this ).dialog( "close" );

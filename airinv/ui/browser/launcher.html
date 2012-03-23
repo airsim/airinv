@@ -274,7 +274,8 @@ function saveParameters()
 	parent.simulationStartEndDates = document.getElementById("startDatepicker").value + " to " + document.getElementById("endDatepicker").value;
 	parent.randomSeed =  document.getElementById("tbRandomSeed").value;
 	parent.numberOfRuns =  document.getElementById("listNumberOfRuns").value;
-	parent.demandGenerationType =  document.getElementById("listDemandGeneration").value;
+	var e = document.getElementById("listDemandGeneration");
+	parent.demandGenerationType =  e.options[e.selectedIndex].text;
 }
 
 

@@ -106,10 +106,11 @@ table /*Firefox table border fix*/
         <li><a href="#tabs-2">Subclasses</a></li>
         <li><a href="#tabs-3">Cabins</a></li>
         <li><a href="#tabs-1">Bid-Price Vectors</a></li>
-        <li><a href="#tabs-4">Bkg Pattern</a></li>
+        <li><a href="#tabs-4">Booking Patterns</a></li>
       </ul>
-      <div id="tabs-1">
-        <div id="bidpricechartcontainer" align="left" style="width:95%;"></div>
+      <div id="tabs-1" style="height:420px; width:1100px">
+        <div id="bidpricechartcontainer" align="center" style="size:98%;"></div>
+        
       </div>
       <div id="tabs-2" style="padding:1px; height:auto; width:auto">
         <div style="width:100%; height:100%;">
@@ -121,8 +122,8 @@ table /*Firefox table border fix*/
           <div id="cabins-GridDisplay" style="height:auto; width:auto;"></div>
         </div>
        </div>
-      <div id="tabs-4" style="padding:6px; height:420px; width:1100px">
-        <div id="bookingarrivalchartcontainer" align="center" style="size:95%"></div>
+      <div id="tabs-4" style="height:420px; width:1100px">
+        <div id="bookingarrivalchartcontainer" align="center" style="padding-left:10px; size:95%"></div>
         <p>&nbsp;</p>
       </div>
     </div>
@@ -138,9 +139,9 @@ table /*Firefox table border fix*/
 		document.getElementById('subclasses-GridDisplay').innerHTML = "No subclasses found.";
 		document.getElementById('cabins-GridDisplay').innerHTML = "No cabins found.";
 		
-		$.getJSON(serverURL + "SV/5/2010-Mar-11", function(data) {
+		/*$.getJSON(serverURL + "SV/5/2010-Mar-11", function(data) {
 		initGrids(data);
-		});
+		});*/
 	}
 	
 	function fetch()

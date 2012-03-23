@@ -8,6 +8,9 @@ $(document).ready(function() {
          marginRight: 130,
          marginBottom: 25
       },
+      credits: {
+            enabled: false
+        },
       title: {
          text: segmentName,
          x: -20 //center
