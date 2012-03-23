@@ -24,18 +24,9 @@ var url = "http://ncevsediri-fed/api/get/getairlinelist/";
 
 function showAllGrid()
 {
-
-	/*
-	var bkgRequest = [
-						['20-Mar-11, 08:15:37','NYC','IEV','Business','3','NYC','In/Off', 2000,'20-Mar-11','60 days','20-Jun-11','30-Jun-11','10 days','25-Apr-11','8AM','10PM','BA, AA']
-					 ];
-	
-	var solList = [
-					  ['false', 'AF10/JFK-CDG/H, AF52/CDG-KBP/K', '20-Jun-11', 'AF53/KBP-CDG/K, AF11/CDG-JFK/H', '30-Jun-11', 800],
-					  ['true', 'AA56/JFK-KBP/Y', '20-Jun-11', 'AA57/KBP-JFK/Y','30-Jun-11', 700],
-					  ['false', 'SV5/JFK-KBP/Q', '20-Jun-11', 'SV6/KBP-JFK/Q','30-Jun-11', 800]
-				  ];
-	*/
+	var selected_AirlineCode;
+	var selected_Number;
+	var selected_Date;
 	
 	var store_airlines = Ext.create('Ext.data.Store', {
 		model: 'airlineinfo',
@@ -51,7 +42,7 @@ function showAllGrid()
 	});
 	store_airlines.load();
 	
-	var bkgGrid = Ext.create('Ext.grid.Panel', {
+	var grid_AllInventory = Ext.create('Ext.grid.Panel', {
 		store: store_airlines,
 		stateful: true,
 		columns: [
@@ -68,6 +59,19 @@ function showAllGrid()
 		}
 		});
 	
+	grid_AllInventory.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
+		
+		if(selectedRecord[0] != undefined)
+		{
+			selected_AirlineCode = selectedRecord[0].data.airline_code;	
+			selected_Number = selectedRecord[0].data.number;	
+			selected_Date = selectedRecord[0].data.date;	
+		
+			document.getElementById('tbCompanyCode').value = selected_AirlineCode;
+			document.getElementById('tbFlightNumber').value = selected_Number;
+			document.getElementById('datepicker').value = selected_Date;
+		}
+	});
 
 }
 
