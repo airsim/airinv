@@ -5,4 +5,5 @@ var simulationStartEndDates;
 var randomSeed;
 var numberOfRuns;
 var demandGenerationType;
+var currentBreakpoint;
 

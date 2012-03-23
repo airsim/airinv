@@ -25,7 +25,7 @@
  
 <style type="text/css">
 body {
-	font: 100% Verdana, Arial, Helvetica, sans-serif;
+	font: 92% Verdana, Arial, Helvetica, sans-serif;
 	background: #FFFFFF;
 	margin: 0;
 	padding: 0px;
@@ -73,6 +73,7 @@ body {
       <input type="submit" name="btnBeginSim" id="btnBeginSim" value="< Previous Event" disabled="disabled"/>
       <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Next Event >"  onClick="window.open('')"/>-->
       <input type="submit" name="btnBeginSim" id="btnBeginSim" value="Next Breakpoint >>"  onClick="goToNextBreakPoint()"/>
+      <label>&nbsp;Current Breakpoint: &nbsp;</label><span id="spanCurrentBreakpoint"></span>
       <br />
       <div id="breakpoint-timeline" style="width: 1190px; height: 130px; border: 1px solid #aaa;"></div>
       </div>
@@ -91,16 +92,18 @@ body {
 <!-- end #container -->
 </div>
 </body>
-</html>
+
 <script type="text/javascript">
 
 var tli;
 var eventSource;
 var listOfBreak_Points;
 var bandInfos;
-function onLoad() 
-{
+
+	function onLoad() 
+	{
 	listOfBreak_Points = JSON.parse(parent.bpArrayTemp);
+	document.getElementById('spanCurrentBreakpoint').innerHTML = parent.currentBreakpoint;
 	
 	$(function() {
 		$( "input:submit, a, button", ".demo" ).button({icons: {
@@ -145,7 +148,6 @@ function onLoad()
 	
 	function drawevent()
 	{
-		
 		for (var i in listOfBreak_Points.break_point) 
 		{
 			//console.log(listOfBreak_Points.break_point[i]);
@@ -165,7 +167,8 @@ function onLoad()
 	}
 
 	var resizeTimerID = null;
-	function onResize() {
+	function onResize() 
+	{
 		if (resizeTimerID == null) {
 			resizeTimerID = window.setTimeout(function() {
 				resizeTimerID = null;
@@ -180,6 +183,7 @@ function onLoad()
 		$.getJSON(parent.serverURL + 'controls/run/', function(data) {
 			if(data.done != "2012-Apr-27") //Date when sim is finished to avoid displaying blank grid
 			{
+				document.getElementById('spanCurrentBreakpoint').innerHTML = data.done;
 				tli.getBand(0).date = data.done; //does not seem to work
 				refreshBookingEvents();
 			}else{
@@ -188,7 +192,23 @@ function onLoad()
 		});
 	}
 
-
-
-
+	function showTravelSolutions()
+	{
+		$( "#dialog-solutions" ).dialog({
+				resizable: false,
+				width:1220,
+				height:510,
+				modal: true,
+				position: "top",
+				buttons: {
+					Close:function() {$( this ).dialog( "close" );}
+				}
+			});
+	}
+	
 </script>
+
+<div id="dialog-solutions" title="Travel Solutions" style="display:none">
+	<iframe id="travelSolutionsFrame" src="travelsolutions.html" style="width:100%; height:99%; border-style:none;"/>
+</div>
+</html>

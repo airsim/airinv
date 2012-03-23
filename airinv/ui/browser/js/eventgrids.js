@@ -93,6 +93,14 @@ function refreshBookingEvents()
 			stripeRows: true
 		}
 		});
+		
+		bkgGrid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
+		
+		if(selectedRecord[0] != undefined)
+		{
+			showTravelSolutions();
+		}
+	});
 	
 
 }

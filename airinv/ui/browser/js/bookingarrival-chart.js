@@ -15,6 +15,9 @@ $(document).ready(function() {
          spacingLeft: 10,
          defaultSeriesType: 'area'
       },
+      credits: {
+            enabled: false
+        },
       title: {
          text: 'Booking Pattern'
       },
