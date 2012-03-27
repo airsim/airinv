@@ -1,6 +1,8 @@
 var bidpricechart;
 var segmentName='Bid-Price Vector';
-$(document).ready(function() {
+
+
+function buildBPV(chartData, legName, flightName) {
    bidpricechart = new Highcharts.Chart({
       chart: {
          renderTo: 'bidpricechartcontainer',
@@ -15,10 +17,10 @@ $(document).ready(function() {
          text: segmentName,
          x: -20 //center
       },
-      /*subtitle: {
-         text: 'Source: WorldClimate.com',
+      subtitle: {
+         text: legName,
          x: -20
-      },*/
+      },
       xAxis: {
          title: {
             text: 'Seat Index'
@@ -49,11 +51,11 @@ $(document).ready(function() {
          borderWidth: 0
       },
       series: [{
-         name: 'SV 5',
-         data: [3000,2871, 2672, 2546, 2452, 2361, 2292, 2235, 2192, 2153, 2112, 2070, 2027, 1983]
+         name: flightName,
+         data: chartData
       }]
    });
    
    
-});
+}
    
