@@ -109,7 +109,7 @@ table /*Firefox table border fix*/
         <li><a href="#tabs-4">Booking Patterns</a></li>
       </ul>
       <div id="tabs-1" style="height:420px; width:1100px">
-        <div id="bidpricechartcontainer" align="center" style="size:98%;"></div>
+        <div id="bidpricechartcontainer" align="center" style="width:1100px;"></div>
         
       </div>
       <div id="tabs-2" style="padding:1px; height:auto; width:auto">
@@ -142,6 +142,7 @@ table /*Firefox table border fix*/
 		/*$.getJSON(serverURL + "SV/5/2010-Mar-11", function(data) {
 		initGrids(data);
 		});*/
+		buildBPV('' ,'Please select a leg', 'No flight selected')
 	}
 	
 	function fetch()
@@ -229,6 +230,19 @@ table /*Firefox table border fix*/
 		
 		
 		loadGrids(invJSON);
+	}
+	
+	function rebuildBPVChart(BPVData, chartLegName, chartFlightName)
+	{
+		var arrayBPVData = BPVData.split(",");
+		
+		for(var i=0; i<arrayBPVData.length; i++)
+		{
+			arrayBPVData[i] = parseFloat(arrayBPVData[i]);
+		}
+		
+		console.log(arrayBPVData);
+		buildBPV(arrayBPVData, chartLegName, chartFlightName);
 	}
 
 //Datepicker + Date format
