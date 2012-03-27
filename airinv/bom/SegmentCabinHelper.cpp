@@ -212,5 +212,21 @@ namespace AIRINV {
       const stdair::Availability_T lAvl = lAU - lCumulativeBookingCounter;
       lBC_ptr->setSegmentAvailability (lAvl);
     }
+
+    // Cascading
+    stdair::BookingClassList_T::const_iterator itCurrentBC = lBCList.begin();
+    assert (itCurrentBC != lBCList.end());
+    stdair::BookingClassList_T::const_iterator itNextBC = itCurrentBC; ++itNextBC;
+    for (; itNextBC != lBCList.end(); ++itCurrentBC, ++itNextBC) {
+      stdair::BookingClass* lCurrentBC_ptr = *itCurrentBC;
+      assert (lCurrentBC_ptr != NULL);
+      stdair::BookingClass* lNextBC_ptr = *itNextBC;
+      assert (lNextBC_ptr != NULL);
+      const stdair::Availability_T& lCurrentAvl = lCurrentBC_ptr->getSegmentAvailability();
+      const stdair::Availability_T& lNextAvl = lNextBC_ptr->getSegmentAvailability();
+      if (lCurrentAvl < lNextAvl) {
+        lNextBC_ptr->setSegmentAvailability (lCurrentAvl);
+      }
+    }
   }
 }
