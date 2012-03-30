@@ -1147,7 +1147,7 @@ namespace AIRINV {
 
     // Update the status of RM events within the event queue. 
     const stdair::Count_T lRMEventListSize = ioRMEventList.size();
-    ioSEVMGR_ServicePtr->updateStatus (stdair::EventType::RM, lRMEventListSize);  
+    ioSEVMGR_ServicePtr->addStatus (stdair::EventType::RM, lRMEventListSize);  
 
   }
 }
