@@ -20,18 +20,17 @@
 #include <stdair/bom/LegCabin.hpp>
 #include <stdair/bom/FareFamily.hpp>
 #include <stdair/bom/BookingClass.hpp>
-#include <stdair/bom/GuillotineBlock.hpp>
+#include <stdair/bom/SegmentSnapshotTable.hpp>
 #include <stdair/bom/TravelSolutionStruct.hpp>
 #include <stdair/bom/FareOptionStruct.hpp>
 #include <stdair/bom/EventStruct.hpp>
 #include <stdair/bom/SnapshotStruct.hpp>
 #include <stdair/bom/RMEventStruct.hpp>
-#include <stdair/factory/FacBomManager.hpp>
-#include <stdair/factory/FacBom.hpp>
-#include <stdair/service/Logger.hpp>
 #include <stdair/bom/FareFamily.hpp> // Contains the definition of FareFamilyList_T
 #include <stdair/bom/BookingClass.hpp> //
-// SEvMgr
+#include <stdair/factory/FacBomManager.hpp>
+#include <stdair/factory/FacBom.hpp>
+#include <stdair/service/Logger.hpp>// SEvMgr
 #include <sevmgr/SEVMGR_Service.hpp>
 // AirInv
 #include <airinv/AIRINV_Types.hpp>
@@ -983,26 +982,26 @@ namespace AIRINV {
       }
     }
 
-    // Initialise the guillotine blocks.
-    stdair::GuillotineNumber_T lGuillotineNumber = 1;
+    // Initialise the segment data table.
+    stdair::TableID_T lTableID = 1;
     for (SimilarSegmentCabinSetMap_T::const_iterator itSSCS = lSSCSM.begin();
-         itSSCS != lSSCSM.end(); ++itSSCS, ++lGuillotineNumber) {
+         itSSCS != lSSCSM.end(); ++itSSCS, ++lTableID) {
       const DepartureDateSegmentCabinMap_T& lDDSCMap = itSSCS->second;
 
-      buildGuillotineBlock (ioInventory, lGuillotineNumber, lDDSCMap);
+      buildSegmentSnapshotTable (ioInventory, lTableID, lDDSCMap);
     }    
   }
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
-  buildGuillotineBlock (stdair::Inventory& ioInventory,
-                        const stdair::GuillotineNumber_T& iGuillotineNumber,
-                        const DepartureDateSegmentCabinMap_T& iDDSCMap) {
-    // Build an empty guillotine block.
-    const stdair::GuillotineBlockKey lKey (iGuillotineNumber);
-    stdair::GuillotineBlock& lGuillotineBlock =
-      stdair::FacBom<stdair::GuillotineBlock>::instance().create (lKey);
-    stdair::FacBomManager::addToListAndMap (ioInventory, lGuillotineBlock);
+  buildSegmentSnapshotTable (stdair::Inventory& ioInventory,
+			     const stdair::TableID_T& iTableID,
+			     const DepartureDateSegmentCabinMap_T& iDDSCMap) {
+    // Build an empty segment data table.
+    const stdair::SegmentSnapshotTableKey lKey (iTableID);
+    stdair::SegmentSnapshotTable& lSegmentSnapshotTable =
+      stdair::FacBom<stdair::SegmentSnapshotTable>::instance().create (lKey);
+    stdair::FacBomManager::addToListAndMap (ioInventory, lSegmentSnapshotTable);
 
     // Build the value type index map.
     DepartureDateSegmentCabinMap_T::const_iterator itDDSC = iDDSCMap.begin();
@@ -1011,14 +1010,14 @@ namespace AIRINV {
     
     // Browse the booking class list and build the value type for the classes
     // as well as for the cabin (Q-equivalent).
-    stdair::ValueTypeIndexMap_T lValueTypeIndexMap;
-    stdair::BlockIndex_T lBlockIndex = 0;
+    stdair::ClassIndexMap_T lClassIndexMap;
+    stdair::ClassIndex_T lClassIndex = 0;
     std::ostringstream lSCMapKey;
     lSCMapKey << stdair::DEFAULT_SEGMENT_CABIN_VALUE_TYPE
               << lSegmentCabin_ptr->describeKey();
-    lValueTypeIndexMap.insert (stdair::ValueTypeIndexMap_T::
-                               value_type (lSCMapKey.str(), lBlockIndex));
-    ++lBlockIndex;
+    lClassIndexMap.insert (stdair::ClassIndexMap_T::
+                               value_type (lSCMapKey.str(), lClassIndex));
+    ++lClassIndex;
     
     // Browse the booking class list
     const stdair::BookingClassList_T& lBCList =
@@ -1027,29 +1026,29 @@ namespace AIRINV {
          itBC != lBCList.end(); ++itBC) {
       const stdair::BookingClass* lBookingClass_ptr = *itBC;
       assert (lBookingClass_ptr != NULL);
-      lValueTypeIndexMap.
-        insert (stdair::ValueTypeIndexMap_T::
-                value_type(lBookingClass_ptr->describeKey(),lBlockIndex));
-      ++lBlockIndex;
+      lClassIndexMap.
+        insert (stdair::ClassIndexMap_T::
+                value_type(lBookingClass_ptr->describeKey(),lClassIndex));
+      ++lClassIndex;
     }
 
     // Build the segment-cabin index map
     stdair::SegmentCabinIndexMap_T lSegmentCabinIndexMap;
-    stdair::BlockNumber_T lBlockNumber = 0;
-    for (; itDDSC != iDDSCMap.end(); ++itDDSC, ++lBlockNumber) {
+    stdair::SegmentDataID_T lSegmentDataID = 0;
+    for (; itDDSC != iDDSCMap.end(); ++itDDSC, ++lSegmentDataID) {
       stdair::SegmentCabin* lCurrentSC_ptr = itDDSC->second;
       assert (lCurrentSC_ptr != NULL);
       lSegmentCabinIndexMap.
         insert (stdair::SegmentCabinIndexMap_T::value_type (lCurrentSC_ptr,
-                                                            lBlockNumber));
+                                                            lSegmentDataID));
 
-      // Added the guillotine to the segment-cabin.
-      lCurrentSC_ptr->setGuillotineBlock (lGuillotineBlock);
+      // Added the data table to the segment-cabin.
+      lCurrentSC_ptr->setSegmentSnapshotTable (lSegmentSnapshotTable);
     }
 
-    // Initialise the guillotine block.
-    lGuillotineBlock.initSnapshotBlocks(lSegmentCabinIndexMap,
-                                        lValueTypeIndexMap);
+    // Initialise the segment data table.
+    lSegmentSnapshotTable.initSnapshotBlocks(lSegmentCabinIndexMap,
+                                             lClassIndexMap);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -1084,6 +1083,7 @@ namespace AIRINV {
     ++lNbOfSnapshots;
     }
 
+    // Update the status of snap shots within the event queue.
     ioSEVMGR_ServicePtr->addStatus (stdair::EventType::SNAPSHOT, lNbOfSnapshots);
   }
 
@@ -1145,7 +1145,9 @@ namespace AIRINV {
       ioSEVMGR_ServicePtr->addEvent (lEventStruct);
     }
 
-    // Update the status of RM events within the event queue.
-    ioSEVMGR_ServicePtr->updateStatus (stdair::EventType::RM, ioRMEventList.size());
+    // Update the status of RM events within the event queue. 
+    const stdair::Count_T lRMEventListSize = ioRMEventList.size();
+    ioSEVMGR_ServicePtr->addStatus (stdair::EventType::RM, lRMEventListSize);  
+
   }
 }
