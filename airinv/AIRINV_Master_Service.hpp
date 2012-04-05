@@ -11,8 +11,6 @@
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/stdair_inventory_types.hpp>
 #include <stdair/stdair_maths_types.hpp>
-#include <stdair/basic/ForecastingMethod.hpp>
-#include <stdair/basic/PartnershipTechnique.hpp>
 #include <stdair/bom/BomIDTypes.hpp>
 // AirRAC
 #include <airrac/AIRRAC_Types.hpp>
@@ -162,8 +160,7 @@ namespace AIRINV {
     /**
      * Compute the availability for the given travel solution.
      */
-    void calculateAvailability (stdair::TravelSolutionStruct&,
-                                const stdair::PartnershipTechnique&);
+    void calculateAvailability (stdair::TravelSolutionStruct&);
 
     /**
      * Register a booking.
@@ -214,9 +211,7 @@ namespace AIRINV {
     /**
      * Optimise (revenue management) an flight-date/network-date
      */
-    void optimise (const stdair::RMEventStruct&,
-                   const stdair::ForecastingMethod&,
-                   const stdair::PartnershipTechnique&);    
+    void optimise (const stdair::RMEventStruct&);    
 
 
   public:

@@ -564,8 +564,7 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
-  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution,
-                         const stdair::PartnershipTechnique& iPartnershipTechnique) {
+  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution) {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext == NULL) {
@@ -586,7 +585,7 @@ namespace AIRINV {
     stdair::BasChronometer lAvlChronometer;
     lAvlChronometer.start();
 
-    lAIRINV_Service.calculateAvailability (ioTravelSolution, iPartnershipTechnique);
+    lAIRINV_Service.calculateAvailability (ioTravelSolution);
 
     // DEBUG
     // const double lAvlMeasure = lAvlChronometer.elapsed();
@@ -788,9 +787,7 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
-  optimise (const stdair::RMEventStruct& iRMEvent,
-            const stdair::ForecastingMethod& iForecastingMethod,
-            const stdair::PartnershipTechnique& iPartnershipTechnique) {
+  optimise (const stdair::RMEventStruct& iRMEvent) {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext == NULL) {
@@ -813,7 +810,6 @@ namespace AIRINV {
     const stdair::KeyDescription_T& lFDDescription =
       iRMEvent.getFlightDateDescription();
 
-    lAIRINV_Service.optimise (lAirlineCode, lFDDescription, lRMEventTime,
-                              iForecastingMethod, iPartnershipTechnique);
+    lAIRINV_Service.optimise (lAirlineCode, lFDDescription, lRMEventTime);
   }
 }

@@ -44,11 +44,10 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
   calculateAvailability (const stdair::BomRoot& iBomRoot,
-                         stdair::TravelSolutionStruct& ioTravelSolution,
-                         const stdair::PartnershipTechnique& iPartnershipTechnique) {
+                         stdair::TravelSolutionStruct& ioTravelSolution) {
 
-    const stdair::PartnershipTechnique::EN_PartnershipTechnique& lPartnershipTechnique =
-      iPartnershipTechnique.getTechnique();
+    stdair::PartnershipTechnique::EN_PartnershipTechnique lENPartnershipTechnique =
+      stdair::PartnershipTechnique::NONE;
     
     // Browse the list of segments and get the availability for the
     // children classes.
@@ -63,7 +62,9 @@ namespace AIRINV {
         stdair::BomManager::getObject<stdair::Inventory>(iBomRoot,
                                                          lInvKey.toString());
 
-      switch (lPartnershipTechnique) {
+      lENPartnershipTechnique = lInventory.getPartnershipTechnique();
+      
+      switch (lENPartnershipTechnique) {
 
       case stdair::PartnershipTechnique::NONE:{
         InventoryHelper::calculateAvailability (lInventory, lSegmentKey,
@@ -76,9 +77,10 @@ namespace AIRINV {
         break;
       }
       }
+      
     }
 
-    switch (lPartnershipTechnique) {
+    switch (lENPartnershipTechnique) {
     case stdair::PartnershipTechnique::NONE:{
       // Compute the availabitliy for each fare option using the AU's.
       calculateAvailabilityByAU (ioTravelSolution);
@@ -108,6 +110,7 @@ namespace AIRINV {
       break;
     }
     }
+
   }
 
   // ////////////////////////////////////////////////////////////////////

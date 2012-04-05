@@ -9,7 +9,6 @@
 // STDAIR
 #include <stdair/stdair_basic_types.hpp>
 #include <stdair/bom/RMEventTypes.hpp>
-#include <stdair/basic/PartnershipTechnique.hpp>
 #include <stdair/bom/BomIDTypes.hpp>
 // SEvMgr
 #include <sevmgr/SEVMGR_Types.hpp>
@@ -54,8 +53,7 @@ namespace AIRINV {
     
     /** Compute the availability for the given travel solution. */
     static void calculateAvailability (const stdair::BomRoot&,
-                                       stdair::TravelSolutionStruct&,
-                                       const stdair::PartnershipTechnique&);
+                                       stdair::TravelSolutionStruct&);
     
     /** Compute the availability for each fare option using the AU's. */
     static void calculateAvailabilityByAU (stdair::TravelSolutionStruct&);
