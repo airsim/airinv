@@ -9,6 +9,8 @@
 #include <stdair/stdair_json.hpp>
 #include <stdair/basic/BasChronometer.hpp>
 #include <stdair/basic/JSonCommand.hpp>
+#include <stdair/basic/PartnershipTechnique.hpp>
+#include <stdair/basic/UnconstrainingMethod.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
 #include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomKeyManager.hpp> 
@@ -768,8 +770,7 @@ namespace AIRINV {
   
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::
-  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution,
-                         const stdair::PartnershipTechnique& iPartnershipTechnique) {
+  calculateAvailability (stdair::TravelSolutionStruct& ioTravelSolution) {
     
     if (_airinvServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The AirInv service "
@@ -786,7 +787,7 @@ namespace AIRINV {
     // Delegate the booking to the dedicated command
     stdair::BasChronometer lAvlChronometer;
     lAvlChronometer.start();
-    InventoryManager::calculateAvailability (lBomRoot, ioTravelSolution, iPartnershipTechnique);
+    InventoryManager::calculateAvailability (lBomRoot, ioTravelSolution);
     // const double lAvlMeasure = lAvlChronometer.elapsed();
 
     // DEBUG
@@ -943,9 +944,8 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::optimise (const stdair::AirlineCode_T& iAirlineCode,
                                  const stdair::KeyDescription_T& iFDDescription,
-                                 const stdair::DateTime_T& iRMEventTime,
-                                 const stdair::ForecastingMethod& iForecastingMethod,
-                                 const stdair::PartnershipTechnique& iPartnershipTechnique) {
+                                 const stdair::DateTime_T& iRMEventTime) {
+    
     if (_airinvServiceContext == NULL) {
       throw stdair::NonInitialisedServiceException ("The AirInv service "
                                                     "has not been initialised");
@@ -963,12 +963,18 @@ namespace AIRINV {
       stdair::BomManager::getObject<stdair::FlightDate> (lInventory,
                                                          iFDDescription);
 
+    const stdair::UnconstrainingMethod& lUnconstrainingMethod =
+      lInventory.getUnconstrainingMethod();
+    const stdair::PartnershipTechnique& lPartnershipTechnique =
+      lInventory.getPartnershipTechnique();
+
     // Retrieve the RMOL service.
     RMOL::RMOL_Service& lRMOL_Service =lAIRINV_ServiceContext.getRMOL_Service();
 
     // Optimise the flight-date.
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
-                                               iForecastingMethod, iPartnershipTechnique);
+                                               lUnconstrainingMethod,
+                                               lPartnershipTechnique);
 
     // Update the inventory with the new controls.
     if (isOptimised == true) {
