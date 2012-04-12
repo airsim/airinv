@@ -353,13 +353,16 @@ int main (int argc, char* argv[]) {
   } else {
     if (isForSchedule == true) {
       // Build the BOM tree from parsing a schedule file (and O&D list)
+      stdair::ScheduleFilePath lScheduleFilePath (lScheduleInputFilename);
+      stdair::ODFilePath lODFilePath (lODInputFilename);
       AIRRAC::YieldFilePath lYieldFilePath (lYieldInputFilename);
-      airinvService.parseAndLoad (lScheduleInputFilename, lODInputFilename,
+      airinvService.parseAndLoad (lScheduleFilePath, lODFilePath,
                                   lYieldFilePath);
 
     } else {
       // Build the BOM tree from parsing an inventory dump file
-      airinvService.parseAndLoad (lInventoryFilename);
+      AIRINV::InventoryFilePath lInventoryFilePath (lInventoryFilename);
+      airinvService.parseAndLoad (lInventoryFilePath);
     }
   }
 

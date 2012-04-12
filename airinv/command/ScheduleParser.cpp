@@ -17,22 +17,24 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   void ScheduleParser::
-  generateInventories (const stdair::Filename_T& iScheduleFilename,
+  generateInventories (const stdair::ScheduleFilePath& iScheduleFilename,
                        stdair::BomRoot& ioBomRoot) {
+
+    const stdair::Filename_T lFilename = iScheduleFilename.name();
 
     // Check that the file path given as input corresponds to an actual file
     bool doesExistAndIsReadable =
-      stdair::BasFileMgr::doesExistAndIsReadable (iScheduleFilename);
+      stdair::BasFileMgr::doesExistAndIsReadable (lFilename);
     if (doesExistAndIsReadable == false) {
       std::ostringstream oMessage;
-      oMessage << "The schedule input file, '" << iScheduleFilename
+      oMessage << "The schedule input file, '" << lFilename
                << "', can not be retrieved on the file-system";
       STDAIR_LOG_ERROR (oMessage.str());
       throw ScheduleInputFileNotFoundException (oMessage.str());
     }
 
     // Initialise the Flight-Period file parser.
-    FlightPeriodFileParser lFlightPeriodParser (ioBomRoot, iScheduleFilename);
+    FlightPeriodFileParser lFlightPeriodParser (ioBomRoot, lFilename);
 
     // Parse the CSV-formatted schedule input file, and generate the
     // corresponding Inventories for the airlines.

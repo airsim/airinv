@@ -10,6 +10,7 @@
 #include <boost/shared_ptr.hpp>
 // StdAir
 #include <stdair/stdair_exceptions.hpp>
+#include <stdair/stdair_file.hpp>
 #include <stdair/stdair_inventory_types.hpp>
 
 namespace AIRINV {
@@ -104,6 +105,18 @@ namespace AIRINV {
 
 
   // //////// Type definitions /////////
+  /**
+   * Inventory input file.
+   */
+  class InventoryFilePath : public stdair::InputFilePath {
+  public:
+    /**
+     * Constructor.
+     */
+    explicit InventoryFilePath (const stdair::Filename_T& iFilename)
+      : stdair::InputFilePath (iFilename) {}
+  };
+  
   /**
    * (Smart) Pointer on the AirInv (slave) service handler.
    */

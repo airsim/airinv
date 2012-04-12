@@ -8,6 +8,7 @@
 #include <string>
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
+#include <stdair/stdair_file.hpp>
 #include <stdair/stdair_service_types.hpp>
 #include <stdair/stdair_inventory_types.hpp>
 #include <stdair/stdair_maths_types.hpp>
@@ -16,6 +17,8 @@
 #include <airrac/AIRRAC_Types.hpp>
 // SEvMgr
 #include <sevmgr/SEVMGR_Types.hpp>
+// AirInv
+#include <airinv/AIRINV_Types.hpp>
 
 
 /// Forward declarations
@@ -116,9 +119,9 @@ namespace AIRINV {
      * The CSV file, describing the airline inventory for the
      * simulator, is parsed and instantiated in memory accordingly.
      *
-     * @param const stdair::Filename_T& Filename of the input demand file.
+     * @param const InventoryFilePath& Filename of the input inventory file.
      */
-    void parseAndLoad (const stdair::Filename_T& iInventoryFilename);
+    void parseAndLoad (const InventoryFilePath&);
 
     /**
      * Parse the schedule and O&D input files, and load them into memory.
@@ -126,13 +129,13 @@ namespace AIRINV {
      * The CSV files, describing the airline schedule and the O&Ds for
      * the simulator, are parsed and instantiated in memory accordingly.
      *
-     * @param const stdair::Filename_T& Filename of the input schedule file.
-     * @param const stdair::Filename_T& Filename of the input O&D file.
+     * @param const stdair::ScheduleFilePath& Filename of the input schedule file.
+     * @param const stdair::ODFilePath& Filename of the input O&D file.
      * @param const AIRRAC::YieldFilePath& Filename of the input yield file.
      */
-    void parseAndLoad (const stdair::Filename_T& iScheduleFilename,
-                       const stdair::Filename_T& iODInputFilename,
-                       const AIRRAC::YieldFilePath& iYieldFilename);
+    void parseAndLoad (const stdair::ScheduleFilePath&,
+                       const stdair::ODFilePath&,
+                       const AIRRAC::YieldFilePath&);
 
     /**
      * Destructor.

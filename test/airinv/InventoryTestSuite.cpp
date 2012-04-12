@@ -100,8 +100,10 @@ bool testInventoryHelper (const unsigned short iTestFlag,
 
     if (isForSchedule == true) {
       // Build the BOM tree from parsing a schedule file (and O&D list)
+      stdair::ScheduleFilePath lScheduleFilePath (iScheduleInputFilename);
+      stdair::ODFilePath lODFilePath (iODInputFilename);
       AIRRAC::YieldFilePath lYieldFilePath (iYieldInputFilename);
-      airinvService.parseAndLoad (iScheduleInputFilename, iODInputFilename,
+      airinvService.parseAndLoad (lScheduleFilePath, lODFilePath,
                                   lYieldFilePath);
 
       // Define a specific segment-date key for the schedule-based inventory
@@ -111,7 +113,8 @@ bool testInventoryHelper (const unsigned short iTestFlag,
     } else {
 
       // Build the BOM tree from parsing an inventory dump file
-      airinvService.parseAndLoad (iInventoryInputFilename);
+      AIRINV::InventoryFilePath lInventoryFilePath (iInventoryInputFilename);
+      airinvService.parseAndLoad (lInventoryFilePath);
 
       // Define a specific segment-date key for the inventory parsed file
       //const std::string lSegmentDateKey ("SV, 5, 2010-03-11, KBP, JFK, 08:00:00");
