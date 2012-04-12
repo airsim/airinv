@@ -339,7 +339,7 @@ namespace AIRINV {
   
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::
-  parseAndLoad (const stdair::Filename_T& iInventoryInputFilename) {
+  parseAndLoad (const AIRINV::InventoryFilePath& iInventoryInputFilename) {
 
     // Retrieve the BOM root object.
     assert (_airinvServiceContext != NULL);
@@ -354,8 +354,8 @@ namespace AIRINV {
   
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::
-  parseAndLoad (const stdair::Filename_T& iScheduleInputFilename,
-                const stdair::Filename_T& iODInputFilename,
+  parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
+                const stdair::ODFilePath& iODInputFilename,
                 const AIRRAC::YieldFilePath& iYieldFilename) {
 
     // Retrieve the BOM root object.

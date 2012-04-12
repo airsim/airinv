@@ -6,6 +6,7 @@
 // //////////////////////////////////////////////////////////////////////
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
+#include <stdair/stdair_file.hpp>
 #include <stdair/command/CmdAbstract.hpp>
 
 /// Forward declarations.
@@ -28,7 +29,7 @@ namespace AIRINV {
      *        schedule input file.
      * @param stdair::BomRoot& Root of the BOM tree.
      */
-    static void generateInventories (const stdair::Filename_T& iScheduleFilename,
+    static void generateInventories (const stdair::ScheduleFilePath& iScheduleFilename,
                                      stdair::BomRoot&);
   };
 }

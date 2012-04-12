@@ -252,7 +252,7 @@ namespace AIRINV {
   
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
-  parseAndLoad (const stdair::Filename_T& iInventoryInputFilename) {
+  parseAndLoad (const InventoryFilePath& iInventoryInputFilename) {
 
     // Retrieve the AirInv Master service context
     if (_airinvMasterServiceContext == NULL) {
@@ -275,8 +275,8 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Master_Service::
-  parseAndLoad (const stdair::Filename_T& iScheduleInputFilename,
-                const stdair::Filename_T& iODInputFilename,
+  parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
+                const stdair::ODFilePath& iODInputFilename,
                 const AIRRAC::YieldFilePath& iYieldFilename) {
     
     // Retrieve the AirInv Master service context

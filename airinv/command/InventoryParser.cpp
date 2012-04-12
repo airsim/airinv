@@ -17,22 +17,24 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   void InventoryParser::
-  buildInventory (const stdair::Filename_T& iInventoryFilename,
+  buildInventory (const InventoryFilePath& iInventoryFilename,
                   stdair::BomRoot& ioBomRoot) {
+
+    const stdair::Filename_T lFilename = iInventoryFilename.name();
 
     // Check that the file path given as input corresponds to an actual file
     const bool doesExistAndIsReadable =
-      stdair::BasFileMgr::doesExistAndIsReadable (iInventoryFilename);
+      stdair::BasFileMgr::doesExistAndIsReadable (lFilename);
     if (doesExistAndIsReadable == false) {
       std::ostringstream oMessage;
-      oMessage << "The inventory input file, '" << iInventoryFilename
+      oMessage << "The inventory input file, '" << lFilename
                << "', can not be retrieved on the file-system";
       STDAIR_LOG_ERROR (oMessage.str());
       throw InventoryInputFileNotFoundException (oMessage.str());
     }
 
     // Initialise the inventory file parser.
-    InventoryFileParser lInventoryParser (ioBomRoot, iInventoryFilename);
+    InventoryFileParser lInventoryParser (ioBomRoot, lFilename);
 
     // Parse the CSV-formatted inventory input file, and generate the
     // corresponding Inventory-related objects.

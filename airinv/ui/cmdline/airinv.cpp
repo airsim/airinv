@@ -776,8 +776,10 @@ int main (int argc, char* argv[]) {
   } else {
     if (isForSchedule == true) {
       // Build the BOM tree from parsing a schedule file (and O&D list)
+      stdair::ScheduleFilePath lScheduleFilePath (lScheduleInputFilename);
+      stdair::ODFilePath lODFilePath (lODInputFilename);
       AIRRAC::YieldFilePath lYieldFilePath (lYieldInputFilename);
-      airinvService.parseAndLoad (lScheduleInputFilename, lODInputFilename,
+      airinvService.parseAndLoad (lScheduleFilePath, lODFilePath,
                                   lYieldFilePath);
 
       // Update the default parameters for the following interactive session
@@ -791,7 +793,8 @@ int main (int argc, char* argv[]) {
 
     } else {
       // Build the BOM tree from parsing an inventory dump file
-      airinvService.parseAndLoad (lInventoryFilename);
+      AIRINV::InventoryFilePath lInventoryFilePath (lInventoryFilename);
+      airinvService.parseAndLoad (lInventoryFilePath);
 
       // Update the default parameters for the following interactive session
       lInteractiveAirlineCode = "SV";
