@@ -10,13 +10,13 @@ Ext.onReady(function() {
     Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
 	
     var bkgRequest = [
-						['20-Mar-11, 08:15:37','NYC','IEV','Business','3','NYC','In/Off', 2000,'20-Mar-11','60 days','20-Jun-11','30-Jun-11','10 days','25-Apr-11','8AM','10PM','BA, AA']
+						['2009-Aug-27, 04:18:00','SIN','BKK','XX','1','NYC','IF', 197.07,'2009-Aug-31','4 days','2009-Aug-31','2009-Aug-31','0 days','xxxx-xxx-xx','8AM','10PM','xx']
 					 ];
 	
 	var solList = [
-					  ['false', 'AF10/JFK-CDG/H, AF52/CDG-KBP/K', '20-Jun-11', 'AF53/KBP-CDG/K, AF11/CDG-JFK/H', '30-Jun-11', 800],
-					  ['true', 'AA56/JFK-KBP/Y', '20-Jun-11', 'AA57/KBP-JFK/Y','30-Jun-11', 700],
-					  ['false', 'SV5/JFK-KBP/Q', '20-Jun-11', 'SV6/KBP-JFK/Q','30-Jun-11', 800]
+					  ['false', 'xxx/xxx-xxx/x', '2009-Aug-31', 'xxx/xxx-xxx/x', '2009-Aug-31', 999],
+					  ['true', 'SQ12/SIN-BKK/Y', '2009-Aug-31', 'SQ13/BKK-SIN/Y','2009-Aug-31', 200],
+					  ['false', 'xxx/xxx-xxx/x', '2009-Aug-31', 'xxx/xxx-xxx/x','2009-Aug-31', 999]
 				  ];
 			
 	var bkgStore = Ext.create('Ext.data.ArrayStore', {
@@ -68,7 +68,7 @@ Ext.onReady(function() {
 		renderTo:'bkgRequest',
 		
         width:1168,
-        height:150,
+        height:80,
 		viewConfig: {
             stripeRows: true
         }

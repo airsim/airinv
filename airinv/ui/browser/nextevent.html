@@ -138,8 +138,7 @@ var bandInfos;
 			intervalPixels: 200,
 			date: new Date(listOfBreak_Points.break_point[0].Breakpoint)
 			
-		})
-	  ];
+		})];
 	  bandInfos[1].syncWith = 0;
 	  bandInfos[1].highlight = true;
 	  tli = Timeline.create(document.getElementById("breakpoint-timeline"), bandInfos);
@@ -197,9 +196,9 @@ var bandInfos;
 		$( "#dialog-solutions" ).dialog({
 				resizable: false,
 				width:1220,
-				height:510,
+				height:440,
 				modal: true,
-				position: "top",
+				position: "bottom",
 				buttons: {
 					Close:function() {$( this ).dialog( "close" );}
 				}

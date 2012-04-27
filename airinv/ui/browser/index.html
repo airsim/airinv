@@ -30,6 +30,9 @@
        Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
        For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
 <script src="js/libs/modernizr-2.0.6.min.js"></script>
+<style>
+	.ui-progressbar-value { background-image: url(img/images/pbar-ani.gif); }
+</style>
 </head>
 </head>
 <body onLoad="onLoad()">
@@ -42,6 +45,7 @@
     <div align="left">
 	<button onClick="loadLauncher()" id="btnNewSim">New Simulation</button>
     <button onClick="stopSimulation()" id="btnStopSim" value="Stop" disabled="disabled">Stop Simulation</button>
+    <button onClick="showStatus()" id="btnShowStatus" value="Status">Status</button>
     
     </div></div>
     
@@ -60,7 +64,7 @@
     <iframe id="contentFrame" name="contentFrame" style="width:1220px; height:800px; border-style:none" src="airinv.html"></iframe></td>
   </div>
   
-  <div id="dialog-confirmlaunch" title="Corfirm launch ?" style="display:none;">
+ <div id="dialog-confirmlaunch" title="Corfirm launch ?" style="display:none;">
 	<p>Simulation will launch with the following parameters:</p> <br>
 	<span id="confirmSimDates"></span> <br>
 	<span id="confirmRandomSeed"></span> <br>
@@ -68,6 +72,19 @@
 	<span id="confirmDemandGeneration"></span> <br>
 	<span id="confirmBreakPoints"></span>
 </div>	
+ 
+<div id="dialog-status" title="Simulation Status" style="display:none">
+	<span id="statusSimDates"></span> <br>
+	<span id="statusCurrentDate"></span> <br>
+	<span id="statusBookings"></span> <br>
+	<span id="statusElapsedTime"></span> <br>
+	<span id="statusRemainingTime"></span> <br>
+	<span id="statusCurrentNumber"></span> <br>
+	<span id="statusActualNumber"></span> <br> <br>
+	
+	<span id="statusOverallProgress"></span> <br>
+	<div id="progressbar"></div>
+</div>
 
 
 <div id="dialog-stopsim" title="Corfirm stop ?" style="display:none;">
@@ -262,11 +279,57 @@ var serverURL = "http://ncevsediri-fed/api/";
 			
 		}
 	}
+	
+	function showStatus()
+	{	
+		var overallProgress;
+		$.getJSON(serverURL + 'controls/status/', function(data) {
+			console.log(data.status);
+			
+			overallProgress = parseInt(data.status.current_number) / parseInt(data.status.actual_number);
+			overallProgress = Math.round(overallProgress*100);
+			console.log(overallProgress);
+			
+			$("#dialog-status").dialog({
+			resizable: false,
+			width:600,
+			height:310,
+			modal: false,
+			position: "top",
+			show: "blind",
+			buttons: {
+				Ok:function() {$( this ).dialog( "close" );}
+				}
+		});
+		
+		$( "#progressbar" ).progressbar({
+			value: overallProgress
+		});			
+			
+			if(data != null)
+			{
+				document.getElementById('statusSimDates').innerHTML = "Simulation running from " + data.status.start_date + " to " + data.status.end_date;			
+				document.getElementById('statusElapsedTime').innerHTML = Math.round(parseInt(data.status.elapsed_time)) + " seconds elapsed.";
+				document.getElementById('statusRemainingTime').innerHTML = Math.round(parseInt(data.status.remaining_time)) + " seconds remaining.";
+				document.getElementById('statusBookings').innerHTML = data.status.bks + " bookings done.";
+				document.getElementById('statusOverallProgress').innerHTML = overallProgress + "%";
+			}else
+			{
+				alert("Simalator not respnding");
+			}
+		});
+		
+		
+		
+		
+	}
+	
 </script>
 
  <div id="dialog-launch" title="New Simulation Configuration" style="display:none">
 	<iframe id="launcherFrame" name="launcherFrame" src="launcher.html" style="width:100%; height:99%; border-style:none;"/>
 </div>
+
 
 <!-- Prompt IE 6 users to install Chrome Frame.-->
 <!--[if lt IE 7 ]>

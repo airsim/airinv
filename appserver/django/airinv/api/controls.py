@@ -43,3 +43,17 @@ class SimulatorCommands (BaseHandler):
 			print 'Received reply ', request, '[', jsonMessage, ']'	
 			return message
 			print 'Message: ', message
+			
+		if command == "status":
+			jsonAction = json.dumps ({"status":"1"})
+			print 'JSON serialised request: ', jsonAction
+
+			# print 'Sending request ', request, '...'
+			socket.send_unicode (jsonAction)
+
+			jsonMessage = socket.recv()
+			message = json.loads (jsonMessage)	
+
+			print 'Received reply ', request, '[', jsonMessage, ']'	
+			return message
+			print 'Message: ', message
