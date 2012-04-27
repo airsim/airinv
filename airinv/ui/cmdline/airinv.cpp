@@ -275,6 +275,8 @@ void initReadline (swift::SReadline& ioInputReader) {
   Completers.push_back ("display");
   Completers.push_back ("sell %booking_class %party_size %origin %destination");
   Completers.push_back ("quit");
+  Completers.push_back ("json_list");  
+  Completers.push_back ("json_display");
 
 
   // Now register the completers.
