@@ -29,7 +29,7 @@ get_events = CsrfExemptResource (EventsGetter)
 urlpatterns = patterns ('',
 	(r'^display/inv(?:/(?P<airlineCodeURL>\w{2,3}))?(?:/(?P<flightNumberURL>\d{1,4}))?(?:/(?P<departureDateURL>\d{2,4}-\w{3}-\d{1,2}))?$', display_resource),
 	(r'^set/bp(?:/(?P<bpJsonString>\w+)/)?$', set_breakpoints),
-	(r'^controls(?:/(?P<command>\w{1,5})/)?$', simulation_controls),
+	(r'^controls(?:/(?P<command>\w{1,6})/)?$', simulation_controls),
 	(r'^get/getairlinelist/$', get_airline_list),
 	(r'^get/events/$', get_events),
 )
