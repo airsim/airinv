@@ -11,6 +11,8 @@
 #include <stdair/bom/SegmentCabin.hpp>
 #include <stdair/bom/FareFamily.hpp>
 #include <stdair/bom/BookingClass.hpp>
+#include <stdair/bom/SimpleNestingStruct.hpp>
+#include <stdair/bom/NestingTypes.hpp>
 // AirInv
 #include <airinv/bom/SegmentCabinHelper.hpp>
 #include <airinv/bom/FlightDateHelper.hpp>
@@ -133,99 +135,133 @@ namespace AIRINV {
     // Retrieve the pseudo bid price vector.
     const stdair::BidPriceVector_T& lPseudoBPV =
       iSegmentCabin.getBidPriceVector();
-    const stdair::Availability_T& lAvlPool=iSegmentCabin.getAvailabilityPool();
-    
-    // Update the cumulative booking limit for all booking classes.
-    const stdair::BookingClassList_T& lBCList =
-      stdair::BomManager::getList<stdair::BookingClass> (iSegmentCabin);
-    for (stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
-         itBC != lBCList.end(); ++itBC) {
-      stdair::BookingClass* lBC_ptr = *itBC;
-      assert (lBC_ptr != NULL);
+    const stdair::Availability_T& lAvlPool= iSegmentCabin.getAvailabilityPool();
 
-      lBC_ptr->setCumulatedBookingLimit (lAvlPool);
-      const stdair::Yield_T& lYield = lBC_ptr->getYield();
+    // Update the cumulative booking limit for all booking classes.
+    // Browse the nesting structure
+    const stdair::SimpleNestingStruct& lNestingStruct = 
+      iSegmentCabin.getNestingStruct();
+    for (stdair::NestingNodeMap_T::const_reverse_iterator itNS = lNestingStruct.rbegin();
+         itNS != lNestingStruct.rend(); ++itNS) {
+      const stdair::BookingClassList_T& lBCList = (*itNS).second;
+      stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
+      assert(itBC != lBCList.end());
+      // Browse the booking class list of the current node   
+      const stdair::Yield_T& lYield = (*itNS).first;
+      stdair::BookingLimit_T lCumuBL = lAvlPool;
       for (stdair::BidPriceVector_T::const_reverse_iterator itBP =
-             lPseudoBPV.rbegin(); itBP != lPseudoBPV.rend(); ++itBP) {
+           lPseudoBPV.rbegin(); itBP != lPseudoBPV.rend(); ++itBP) {
         const stdair::BidPrice_T& lBP = *itBP;
         if (lYield < lBP) {
-          stdair::BookingLimit_T lCumuBL = itBP - lPseudoBPV.rbegin();
-          lBC_ptr->setCumulatedBookingLimit (lCumuBL);
+          lCumuBL = itBP - lPseudoBPV.rbegin();
           break;
         }
       }
+      for (; itBC != lBCList.end(); ++itBC) {
+        stdair::BookingClass* lBC_ptr = *itBC;
+        assert (lBC_ptr != NULL);
+        lBC_ptr->setCumulatedBookingLimit (lCumuBL);
+      }
     }
-
     // Update the authorization levels from the booking limits
     updateAUs (iSegmentCabin);
   }
 
   // ////////////////////////////////////////////////////////////////////
   void SegmentCabinHelper::updateAUs(const stdair::SegmentCabin& iSegmentCabin){
-    // Browse the booking class list and compute the AU from the
+    // Browse the nesting structure and compute the AU from the
     // cumulative booking counter and the cumulative booking limit.
     stdair::NbOfBookings_T lCumulativeBookingCounter = 0.0;
-    const stdair::BookingClassList_T& lBCList =
-      stdair::BomManager::getList<stdair::BookingClass> (iSegmentCabin);
-    for (stdair::BookingClassList_T::const_reverse_iterator itBC =
-           lBCList.rbegin(); itBC != lBCList.rend(); ++itBC) {
-      stdair::BookingClass* lBC_ptr = *itBC;
-      assert (lBC_ptr != NULL);
-
-      const stdair::NbOfBookings_T& lNbOfBookings = lBC_ptr->getNbOfBookings();
-      lCumulativeBookingCounter += lNbOfBookings;
-
+    // Browse the nesting structure
+    const stdair::SimpleNestingStruct& lNestingStruct = 
+      iSegmentCabin.getNestingStruct();
+    for (stdair::NestingNodeMap_T::const_iterator itNS = lNestingStruct.begin();
+         itNS != lNestingStruct.end(); ++itNS) {
+      const stdair::BookingClassList_T& lBCList = (*itNS).second;
+      stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
+      assert(itBC != lBCList.end());
       const stdair::BookingLimit_T& lCumuBookingLimit =
-        lBC_ptr->getCumulatedBookingLimit();
-
+        (*itBC)->getCumulatedBookingLimit();
+      // Browse the booking class list of the current node to update the 
+      // cumulative booking counter
+      for (; itBC != lBCList.end(); ++itBC) {
+        stdair::BookingClass* lBC_ptr = *itBC;
+        assert (lBC_ptr != NULL);
+        assert(lCumuBookingLimit == lBC_ptr->getCumulatedBookingLimit());
+        const stdair::NbOfBookings_T& lNbOfBookings = lBC_ptr->getNbOfBookings();
+        lCumulativeBookingCounter += lNbOfBookings;
+      }
       stdair::AuthorizationLevel_T lAU =
-        lCumulativeBookingCounter + lCumuBookingLimit;
-      lBC_ptr->setAuthorizationLevel (lAU);
-
-      // DEBUG
-      // STDAIR_LOG_DEBUG ("Updating the AU for class: "
-      //                   << lBC_ptr->describeKey()
-      //                   << ", with BL: " << lCumuBookingLimit
-      //                   << ", CumuBkg: " << lCumulativeBookingCounter
-      //                   << ", AU: " << lAU);
+          lCumulativeBookingCounter + lCumuBookingLimit;
+      // Browse the booking class list of the current node to set
+      // the authorization level of all booking classes of the node
+      for (itBC = lBCList.begin(); itBC != lBCList.end(); ++itBC) {
+        stdair::BookingClass* lBC_ptr = *itBC;
+        assert (lBC_ptr != NULL);
+        lBC_ptr->setAuthorizationLevel (lAU);
+        // DEBUG
+        // STDAIR_LOG_DEBUG ("Updating the AU for class: "
+        //                   << lBC_ptr->describeKey()
+        //                   << ", with BL: " << lCumuBookingLimit
+        //                   << ", CumuBkg: " << lCumulativeBookingCounter
+        //                   << ", AU: " << lAU);
+      }
     }
   }
 
   // ////////////////////////////////////////////////////////////////////
   void SegmentCabinHelper::
   updateAvailabilities (const stdair::SegmentCabin& iSegmentCabin) {
-    // Browse the booking class list and compute the avl from the
+    // Browse the nesting structure and compute the avl from the
     // cumulative booking counter and the AU.
     stdair::NbOfBookings_T lCumulativeBookingCounter = 0.0;
-    const stdair::BookingClassList_T& lBCList =
-      stdair::BomManager::getList<stdair::BookingClass> (iSegmentCabin);
-    for (stdair::BookingClassList_T::const_reverse_iterator itBC =
-           lBCList.rbegin(); itBC != lBCList.rend(); ++itBC) {
-      stdair::BookingClass* lBC_ptr = *itBC;
-      assert (lBC_ptr != NULL);
-
-      const stdair::NbOfBookings_T& lNbOfBookings = lBC_ptr->getNbOfBookings();
-      lCumulativeBookingCounter += lNbOfBookings;
-
-      const stdair::AuthorizationLevel_T& lAU=lBC_ptr->getAuthorizationLevel();
-
-      const stdair::Availability_T lAvl = lAU - lCumulativeBookingCounter;
-      lBC_ptr->setSegmentAvailability (lAvl);
+    const stdair::SimpleNestingStruct& lNestingStruct = iSegmentCabin.getNestingStruct();
+    for (stdair::NestingNodeMap_T::const_iterator itNS = lNestingStruct.begin();
+         itNS != lNestingStruct.end(); ++itNS) {
+      const stdair::BookingClassList_T& lBCList = (*itNS).second;
+      stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
+      assert(itBC != lBCList.end());
+      const stdair::AuthorizationLevel_T& lNodeAU = (*itBC)->getAuthorizationLevel();
+      // Browse the booking class list of the current node to update the 
+      // cumulative booking counter
+      for (; itBC != lBCList.end(); ++itBC) {
+        stdair::BookingClass* lBC_ptr = *itBC;
+        assert (lBC_ptr != NULL);
+        assert(lNodeAU == lBC_ptr->getAuthorizationLevel());
+        const stdair::NbOfBookings_T& lNbOfBookings = lBC_ptr->getNbOfBookings();
+        lCumulativeBookingCounter += lNbOfBookings;
+      }
+      const stdair::Availability_T lNodeAvl = lNodeAU - lCumulativeBookingCounter;
+      // Browse the booking class list of the current node to set
+      // the availability of all booking classes of the node
+      for (itBC = lBCList.begin(); itBC != lBCList.end(); ++itBC) {
+        stdair::BookingClass* lBC_ptr = *itBC;
+        assert (lBC_ptr != NULL);    
+        lBC_ptr->setSegmentAvailability (lNodeAvl);
+      }
     }
 
     // Cascading
-    stdair::BookingClassList_T::const_iterator itCurrentBC = lBCList.begin();
-    assert (itCurrentBC != lBCList.end());
-    stdair::BookingClassList_T::const_iterator itNextBC = itCurrentBC; ++itNextBC;
-    for (; itNextBC != lBCList.end(); ++itCurrentBC, ++itNextBC) {
-      stdair::BookingClass* lCurrentBC_ptr = *itCurrentBC;
+    stdair::NestingNodeMap_T::const_reverse_iterator itCurrentNode = lNestingStruct.rbegin();
+    assert (itCurrentNode != lNestingStruct.rend());
+    stdair::NestingNodeMap_T::const_reverse_iterator itNextNode = itCurrentNode; 
+    ++itNextNode;
+    for (; itNextNode != lNestingStruct.rend(); ++itCurrentNode, ++itNextNode) {
+      stdair::BookingClassList_T lCurrentBCList = (*itCurrentNode).second;
+      stdair::BookingClass* lCurrentBC_ptr = *(lCurrentBCList.begin());
       assert (lCurrentBC_ptr != NULL);
-      stdair::BookingClass* lNextBC_ptr = *itNextBC;
+      stdair::BookingClassList_T lNextBCList = (*itNextNode).second;
+      stdair::BookingClass* lNextBC_ptr = *(lNextBCList.begin());
       assert (lNextBC_ptr != NULL);
       const stdair::Availability_T& lCurrentAvl = lCurrentBC_ptr->getSegmentAvailability();
       const stdair::Availability_T& lNextAvl = lNextBC_ptr->getSegmentAvailability();
       if (lCurrentAvl < lNextAvl) {
-        lNextBC_ptr->setSegmentAvailability (lCurrentAvl);
+        for (stdair::BookingClassList_T::const_iterator itNextBC = lNextBCList.begin();
+             itNextBC != lNextBCList.end(); ++itNextBC) {
+          lNextBC_ptr = *itNextBC;
+          assert (lNextBC_ptr != NULL);
+          lNextBC_ptr->setSegmentAvailability (lCurrentAvl);
+        }
       }
     }
   }
