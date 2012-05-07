@@ -17,6 +17,7 @@
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
 #include <stdair/bom/FlightDate.hpp>
+#include <stdair/bom/SegmentCabin.hpp>
 #include <stdair/bom/AirlineFeature.hpp>
 #include <stdair/bom/RMEventStruct.hpp>
 #include <stdair/bom/BomJSONImport.hpp>
@@ -375,6 +376,9 @@ namespace AIRINV {
 
     // Update yield values for booking classes and O&D.
     lAIRRAC_Service.updateYields();
+
+    // Initialise the nesting structures
+    InventoryManager::initialiseNestingStructures (lBomRoot);
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -460,6 +464,11 @@ namespace AIRINV {
      * 3.3. Initialise the bid price vectors.
      */
     //    InventoryManager::setDefaultBidPriceVector (lBomRoot);
+
+    /**
+     * Initialise the nesting structures
+     */
+    InventoryManager::initialiseNestingStructures (lBomRoot);
   }   
 
 
