@@ -1153,4 +1153,45 @@ namespace AIRINV {
     ioSEVMGR_ServicePtr->addStatus (stdair::EventType::RM, lRMEventListSize);  
 
   }
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  initialiseNestingStructures (const stdair::BomRoot& iBomRoot) {
+    // Browse the list of inventories
+    const stdair::InventoryList_T& lInvList =
+      stdair::BomManager::getList<stdair::Inventory> (lBomRoot);
+    // Browse the inventories
+    for (stdair::InventoryList_T::const_iterator itInv = lInvList.begin();
+         itInv != lInvList.end(); ++itInv) {
+      stdair::Inventory* lCurrentInv_ptr = *itInv;
+      assert (lCurrentInv_ptr != NULL);
+      const stdair::FlightDateList_T& lFlightDateList =
+        stdair::BomManager::getList<stdair::FlightDate> (*lCurrentInv_ptr);
+      // Browse the flight dates
+      for (stdair::FlightDateList_T::const_iterator itFD= lFlightDateList.begin();
+           itFD != lFlightDateList.end(); ++itFD) {
+        const stdair::FlightDate* lFD_ptr = *itFD;
+        assert (lFD_ptr != NULL);
+        const stdair::SegmentDateList_T& lSegmentDateList =
+          stdair::BomManager::getList<stdair::SegmentDate> (*lFD_ptr);
+        // Browse the segment dates
+        for (stdair::SegmentDateList_T::const_iterator itSD =
+             lSegmentDateList.begin(); itSD != lSegmentDateList.end(); ++itSD) {
+          const stdair::SegmentDate* lSD_ptr = *itSD;
+          assert (lSD_ptr != NULL);
+          const stdair::SegmentCabinList_T& lSegmentCabinList =
+            stdair::BomManager::getList<stdair::SegmentCabin> (*lSD_ptr);
+          // Browse the segment cabins
+          for (stdair::SegmentCabinList_T::const_iterator itSC =
+               lSegmentCabinList.begin(); itSC != lSegmentCabinList.end();
+               ++itSC) {
+            stdair::SegmentCabin* lSC_ptr = *itSC;
+            assert (lSC_ptr != NULL);
+            // Initialise the nesting structure of the segment cabin
+            lSC_ptr->initNestingStruct();
+          }
+        }
+      }
+    }
+  } 
 }
