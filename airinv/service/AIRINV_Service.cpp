@@ -973,7 +973,9 @@ namespace AIRINV {
                                                          iFDDescription);
 
     const stdair::UnconstrainingMethod& lUnconstrainingMethod =
-      lInventory.getUnconstrainingMethod();
+      lInventory.getUnconstrainingMethod();   
+    const stdair::ForecastingMethod& lForecastingMethod =
+      lInventory.getForecastingMethod();
     const stdair::PartnershipTechnique& lPartnershipTechnique =
       lInventory.getPartnershipTechnique();
 
@@ -983,6 +985,7 @@ namespace AIRINV {
     // Optimise the flight-date.
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
                                                lUnconstrainingMethod,
+					       lForecastingMethod,
                                                lPartnershipTechnique);
 
     // Update the inventory with the new controls.
