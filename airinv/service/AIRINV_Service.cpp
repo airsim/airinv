@@ -11,6 +11,7 @@
 #include <stdair/basic/JSonCommand.hpp>
 #include <stdair/basic/PartnershipTechnique.hpp>
 #include <stdair/basic/UnconstrainingMethod.hpp>
+#include <stdair/basic/OptimisationMethod.hpp>
 #include <stdair/bom/BomKeyManager.hpp> 
 #include <stdair/bom/BomManager.hpp> 
 #include <stdair/bom/BomKeyManager.hpp> 
@@ -966,7 +967,9 @@ namespace AIRINV {
     const stdair::UnconstrainingMethod& lUnconstrainingMethod =
       lInventory.getUnconstrainingMethod();   
     const stdair::ForecastingMethod& lForecastingMethod =
-      lInventory.getForecastingMethod();
+      lInventory.getForecastingMethod(); 
+    const stdair::OptimisationMethod& lOptimisationMethod =
+      lInventory.getOptimisationMethod();
     const stdair::PartnershipTechnique& lPartnershipTechnique =
       lInventory.getPartnershipTechnique();
 
@@ -977,6 +980,7 @@ namespace AIRINV {
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
                                                lUnconstrainingMethod,
 					       lForecastingMethod,
+					       lOptimisationMethod,
                                                lPartnershipTechnique);
 
     // Update the inventory with the new controls.
