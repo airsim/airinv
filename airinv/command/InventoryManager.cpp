@@ -1159,7 +1159,7 @@ namespace AIRINV {
   initialiseNestingStructures (const stdair::BomRoot& iBomRoot) {
     // Browse the list of inventories
     const stdair::InventoryList_T& lInvList =
-      stdair::BomManager::getList<stdair::Inventory> (lBomRoot);
+      stdair::BomManager::getList<stdair::Inventory> (iBomRoot);
     // Browse the inventories
     for (stdair::InventoryList_T::const_iterator itInv = lInvList.begin();
          itInv != lInvList.end(); ++itInv) {
