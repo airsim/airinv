@@ -120,8 +120,11 @@ namespace AIRINV {
     static void setDefaultBidPriceVector (stdair::BomRoot&);
     static void setDefaultBidPriceVector (stdair::Inventory&);
 
-    /** Nesting structure initialisation */
-    static void initialiseNestingStructures (const stdair::BomRoot&);
+    /** Yield-based nesting structure initialisation */
+    static void initialiseYieldBasedNestingStructures (const stdair::BomRoot&);
+
+    /** Lists of usable policies initialisation. */
+    static void initialiseListsOfUsablePolicies (const stdair::BomRoot&);
     
   private:
     /** Constructors. */

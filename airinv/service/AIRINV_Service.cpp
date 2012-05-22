@@ -378,8 +378,11 @@ namespace AIRINV {
     // Update yield values for booking classes and O&D.
     lAIRRAC_Service.updateYields();
 
-    // Initialise the nesting structures
-    InventoryManager::initialiseNestingStructures (lBomRoot);
+    // Initialise the yield based nesting structures
+    InventoryManager::initialiseYieldBasedNestingStructures (lBomRoot);
+
+    // Initialise the lists of all usable policies
+    InventoryManager::initialiseListsOfUsablePolicies (lBomRoot);
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -469,7 +472,7 @@ namespace AIRINV {
     /**
      * Initialise the nesting structures
      */
-    InventoryManager::initialiseNestingStructures (lBomRoot);
+    InventoryManager::initialiseYieldBasedNestingStructures (lBomRoot);
   }   
 
 
@@ -977,6 +980,8 @@ namespace AIRINV {
       lInventory.getUnconstrainingMethod();   
     const stdair::ForecastingMethod& lForecastingMethod =
       lInventory.getForecastingMethod(); 
+    const stdair::PreOptimisationMethod& lPreOptimisationMethod =
+      lInventory.getPreOptimisationMethod();
     const stdair::OptimisationMethod& lOptimisationMethod =
       lInventory.getOptimisationMethod();
     const stdair::PartnershipTechnique& lPartnershipTechnique =
@@ -989,6 +994,7 @@ namespace AIRINV {
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
                                                lUnconstrainingMethod,
 					       lForecastingMethod,
+					       lPreOptimisationMethod,
 					       lOptimisationMethod,
                                                lPartnershipTechnique);
 

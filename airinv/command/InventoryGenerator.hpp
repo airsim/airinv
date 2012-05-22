@@ -105,7 +105,11 @@ namespace AIRINV {
      */
     static void createClass (stdair::FareFamily&, 
                              const stdair::ClassCode_T&);
-
+    
+    /**
+     * Generate the display nesting structure.
+     */
+    static void createDisplayNestingStructure (stdair::SegmentCabin&);
   };
 
 }
