@@ -6,12 +6,14 @@
 // //////////////////////////////////////////////////////////////////////
 // StdAir
 #include <stdair/stdair_basic_types.hpp>
+#include <stdair/bom/FareFamilyTypes.hpp>
 
 // Forward declarations
 namespace stdair {
   class FlightDate;
   class SegmentCabin;
   class FareFamily;
+  class Policy;
 }
 
 namespace AIRINV {
@@ -52,6 +54,26 @@ namespace AIRINV {
      * Initialise the AU for the booking classes.
      */
     static void initialiseAU (stdair::SegmentCabin&);
+
+    /**
+     * Yield-based nesting structure initialisation.
+     */
+    static void initYieldBasedNestingStructure (stdair::SegmentCabin&);
+
+    /**
+     * List of usable policies initialisation.
+     */
+    static void initListOfUsablePolicies (stdair::SegmentCabin&);
+
+  private:    
+    /**
+     * Recursive method helper for usable policies initialisation.
+     */
+    static void createPolicies (stdair::SegmentCabin&,
+                                const stdair::FareFamilyList_T&,
+                                const stdair::FareFamilyList_T::const_iterator&,
+                                stdair::Policy&, unsigned int&,
+                                const stdair::Yield_T&);
   };
 
 }

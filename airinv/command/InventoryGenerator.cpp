@@ -8,6 +8,7 @@
 // StdAir
 #include <stdair/stdair_types.hpp>
 #include <stdair/basic/BasConst_Inventory.hpp>
+#include <stdair/basic/BasConst_SellUpCurves.hpp>
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
@@ -18,6 +19,9 @@
 #include <stdair/bom/BookingClass.hpp>
 #include <stdair/bom/LegDate.hpp>
 #include <stdair/bom/LegCabin.hpp>
+#include <stdair/bom/SimpleNestingStructure.hpp>
+#include <stdair/bom/NestingNode.hpp>
+#include <stdair/bom/Policy.hpp>
 #include <stdair/bom/Bucket.hpp>
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/service/Logger.hpp>
@@ -257,20 +261,34 @@ namespace AIRINV {
     iCabin.fill (lSegmentCabin);
 
     // Create the list of fare families
-    for (FareFamilyStructList_T::const_iterator itFareFamily =
-           iCabin._fareFamilies.begin();
-         itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
+    // TODO: remove the hard-coded FRAT5 and disutility curve assignment
+    FareFamilyStructList_T::const_iterator itFareFamily =
+      iCabin._fareFamilies.begin();
+    assert (itFareFamily != iCabin._fareFamilies.end());
+    const FareFamilyStruct& lHighestFareFamilyStruct = *itFareFamily;
+    // Create the fare families and the booking classes.
+    createFareFamily (lSegmentCabin, lHighestFareFamilyStruct,
+                      stdair::FRAT5_CURVE_B, stdair::FF_DISUTILITY_CURVE_A);
+    ++itFareFamily;
+        
+    for (;itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
       const FareFamilyStruct& lFareFamilyStruct = *itFareFamily;
 
-      //
-      createFareFamily (lSegmentCabin, lFareFamilyStruct);
+      // Create the fare families and the booking classes.
+      createFareFamily (lSegmentCabin, lFareFamilyStruct,
+                        stdair::FRAT5_CURVE_A, stdair::FF_DISUTILITY_CURVE_A);
     } 
+
+    // Create the display nesting structure.
+    createDisplayNestingStructure (lSegmentCabin);
   }
     
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
   createFareFamily (stdair::SegmentCabin& ioSegmentCabin,
-                    const FareFamilyStruct& iFF) {
+                    const FareFamilyStruct& iFF,
+                    const stdair::FRAT5Curve_T& iFRAT5Curve,
+                    const stdair::FFDisutilityCurve_T& iDisutilityCurve) {
     // Instantiate an segment-cabin object with the corresponding cabin code
     stdair::FareFamilyKey lKey (iFF._familyCode);
     stdair::FareFamily& lFareFamily =
@@ -284,6 +302,8 @@ namespace AIRINV {
     
     // Set the fare family attributes
     iFF.fill (lFareFamily);
+    lFareFamily.setFrat5Curve (iFRAT5Curve);
+    lFareFamily.setDisutilityCurve (iDisutilityCurve);
 
     // Iterate on the classes
     const stdair::ClassList_String_T& lClassList = iFF._classes;
@@ -321,5 +341,37 @@ namespace AIRINV {
     stdair::SegmentDate& lSegmentDate =
       stdair::BomManager::getParent<stdair::SegmentDate> (lSegmentCabin);
     stdair::FacBomManager::addToListAndMap (lSegmentDate, lClass);
+  }
+    
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryGenerator::
+  createDisplayNestingStructure (stdair::SegmentCabin& ioSegmentCabin) {
+    // Create the nesting structure.
+    stdair::NestingStructureKey lKey (stdair::DISPLAY_NESTING_STRUCTURE_CODE);
+    stdair::SimpleNestingStructure& lNestingStructure =
+      stdair::FacBom<stdair::SimpleNestingStructure>::instance().create(lKey);
+    stdair::FacBomManager::addToListAndMap (ioSegmentCabin, lNestingStructure);
+    stdair::FacBomManager::linkWithParent (ioSegmentCabin, lNestingStructure);
+    
+    // Browse the list of booking classes and create the nesting structure
+    // based on that list. Each nesting node consists of a booking class.
+    const stdair::BookingClassList_T& lBCList =
+      stdair::BomManager::getList<stdair::BookingClass>(ioSegmentCabin);
+    for (stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
+         itBC != lBCList.end(); ++itBC) {
+      stdair::BookingClass* lBC_ptr = *itBC;
+      assert (lBC_ptr != NULL);
+
+      // Create a nesting node
+      stdair::NestingNodeCode_T lNodeCode (lBC_ptr->describeKey());
+      stdair::NestingNodeKey lNodeKey (lNodeCode);
+      stdair::NestingNode& lNestingNode =
+        stdair::FacBom<stdair::NestingNode>::instance().create (lNodeKey);
+      stdair::FacBomManager::addToList (lNestingStructure, lNestingNode);
+      stdair::FacBomManager::linkWithParent (lNestingStructure, lNestingNode);
+
+      // Add the booking class to the node.
+      stdair::FacBomManager::addToList (lNestingNode, *lBC_ptr);
+    }
   }
 }

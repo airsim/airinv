@@ -5,6 +5,7 @@
 #include <cassert>
 // StdAir
 #include <stdair/stdair_exceptions.hpp>
+#include <stdair/stdair_types.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/service/Logger.hpp>
 // AirInv
