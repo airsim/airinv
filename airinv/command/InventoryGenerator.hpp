@@ -98,7 +98,9 @@ namespace AIRINV {
      * Generate a fare family.
      */
     static void createFareFamily (stdair::SegmentCabin&,
-                                  const FareFamilyStruct&);
+                                  const FareFamilyStruct&,
+                                  const stdair::FRAT5Curve_T&,
+                                  const stdair::FFDisutilityCurve_T&);
 
     /**
      * Generate a booking class.

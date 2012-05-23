@@ -314,7 +314,7 @@ namespace AIRINV {
     stdair::NestingStructureKey lKey (stdair::YIELD_BASED_NESTING_STRUCTURE_CODE);
     stdair::SimpleNestingStructure& lNestingStructure =
       stdair::FacBom<stdair::SimpleNestingStructure>::instance().create(lKey);
-    stdair::FacBomManager::addToList (ioSegmentCabin, lNestingStructure);
+    stdair::FacBomManager::addToListAndMap (ioSegmentCabin, lNestingStructure);
     stdair::FacBomManager::linkWithParent (ioSegmentCabin, lNestingStructure);
     
     // Build a multimap of booking classes with their yields as keys.

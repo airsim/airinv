@@ -8,6 +8,7 @@
 // StdAir
 #include <stdair/stdair_types.hpp>
 #include <stdair/basic/BasConst_Inventory.hpp>
+#include <stdair/basic/BasConst_SellUpCurves.hpp>
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
@@ -260,13 +261,22 @@ namespace AIRINV {
     iCabin.fill (lSegmentCabin);
 
     // Create the list of fare families
-    for (FareFamilyStructList_T::const_iterator itFareFamily =
-           iCabin._fareFamilies.begin();
-         itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
+    // TODO: remove the hard-coded FRAT5 and disutility curve assignment
+    FareFamilyStructList_T::const_iterator itFareFamily =
+      iCabin._fareFamilies.begin();
+    assert (itFareFamily != iCabin._fareFamilies.end());
+    const FareFamilyStruct& lHighestFareFamilyStruct = *itFareFamily;
+    // Create the fare families and the booking classes.
+    createFareFamily (lSegmentCabin, lHighestFareFamilyStruct,
+                      stdair::FRAT5_CURVE_B, stdair::FF_DISUTILITY_CURVE_A);
+    ++itFareFamily;
+        
+    for (;itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
       const FareFamilyStruct& lFareFamilyStruct = *itFareFamily;
 
       // Create the fare families and the booking classes.
-      createFareFamily (lSegmentCabin, lFareFamilyStruct);
+      createFareFamily (lSegmentCabin, lFareFamilyStruct,
+                        stdair::FRAT5_CURVE_A, stdair::FF_DISUTILITY_CURVE_A);
     } 
 
     // Create the display nesting structure.
@@ -276,7 +286,9 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
   createFareFamily (stdair::SegmentCabin& ioSegmentCabin,
-                    const FareFamilyStruct& iFF) {
+                    const FareFamilyStruct& iFF,
+                    const stdair::FRAT5Curve_T& iFRAT5Curve,
+                    const stdair::FFDisutilityCurve_T& iDisutilityCurve) {
     // Instantiate an segment-cabin object with the corresponding cabin code
     stdair::FareFamilyKey lKey (iFF._familyCode);
     stdair::FareFamily& lFareFamily =
@@ -290,6 +302,8 @@ namespace AIRINV {
     
     // Set the fare family attributes
     iFF.fill (lFareFamily);
+    lFareFamily.setFrat5Curve (iFRAT5Curve);
+    lFareFamily.setDisutilityCurve (iDisutilityCurve);
 
     // Iterate on the classes
     const stdair::ClassList_String_T& lClassList = iFF._classes;
@@ -336,7 +350,7 @@ namespace AIRINV {
     stdair::NestingStructureKey lKey (stdair::DISPLAY_NESTING_STRUCTURE_CODE);
     stdair::SimpleNestingStructure& lNestingStructure =
       stdair::FacBom<stdair::SimpleNestingStructure>::instance().create(lKey);
-    stdair::FacBomManager::addToList (ioSegmentCabin, lNestingStructure);
+    stdair::FacBomManager::addToListAndMap (ioSegmentCabin, lNestingStructure);
     stdair::FacBomManager::linkWithParent (ioSegmentCabin, lNestingStructure);
     
     // Browse the list of booking classes and create the nesting structure

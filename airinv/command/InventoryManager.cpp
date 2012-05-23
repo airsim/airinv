@@ -1158,6 +1158,10 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
   initialiseYieldBasedNestingStructures (const stdair::BomRoot& iBomRoot) {
+    // DEBUG
+    STDAIR_LOG_DEBUG ("Initialise the yield-based nesting structure for "
+                      << "all segment-cabins");
+    
     // Browse the list of inventories
     const stdair::InventoryList_T& lInvList =
       stdair::BomManager::getList<stdair::Inventory> (iBomRoot);
