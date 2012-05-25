@@ -23,6 +23,7 @@
 
 /// Forward declarations
 namespace stdair {
+  class BomRoot;
   class AirlineFeatureSet;
   class Inventory;
   class JSONString;
@@ -159,6 +160,17 @@ namespace AIRINV {
      * those flights has two legs (and therefore three segments).
      */
     void buildSampleBom();
+      
+    /**
+     * Clone the persistent BOM object.
+     */
+    void clonePersistentBom (); 
+
+    /**
+     * Build all the complementary links in the given bom root object.
+     * \note Do nothing for now.
+     */
+    void buildComplementaryLinks (stdair::BomRoot&);
 
     /**
      * Compute the availability for the given travel solution.
