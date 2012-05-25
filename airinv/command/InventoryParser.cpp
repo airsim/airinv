@@ -39,10 +39,6 @@ namespace AIRINV {
     // Parse the CSV-formatted inventory input file, and generate the
     // corresponding Inventory-related objects.
     lInventoryParser.buildInventory();
-      
-    // Complete the BomRoot BOM building: create the routings for all
-    // the inventories.
-    InventoryManager::createDirectAccesses (ioBomRoot);
   }
 
 }

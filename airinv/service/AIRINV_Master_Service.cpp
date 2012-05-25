@@ -260,9 +260,13 @@ namespace AIRINV {
                                                     "has not been initialised");
     }
     assert (_airinvMasterServiceContext != NULL);
-
+  
+    // Retrieve the AirInv service context and whether it owns the Stdair
+    // service
     AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
-      *_airinvMasterServiceContext;
+      *_airinvMasterServiceContext;   
+    const bool doesOwnStdairService =
+      lAIRINV_Master_ServiceContext.getOwnStdairServiceFlag();
   
     // Retrieve the slave AIRINV service object from the (AIRINV)
     // service context
@@ -270,33 +274,17 @@ namespace AIRINV {
       lAIRINV_Master_ServiceContext.getAIRINV_Service();
 
     // Delegate the file parsing and BOM building to the dedicated service
-    lAIRINV_Service.parseAndLoad (iInventoryInputFilename);
-  }
+    lAIRINV_Service.parseAndLoad (iInventoryInputFilename);  
 
-  // ////////////////////////////////////////////////////////////////////
-  void AIRINV_Master_Service::
-  parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
-                const stdair::ODFilePath& iODInputFilename,
-                const AIRRAC::YieldFilePath& iYieldFilename) {
-    
-    // Retrieve the AirInv Master service context
-    if (_airinvMasterServiceContext == NULL) {
-      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
-                                                    "has not been initialised");
-    }
-    assert (_airinvMasterServiceContext != NULL);
+    /**
+     * Have AIRINV_Master clone the whole persistent BOM tree, only when the StdAir
+     * service is owned by the current component (AIRINV_Master here).
+     */ 
+    if (doesOwnStdairService == true) {
 
-    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
-      *_airinvMasterServiceContext;
-  
-    // Retrieve the slave AirInv service object from the (AirInv)
-    // service context
-    AIRINV_Service& lAIRINV_Service =
-      lAIRINV_Master_ServiceContext.getAIRINV_Service();
-
-    // Delegate the file parsing and BOM building to the dedicated service
-    lAIRINV_Service.parseAndLoad (iScheduleInputFilename, iODInputFilename,
-                                  iYieldFilename);
+      //
+      clonePersistentBom ();
+    }  
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -319,10 +307,12 @@ namespace AIRINV {
     // Retrieve the StdAir service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_Master_ServiceContext.getSTDAIR_Service();
+    stdair::BomRoot& lPersistentBomRoot = 
+      lSTDAIR_Service.getPersistentBomRoot();
 
     /**
      * 1. Have StdAir build the whole BOM tree, only when the StdAir service is
-     *    owned by the current component (AirRAC here)
+     *    owned by the current component (AIRINV_Master here)
      */
     if (doesOwnStdairService == true) {
       //
@@ -343,12 +333,136 @@ namespace AIRINV {
 
     /**
      * 3. Build the complementary objects/links for the current component (here,
-     *    SimFQT)
-     *
-     * \note: Currently, no more things to do by AirRAC at that stage,
-     *        as there is no child
-     */
+     *    AIRINV_Master)
+     */ 
+    buildComplementaryLinks (lPersistentBomRoot);
+
+    /**
+     * 4. Have AIRINV_Master clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AIRINV_Master here).
+     */ 
+    if (doesOwnStdairService == true) {
+
+      //
+      clonePersistentBom ();
+    }  
   }  
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRINV_Master_Service::
+  parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
+                const stdair::ODFilePath& iODInputFilename,
+                const AIRRAC::YieldFilePath& iYieldFilename) {
+    
+    // Retrieve the AirInv Master service context
+    if (_airinvMasterServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvMasterServiceContext != NULL);
+ 
+    // Retrieve the AirInv service context and whether it owns the Stdair
+    // service
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;   
+    const bool doesOwnStdairService =
+      lAIRINV_Master_ServiceContext.getOwnStdairServiceFlag();  
+
+    // Retrieve the slave AirInv service object from the (AirInv)
+    // service context
+    AIRINV_Service& lAIRINV_Service =
+      lAIRINV_Master_ServiceContext.getAIRINV_Service(); 
+
+    // Retrieve the StdAir service object from the (AirInv) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_Master_ServiceContext.getSTDAIR_Service();
+    stdair::BomRoot& lPersistentBomRoot = 
+      lSTDAIR_Service.getPersistentBomRoot();
+
+    /**
+     * 1. Delegate the file parsing and BOM building to the dedicated service
+     */
+    lAIRINV_Service.parseAndLoad (iScheduleInputFilename, iODInputFilename,
+                                  iYieldFilename);  
+
+    /**
+     * 2. Delegate the complementary building of objects and links by the
+     *    appropriate levels/components
+     * \note Currently, no more things to do.
+     */
+
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
+     *    AIRINV_Master)
+     */ 
+    buildComplementaryLinks (lPersistentBomRoot);
+
+    /**
+     * Have AIRINV_Master clone the whole persistent BOM tree, only when the StdAir
+     * service is owned by the current component (AIRINV_Master here).
+     */
+    if (doesOwnStdairService == true) {
+
+      //
+      clonePersistentBom ();
+    }
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRINV_Master_Service::clonePersistentBom () {   
+
+    // Retrieve the AirInv Master service context
+    if (_airinvMasterServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException ("The AirInvMaster service "
+                                                    "has not been initialised");
+    }
+    assert (_airinvMasterServiceContext != NULL);
+  
+    // Retrieve the AirInv service context and whether it owns the Stdair
+    // service
+    AIRINV_Master_ServiceContext& lAIRINV_Master_ServiceContext =
+      *_airinvMasterServiceContext;   
+    const bool doesOwnStdairService =
+      lAIRINV_Master_ServiceContext.getOwnStdairServiceFlag();  
+  
+    // Retrieve the slave AIRINV service object from the (AIRINV)
+    // service context
+    AIRINV_Service& lAIRINV_Service =
+      lAIRINV_Master_ServiceContext.getAIRINV_Service();   
+
+    // Retrieve the StdAir service object from the (AIRINV) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_Master_ServiceContext.getSTDAIR_Service();
+
+    /**
+     * 1. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AirInv here).
+     */ 
+    if (doesOwnStdairService == true) {
+ 
+      //
+      lSTDAIR_Service.clonePersistentBom ();
+    }
+    
+    /**
+     * 2. Delegate the complementary building of objects and links by the
+     *    appropriate component: the slave AIRINV.
+     */
+    lAIRINV_Service.clonePersistentBom ();
+     
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
+     *    DSIM)
+     */ 
+    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();   
+    buildComplementaryLinks (lBomRoot);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRINV_Master_Service::
+  buildComplementaryLinks (stdair::BomRoot& ioBomRoot) {
+    // Currently, no more things to do by AIRINV_Master at that stage.
+  }
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Master_Service::
