@@ -39,17 +39,6 @@ namespace AIRINV {
     // Parse the CSV-formatted schedule input file, and generate the
     // corresponding Inventories for the airlines.
     lFlightPeriodParser.generateInventories ();
-      
-    // Complete the BomRoot BOM building
-    // Create the routings for all the inventories.
-    InventoryManager::createDirectAccesses (ioBomRoot);
-
-    // Build the similar flight-date sets and the corresponding guillotine
-    // blocks.
-    InventoryManager::buildSimilarSegmentCabinSets (ioBomRoot);
-
-    // Bid price vector initialisation
-    InventoryManager::setDefaultBidPriceVector (ioBomRoot);
 
   }
 
