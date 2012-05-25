@@ -791,13 +791,7 @@ namespace AIRINV {
        */
       const stdair::SegmentDate* lOperatingSegmentDate_ptr =
         lCurrentSegmentDate_ptr->getOperatingSegmentDate ();
-      if (lOperatingSegmentDate_ptr != NULL) {
-        // Then get the (parent) flight date and create direct access.
-        stdair::FlightDate* lOperatingFlightDate_ptr =
-          stdair::BomManager::getParentPtr<stdair::FlightDate>(*lOperatingSegmentDate_ptr);
-        assert (lOperatingFlightDate_ptr != NULL);
-        createDirectAccesses (*lOperatingFlightDate_ptr);
-      } else {
+      if (lOperatingSegmentDate_ptr == NULL) {
 
         const stdair::AirportCode_T& lBoardingPoint =
           lCurrentSegmentDate_ptr->getBoardingPoint();

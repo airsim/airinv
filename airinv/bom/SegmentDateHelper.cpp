@@ -24,7 +24,6 @@ namespace AIRINV {
     stdair::SegmentDate* lOperatingSegmentDate_ptr =
       ioSegmentDate.getOperatingSegmentDate ();
     if (lOperatingSegmentDate_ptr != NULL) {
-      fillFromRouting (*lOperatingSegmentDate_ptr);
       return;
     }
     // Retrieve the first and the last legs of the routing.
