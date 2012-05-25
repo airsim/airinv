@@ -595,9 +595,14 @@ namespace AIRINV {
     InventoryManager::setDefaultBidPriceVector (ioBomRoot);
 
     /**
-     * Initialise the nesting structures
+     * Initialise the nesting structures   
      */
-    InventoryManager::initialiseNestingStructures (ioBomRoot);
+    InventoryManager::initialiseYieldBasedNestingStructures (ioBomRoot);
+
+    /**
+     * Initialise the lists of all usable policies
+     */
+    InventoryManager::initialiseListsOfUsablePolicies (ioBomRoot);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -1104,6 +1109,8 @@ namespace AIRINV {
       lInventory.getUnconstrainingMethod();   
     const stdair::ForecastingMethod& lForecastingMethod =
       lInventory.getForecastingMethod(); 
+    const stdair::PreOptimisationMethod& lPreOptimisationMethod =
+      lInventory.getPreOptimisationMethod();
     const stdair::OptimisationMethod& lOptimisationMethod =
       lInventory.getOptimisationMethod();
     const stdair::PartnershipTechnique& lPartnershipTechnique =
@@ -1116,6 +1123,7 @@ namespace AIRINV {
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
                                                lUnconstrainingMethod,
 					       lForecastingMethod,
+					       lPreOptimisationMethod,
 					       lOptimisationMethod,
                                                lPartnershipTechnique);
 
