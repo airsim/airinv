@@ -848,10 +848,11 @@ namespace AIRINV {
   
     // Retrieve the STDAIR service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
-      lAIRINV_ServiceContext.getSTDAIR_Service();
+      lAIRINV_ServiceContext.getSTDAIR_Service();  
+    const stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
 
     // Delegate the BOM display to the dedicated service
-    return lSTDAIR_Service.csvDisplay();
+    return lSTDAIR_Service.csvDisplay(lBomRoot);
   }
   
   // ////////////////////////////////////////////////////////////////////
