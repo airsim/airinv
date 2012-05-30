@@ -1123,13 +1123,20 @@ namespace AIRINV {
     // Optimise the flight-date.
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
                                                lUnconstrainingMethod,
-					       lForecastingMethod,
-					       lPreOptimisationMethod,
-					       lOptimisationMethod,
+                                               lForecastingMethod,
+                                               lPreOptimisationMethod,
+                                               lOptimisationMethod,
                                                lPartnershipTechnique);
 
+    const stdair::OptimisationMethod::EN_OptimisationMethod& lENOptimisationMethod = lOptimisationMethod.getMethod();
+    const bool isEMSRb = 
+      (lENOptimisationMethod == stdair::OptimisationMethod::LEG_BASED_EMSR_B);
     // Update the inventory with the new controls.
-    if (isOptimised == true) {
+    // updateBookingControls uses bid price vector to set 
+    // the authorization level. But EMSRb sets directly the 
+    // authorization level and does not compute the bid price vector.
+    // So if EMSRb is used, do not call updateBookingControls.
+    if (isOptimised == true && isEMSRb == false) {
       InventoryManager::updateBookingControls (lFlightDate);
     }
   }
