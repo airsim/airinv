@@ -153,6 +153,11 @@ namespace AIRINV {
          itNS != lNestingNodeList.end(); ++itNS) {
       stdair::NestingNode* lNestingNode_ptr = *itNS;
       assert (lNestingNode_ptr != NULL);
+      const stdair::Yield_T lNodeYield = 
+        lNestingNode_ptr->getYield();
+      if (lNodeYield < 0) {
+        continue;
+      }
       const stdair::BookingClassList_T& lBCList =
         stdair::BomManager::getList<stdair::BookingClass> (*lNestingNode_ptr);
       stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
@@ -193,6 +198,11 @@ namespace AIRINV {
          itNS != lNestingNodeList.rend(); ++itNS) {
       stdair::NestingNode* lNestingNode_ptr = *itNS;
       assert (lNestingNode_ptr != NULL);
+      const stdair::Yield_T lNodeYield = 
+        lNestingNode_ptr->getYield();
+      if (lNodeYield < 0) {
+        continue;
+      } 
       const stdair::BookingClassList_T& lBCList =
         stdair::BomManager::getList<stdair::BookingClass> (*lNestingNode_ptr);
       stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
@@ -241,6 +251,10 @@ namespace AIRINV {
          itNS != lNestingNodeList.rend(); ++itNS) {
       stdair::NestingNode* lNestingNode_ptr = *itNS;
       assert (lNestingNode_ptr != NULL);
+      const stdair::Yield_T& lNodeYield = lNestingNode_ptr->getYield();
+      if (lNodeYield < 0) {
+        continue;
+      }
       const stdair::BookingClassList_T& lBCList =
         stdair::BomManager::getList<stdair::BookingClass> (*lNestingNode_ptr);
       stdair::BookingClassList_T::const_iterator itBC = lBCList.begin();
@@ -278,6 +292,10 @@ namespace AIRINV {
       assert(itCurrentNode != lNestingNodeList.end());
       stdair::NestingNode* lCurrentNode_ptr = *itCurrentNode;
       assert (lCurrentNode_ptr != NULL);
+      const stdair::Yield_T& lCurrentNodeYield = lCurrentNode_ptr->getYield();
+      if (lCurrentNodeYield < 0) {
+        break;
+      }
       const stdair::BookingClassList_T& lCurrentBCList = 
         stdair::BomManager::getList<stdair::BookingClass> (*lCurrentNode_ptr);
       stdair::BookingClassList_T::const_iterator itCurrentBC = 
@@ -287,6 +305,10 @@ namespace AIRINV {
       assert(itNextNode != lNestingNodeList.end());
       stdair::NestingNode* lNextNode_ptr = *itNextNode;
       assert (lNextNode_ptr != NULL);
+      const stdair::Yield_T& lNextNodeYield = lNextNode_ptr->getYield();
+      if (lNextNodeYield < 0) {
+        break;
+      }
       const stdair::BookingClassList_T& lNextBCList = 
         stdair::BomManager::getList<stdair::BookingClass> (*lNextNode_ptr);
       stdair::BookingClassList_T::const_iterator itNextBC = 
@@ -348,10 +370,10 @@ namespace AIRINV {
         stdair::FacBomManager::addToList (lNestingStructure, lNestingNode);
         stdair::FacBomManager::linkWithParent (lNestingStructure, lNestingNode);
         lCurrentNode_ptr = &lNestingNode;
-        
+        lCurrentNode_ptr->setYield(lCurrentYield);
         // Add the booking class to the node.
         stdair::FacBomManager::addToList (lNestingNode, *lBC_ptr);
-        
+        lLastYield = lCurrentYield;
       } else {        
         // Add the booking class to the current node.
         stdair::FacBomManager::addToList (*lCurrentNode_ptr, *lBC_ptr);      
@@ -422,26 +444,24 @@ namespace AIRINV {
         stdair::FacBomManager::linkWithParent (ioSegmentCabin, lNewPolicy);
 
         // Copy the list of booking classes of the current policy to the new one
-        const stdair::BookingClassList_T& lToBeCopiedBCList =
-          stdair::BomManager::getList<stdair::BookingClass> (ioCurrentPolicy);
-        for (stdair::BookingClassList_T::const_iterator itBCToBeCopied =
-               lToBeCopiedBCList.begin();
-             itBCToBeCopied != lToBeCopiedBCList.end(); ++itBCToBeCopied) {
-          stdair::BookingClass* lBCToBeCopied_ptr = *itBCToBeCopied;
-          assert (lBCToBeCopied_ptr != NULL);
-          stdair::FacBomManager::addToList (lNewPolicy, *lBCToBeCopied_ptr);
+        bool hasAListOfBC = 
+          stdair::BomManager::hasList<stdair::BookingClass> (ioCurrentPolicy);
+        if (hasAListOfBC == true) { 
+          const stdair::BookingClassList_T& lToBeCopiedBCList =
+            stdair::BomManager::getList<stdair::BookingClass> (ioCurrentPolicy);
+          for (stdair::BookingClassList_T::const_iterator itBCToBeCopied =
+                 lToBeCopiedBCList.begin();
+               itBCToBeCopied != lToBeCopiedBCList.end(); ++itBCToBeCopied) {
+            stdair::BookingClass* lBCToBeCopied_ptr = *itBCToBeCopied;
+            assert (lBCToBeCopied_ptr != NULL);
+            stdair::FacBomManager::addToList (lNewPolicy, *lBCToBeCopied_ptr);
+          }
         }          
-        
         stdair::FacBomManager::addToList(lNewPolicy, *lBC_ptr);
         
         createPolicies (ioSegmentCabin, iFareFamilyList, lItFF, lNewPolicy,
                         ioPolicyCounter, lCurrentYield);
       }
-      // Call the same method for the next fare family 
-      // (without adding a booking class to the list: 
-      // no booking class of the current fare family in this policy)
-      createPolicies (ioSegmentCabin, iFareFamilyList, lItFF, ioCurrentPolicy,
-                      ioPolicyCounter, 0.0);
     }
 
   }
