@@ -268,7 +268,7 @@ namespace AIRINV {
     const FareFamilyStruct& lHighestFareFamilyStruct = *itFareFamily;
     // Create the fare families and the booking classes.
     createFareFamily (lSegmentCabin, lHighestFareFamilyStruct,
-                      stdair::FRAT5_CURVE_B, stdair::FF_DISUTILITY_CURVE_A);
+                      stdair::FRAT5_CURVE_C, stdair::FF_DISUTILITY_CURVE_A);
     ++itFareFamily;
         
     for (;itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
@@ -276,7 +276,12 @@ namespace AIRINV {
 
       // Create the fare families and the booking classes.
       createFareFamily (lSegmentCabin, lFareFamilyStruct,
-                        stdair::FRAT5_CURVE_A, stdair::FF_DISUTILITY_CURVE_A);
+                        stdair::FRAT5_CURVE_B, stdair::FF_DISUTILITY_CURVE_A);
+    } 
+
+    const unsigned int lNbOfFareFamilies = iCabin._fareFamilies.size();
+    if (lNbOfFareFamilies > 1) {
+      lSegmentCabin.activateFareFamily();
     } 
 
     // Create the display nesting structure.
