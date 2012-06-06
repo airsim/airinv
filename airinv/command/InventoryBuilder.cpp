@@ -12,6 +12,7 @@
 #include <stdair/bom/BomManager.hpp>
 #include <stdair/bom/BomRoot.hpp>
 #include <stdair/bom/Inventory.hpp>
+#include <stdair/bom/AirlineFeature.hpp>
 #include <stdair/bom/FlightDate.hpp>
 #include <stdair/bom/SegmentDate.hpp>
 #include <stdair/bom/SegmentCabin.hpp>
@@ -45,6 +46,12 @@ namespace AIRINV {
         &stdair::FacBom<stdair::Inventory>::instance().create (lKey);
       stdair::FacBomManager::addToListAndMap (ioBomRoot, *lInventory_ptr);
       stdair::FacBomManager::linkWithParent (ioBomRoot, *lInventory_ptr);
+
+      // Add the airline feature object to the inventory
+      const stdair::AirlineFeatureKey lAirlineFeatureKey (lAirlineCode);
+      stdair::AirlineFeature& lAirlineFeature =
+        stdair::FacBom<stdair::AirlineFeature>::instance().create (lAirlineFeatureKey);
+      lInventory_ptr->setAirlineFeature (lAirlineFeature);
     }
     assert (lInventory_ptr != NULL);
 
