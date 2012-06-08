@@ -72,7 +72,16 @@
 	<span id="confirmDemandGeneration"></span> <br>
 	<span id="confirmBreakPoints"></span>
 </div>	
- 
+
+<div id="dialog-simresume" title="Simulation Already Running" style="display:none">
+	<p>It looks like a simulation is already running, what would you like to do ?</p>
+</div>
+
+<div id="dialog-stopsim" title="Corfirm stop ?" style="display:none;">
+	<p>Simulation will stop, all data will be lost</p>
+	<p>Are you sure you want to continue ?</p>
+</div>	
+
 <div id="dialog-status" title="Simulation Status" style="display:none">
 	<span id="statusSimDates"></span> <br>
 	<span id="statusCurrentDate"></span> <br>
@@ -87,10 +96,7 @@
 </div>
 
 
-<div id="dialog-stopsim" title="Corfirm stop ?" style="display:none;">
-	<p>Simulation will stop, all data will be lost</p>
-	<p>Are you sure you want to continue ?</p>
-</div>	
+
 
   <footer> </footer>
 </div>
@@ -112,9 +118,11 @@
   </script>-->
 <script>
 var serverURL = "http://ncevsediri-fed/api/";
+var rebuiltBpArrayTemp;
+var rebuiltCurrentBreakpoint;
 
 	function onLoad()
-	{		
+	{	
 		$(function() {
 			$( "#radio" ).buttonset();
 		});
@@ -124,6 +132,61 @@ var serverURL = "http://ncevsediri-fed/api/";
                 primary: "ui-icon-gear"
             }});
 		//$( "a", ".demo" ).click(function() { loadLauncher(); return false; });
+		});
+		
+		$.getJSON(serverURL + 'controls/status/callback=?', function(data) {
+			if(data.status.state != "start")
+			{
+			$("#dialog-simresume").dialog({
+				closeOnEscape: false,
+				open: function(event, ui) { $(".ui-dialog-titlebar-close", $(this).parent()).hide();; }, //this removes the X to close dialog without selecting an option
+				resizable: false,
+				width:280,
+				height:190,
+				modal: true,
+				position: "center",
+				buttons: {
+					Resume:function() {							
+						
+						$.getJSON(serverURL + 'controls/status/callback=?', function(data) {
+							rebuiltBpArrayTemp = '{"break_point":[{"Breakpoint":"' + data.status.current_date + '"}';
+						});
+
+						$.getJSON(serverURL + 'get/breakpoints/callback=?', function(data) {
+							
+							for (var i in data.events)
+							{
+									rebuiltBpArrayTemp = rebuiltBpArrayTemp + ',{"Breakpoint":"' + data.events[i].time_stamp + '"}';
+							}
+													
+							bpArrayTemp = rebuiltBpArrayTemp + ']}';
+							currentBreakpoint = rebuiltCurrentBreakpoint;
+						});
+						
+						
+						$( "#btnNewSim" ).button( "option", "disabled", true );
+						$( "#btnStopSim" ).button( "option", "disabled", false );
+						$( "#radioSched" ).button( "option", "disabled", false );
+						$( "#radioSimrun" ).button( "option", "disabled", false );
+						$( "#btnNewSim" ).button( "refresh" );
+						$( "#btnStopSim" ).button( "refresh");
+						$( "#radioSched" ).button( "refresh" );
+						$( "#radioSimrun" ).button( "refresh");  
+						
+						gl_IsSimRunning = true			
+						document.getElementById('radioSimrun').click();
+						$( this ).dialog( "close" );
+						},
+					Restart: function() {
+						$.getJSON(serverURL + 'controls/reset/callback=?', function(data) {
+							$( this ).dialog( "close" );
+							window.location.reload();
+						});
+						
+					}
+				}
+			});
+			}
 		});
 	}
 	
@@ -181,9 +244,9 @@ var serverURL = "http://ncevsediri-fed/api/";
 								intIndexOfMatch = bpUpload.indexOf( "," );
 							}						
 												
-						$.getJSON(serverURL + "set/bp/" + bpUpload + '/', function(data) {
+						$.getJSON(serverURL + "set/bp/" + bpUpload + '/callback=?', function(data) {
 							numberOfBreakpoints = data.done;
-							console.log(data)
+							//console.log(data)
 						});
 						gl_IsSimRunning = true;
 						runSim();
@@ -228,9 +291,9 @@ var serverURL = "http://ncevsediri-fed/api/";
 						$( "#radioSched" ).button( "refresh" );
 						$( "#radioSimrun" ).button( "refresh");  
 						
-						$.getJSON(serverURL + 'controls/run/', function(data) {currentBreakpoint = data.done;});
+						$.getJSON(serverURL + 'controls/run/callback=?', function(data) {currentBreakpoint = data.done;});
 						document.getElementById('radioSimrun').click();
-						alert("Simulation launched!");
+						//alert("Simulation launched!");
 						$( this ).dialog( "close" );
 						},
 				Edit: function() {
@@ -255,7 +318,7 @@ var serverURL = "http://ncevsediri-fed/api/";
 			position: "center",
 			buttons: {
 				Yes:function() {							
-					$.getJSON(serverURL + 'controls/reset/', function(data) {});
+					$.getJSON(serverURL + 'controls/reset/callback=?', function(data) {
 					gl_IsSimRunning == false;
 					$( "#btnNewSim" ).button( "option", "disabled", false );
 					$( "#btnStopSim" ).button( "option", "disabled", true );
@@ -268,7 +331,9 @@ var serverURL = "http://ncevsediri-fed/api/";
 					gl_IsSimRunning = false;
 					document.getElementById('radioInv').click();
 					
-					alert("Simulation stopped!");
+					//alert("Simulation stopped!");
+					window.location.reload();
+					});
 					$( this ).dialog( "close" );
 					},
 				No: function() {
@@ -283,12 +348,12 @@ var serverURL = "http://ncevsediri-fed/api/";
 	function showStatus()
 	{	
 		var overallProgress;
-		$.getJSON(serverURL + 'controls/status/', function(data) {
-			console.log(data.status);
+		$.getJSON(serverURL + 'controls/status/callback=?', function(data) {
+			//console.log(data.status);
 			
 			overallProgress = parseInt(data.status.current_number) / parseInt(data.status.actual_number);
 			overallProgress = Math.round(overallProgress*100);
-			console.log(overallProgress);
+			//console.log(overallProgress);
 			
 			$("#dialog-status").dialog({
 			resizable: false,

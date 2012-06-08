@@ -1,4 +1,6 @@
 from piston.handler import BaseHandler
+from django.http import HttpResponse
+from decorator import decorator
 import json
 import zmq
 import simplejson
@@ -14,7 +16,7 @@ print '... done'
 
 #
 class SetBreakPoints (BaseHandler):	
-	def read (self, request, bpJsonString):
+	def read (self, request, bpJsonString, callback):
 				
 		bpJsonString = bpJsonString.replace('_cbo', '{')
 		bpJsonString = bpJsonString.replace('_cbc', '}')
@@ -48,8 +50,10 @@ class SetBreakPoints (BaseHandler):
 		message = json.loads (jsonMessage)	
 		
 		
-		#print 'Received reply ', request, '[', jsonMessage, ']'	
-		return message
+		#print 'Received reply ', request, '[', jsonMessage, ']'
+		message = simplejson.dumps (message)
+		message = callback + '(' + message + ');'	
+		return HttpResponse(message, mimetype="application/json")
 		print 'Message: ', message
 
 	
