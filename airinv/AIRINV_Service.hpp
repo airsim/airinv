@@ -148,6 +148,18 @@ namespace AIRINV {
     void buildSampleBom();
 
     /**
+     * Clone the persistent BOM object.
+     */
+    void clonePersistentBom ();
+
+    /**
+     * Build all the complementary links in the given bom root object.
+     * For instance, build the links between leg and segment date 
+     * (as well as leg and segment cabin).
+     */
+    void buildComplementaryLinks (stdair::BomRoot&); 
+
+    /**
      * Initialise the RM events for the inventory.
      * @param const stdair::Date_T& Parameters for the start date.
      * @param const stdair::Date_T& Parameters for the end date.

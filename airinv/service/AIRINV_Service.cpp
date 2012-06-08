@@ -343,43 +343,118 @@ namespace AIRINV {
   void AIRINV_Service::
   parseAndLoad (const AIRINV::InventoryFilePath& iInventoryInputFilename) {
 
-    // Retrieve the BOM root object.
+    // Retrieve the AirInv service context
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException("The AirInv service has not "
+                                                   "been initialised");
+    }
     assert (_airinvServiceContext != NULL);
+
+    // Retrieve the AirInv service context and whether it owns the Stdair
+    // service
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+    const bool doesOwnStdairService =
+      lAIRINV_ServiceContext.getOwnStdairServiceFlag();
+
+    // Retrieve the StdAir service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
+
+    // Retrieve the persistent BOM root object.
+    stdair::BomRoot& lPersistentBomRoot = 
+      lSTDAIR_Service.getPersistentBomRoot();
     
-    // Initialise the airline inventories
-    InventoryParser::buildInventory (iInventoryInputFilename, lBomRoot);
+    /**
+     * 1. Initialise the airline inventories
+     */
+    InventoryParser::buildInventory (iInventoryInputFilename, 
+				     lPersistentBomRoot);  
+  
+    /**
+     * 2. Build the complementary objects/links for the current component (here,
+     *    AirInv)
+     */ 
+    buildComplementaryLinks (lPersistentBomRoot);
+    
+    /**
+     * 3. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AirInv here).
+     */
+    if (doesOwnStdairService == true) {
+ 
+      //
+      clonePersistentBom ();
+    }
   }
   
   // ////////////////////////////////////////////////////////////////////
   void AIRINV_Service::
   parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
                 const stdair::ODFilePath& iODInputFilename,
-                const AIRRAC::YieldFilePath& iYieldFilename) {
+                const AIRRAC::YieldFilePath& iYieldFilename) {   
 
-    // Retrieve the BOM root object.
+    // Retrieve the AirInv service context
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException("The AirInv service has not "
+                                                   "been initialised");
+    }
     assert (_airinvServiceContext != NULL);
+
+    // Retrieve the AirInv service context and whether it owns the Stdair
+    // service
     AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+    const bool doesOwnStdairService =
+      lAIRINV_ServiceContext.getOwnStdairServiceFlag();
+
+    // Retrieve the StdAir service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
-    
-    // Initialise the airline inventories
-    ScheduleParser::generateInventories (iScheduleInputFilename, lBomRoot);
 
-    // Parse the yield structures.
+    // Retrieve the perssitent BOM root object.
+    stdair::BomRoot& lPersistentBomRoot = 
+      lSTDAIR_Service.getPersistentBomRoot();
+
+    /**
+     * 1. Initialise the airline inventories
+     */
+    ScheduleParser::generateInventories (iScheduleInputFilename, 
+					 lPersistentBomRoot);
+
+    /**
+     * 2. Build the complementary objects/links for the current component (here,
+     *    AirInv)
+     */ 
+    buildComplementaryLinks (lPersistentBomRoot);
+ 
+    /**
+     * 3. Delegate the complementary building of objects and links by the
+     *    appropriate levels/components
+     * 
+     */
+    /**
+     * Parse the yield structures.
+     */
     AIRRAC::AIRRAC_Service& lAIRRAC_Service =
       lAIRINV_ServiceContext.getAIRRAC_Service();
     lAIRRAC_Service.parseAndLoad (iYieldFilename);
+    /**
+     * Update yield values for booking classes and O&D.
+     *
+     * \note Need to be done after the buildComplementaryLinks call
+     *       because it needs information filled in by this call
+     *       (such as the boarding date and time at the segment date level)
+     */ 
+    lAIRRAC_Service.updateYields(lPersistentBomRoot);
 
-    // Update yield values for booking classes and O&D.
-    lAIRRAC_Service.updateYields();
-
-    // Initialise the nesting structures
-    InventoryManager::initialiseNestingStructures (lBomRoot);
+    /**
+     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AirInv here).
+     */
+    if (doesOwnStdairService == true) {
+ 
+      //
+      clonePersistentBom ();
+    }
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -400,7 +475,11 @@ namespace AIRINV {
 
     // Retrieve the StdAir service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
-      lAIRINV_ServiceContext.getSTDAIR_Service();
+      lAIRINV_ServiceContext.getSTDAIR_Service(); 
+
+    // Retrieve the perssitent BOM root object.  
+    stdair::BomRoot& lPersistentBomRoot = 
+      lSTDAIR_Service.getPersistentBomRoot();
 
     /**
      * 1. Have StdAir build the whole BOM tree, only when the StdAir service is
@@ -415,7 +494,7 @@ namespace AIRINV {
      * 2. Delegate the complementary building of objects and links by the
      *    appropriate levels/components
      * 
-     * \note: Currently, no more things to do by AirSched at that stage,
+     * \note: Currently, no more things to do by AirInv at that stage,
      *        as there is no child
      */
     /**
@@ -430,48 +509,101 @@ namespace AIRINV {
      *
      * \note As of now, RMOL does not add anything to the sample BOM.
      */
-    RMOL::RMOL_Service& lRMOL_Service= lAIRINV_ServiceContext.getRMOL_Service();
+    RMOL::RMOL_Service& lRMOL_Service = 
+      lAIRINV_ServiceContext.getRMOL_Service();
     lRMOL_Service.buildSampleBom();
     
     /**
      * 3. Build the complementary objects/links for the current component (here,
-     *    AirSched)
-     *
-     *    AirSched has to build the network from the schedule.
-     *    \note: that operation is also invoked by the
-     *    ScheduleParser::generateInventories() in parseAndLoad().
+     *    AirInv.
      */
+    buildComplementaryLinks (lPersistentBomRoot);
+
     /**
-     * 3.1. Create the routings for all the inventories.
+     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AirInv here).
+     */
+    if (doesOwnStdairService == true) {
+ 
+      //
+      clonePersistentBom ();
+    }
+  } 
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::clonePersistentBom () { 
+
+    // Retrieve the AirInv service context
+    if (_airinvServiceContext == NULL) {
+      throw stdair::NonInitialisedServiceException("The AirInv service has not "
+                                                   "been initialised");
+    }
+    assert (_airinvServiceContext != NULL);
+
+    // Retrieve the AirInv service context and whether it owns the Stdair
+    // service
+    AIRINV_ServiceContext& lAIRINV_ServiceContext = *_airinvServiceContext;
+    const bool doesOwnStdairService =
+      lAIRINV_ServiceContext.getOwnStdairServiceFlag();
+
+    // Retrieve the StdAir service object from the (AirInv) service context
+    stdair::STDAIR_Service& lSTDAIR_Service =
+      lAIRINV_ServiceContext.getSTDAIR_Service();
+ 
+    /**
+     * 1. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     *    service is owned by the current component (AirInv here).
+     */
+    if (doesOwnStdairService == true) {
+ 
+      //
+      lSTDAIR_Service.clonePersistentBom ();
+    }
+
+    /**
+     * 2. Build the complementary links on the clone BOM root object
+     */ 
+    stdair::BomRoot& lBomRoot = 
+      lSTDAIR_Service.getBomRoot();
+    buildComplementaryLinks (lBomRoot); 
+  }     
+
+  // ////////////////////////////////////////////////////////////////////
+  void AIRINV_Service::buildComplementaryLinks (stdair::BomRoot& ioBomRoot) {
+
+    /**
+     * 1. Create the routings for all the inventories.
      *
      * \note Those links must be directly be provided by the
      *       stdair::CmdBomManager::buildSampleBom() method, as that latter
      *       may also be called by non-Inventory-aware components
      *       (e.g., AirRAC, AvlCal, SimFQT, TraDemGen, TravelCCM),
      *       which therefore would not be able to build those links.
-     *
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
-    InventoryManager::createDirectAccesses (lBomRoot);
+     *     
      */
+    InventoryManager::createDirectAccesses (ioBomRoot);
 
     /**
-     * 3.2. Build the similar flight-date sets and the corresponding
+     * 2. Build the similar flight-date sets and the corresponding
      * guillotine blocks.
      */
-    stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
-    InventoryManager::buildSimilarSegmentCabinSets (lBomRoot);
+    InventoryManager::buildSimilarSegmentCabinSets (ioBomRoot);
 
     /**
-     * 3.3. Initialise the bid price vectors.
+     * 3. Initialise the bid price vectors.
      */
-    //    InventoryManager::setDefaultBidPriceVector (lBomRoot);
+    InventoryManager::setDefaultBidPriceVector (ioBomRoot);
 
     /**
-     * Initialise the nesting structures
+     * Initialise the nesting structures   
      */
-    InventoryManager::initialiseNestingStructures (lBomRoot);
-  }   
+    InventoryManager::initialiseYieldBasedNestingStructures (ioBomRoot);
 
+    /**
+     * Initialise the lists of all usable policies
+     */
+    InventoryManager::initialiseListsOfUsablePolicies (ioBomRoot);
+  }
 
   // ////////////////////////////////////////////////////////////////////
   std::string AIRINV_Service::
@@ -716,10 +848,11 @@ namespace AIRINV {
   
     // Retrieve the STDAIR service object from the (AirInv) service context
     stdair::STDAIR_Service& lSTDAIR_Service =
-      lAIRINV_ServiceContext.getSTDAIR_Service();
+      lAIRINV_ServiceContext.getSTDAIR_Service();  
+    const stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
 
     // Delegate the BOM display to the dedicated service
-    return lSTDAIR_Service.csvDisplay();
+    return lSTDAIR_Service.csvDisplay(lBomRoot);
   }
   
   // ////////////////////////////////////////////////////////////////////
@@ -977,6 +1110,8 @@ namespace AIRINV {
       lInventory.getUnconstrainingMethod();   
     const stdair::ForecastingMethod& lForecastingMethod =
       lInventory.getForecastingMethod(); 
+    const stdair::PreOptimisationMethod& lPreOptimisationMethod =
+      lInventory.getPreOptimisationMethod();
     const stdair::OptimisationMethod& lOptimisationMethod =
       lInventory.getOptimisationMethod();
     const stdair::PartnershipTechnique& lPartnershipTechnique =
@@ -988,12 +1123,20 @@ namespace AIRINV {
     // Optimise the flight-date.
     bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
                                                lUnconstrainingMethod,
-					       lForecastingMethod,
-					       lOptimisationMethod,
+                                               lForecastingMethod,
+                                               lPreOptimisationMethod,
+                                               lOptimisationMethod,
                                                lPartnershipTechnique);
 
+    const stdair::OptimisationMethod::EN_OptimisationMethod& lENOptimisationMethod = lOptimisationMethod.getMethod();
+    const bool isEMSRb = 
+      (lENOptimisationMethod == stdair::OptimisationMethod::LEG_BASED_EMSR_B);
     // Update the inventory with the new controls.
-    if (isOptimised == true) {
+    // updateBookingControls uses bid price vector to set 
+    // the authorization level. But EMSRb sets directly the 
+    // authorization level and does not compute the bid price vector.
+    // So if EMSRb is used, do not call updateBookingControls.
+    if (isOptimised == true && isEMSRb == false) {
       InventoryManager::updateBookingControls (lFlightDate);
     }
   }
