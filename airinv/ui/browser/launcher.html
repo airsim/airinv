@@ -113,13 +113,13 @@ table /*Firefox table border fix*/
 				<br><br>
 			 <p> 
 			 <label style="padding-right:10px;">Random Seed (int)</label>
-				<input type="text" id="tbRandomSeed" style="padding-left:5px;" onchange="saveParameters()"/>
+				<input type="text" id="tbRandomSeed" style="padding-left:5px;" onchange="saveParameters()" value="120765987"/>
 			  
 			  </p>
 			  <br>
 			  <p> 
 			  <label>Set Number of Runs
-				<select id="listNumberOfRuns" onchange="saveParameters()">
+				<select id="listNumberOfRuns" onchange="saveParameters()" option="1">
 				  <option> </option>
 				  <option>1</option>
 				  <option>2</option>
@@ -136,7 +136,7 @@ table /*Firefox table border fix*/
 			  <br>
 			  <p>
 			  <label>Demand Generation
-				<select id="listDemandGeneration" onchange="saveParameters()">
+				<select id="listDemandGeneration" onchange="saveParameters()" option="1">
 				  <option> </option>
 				  <option value="1">Statistics Order</option>
 				  <option value="2">Poisson Process</option>
@@ -217,6 +217,8 @@ eventSource = new Timeline.DefaultEventSource();
   bandInfos[1].syncWith = 0;
   bandInfos[1].highlight = true;
   tl = Timeline.create(document.getElementById("breakpoint-timeline"), bandInfos);
+	
+	setDefault();
 }
 
 var resizeTimerID = null;

@@ -94,7 +94,7 @@ body {
 </body>
 
 <script type="text/javascript">
-
+var serverURL = "http://ncevsediri-fed/api/";
 var tli;
 var eventSource;
 var listOfBreak_Points;
@@ -102,6 +102,15 @@ var bandInfos;
 
 	function onLoad() 
 	{
+	
+	if(document.getElementById('spanCurrentBreakpoint').innerHTML == '')
+	{
+		$.getJSON(serverURL + 'controls/status/callback=?', function(data) {
+			document.getElementById('spanCurrentBreakpoint').innerHTML = data.status.current_date;
+		});
+	}
+	
+	
 	listOfBreak_Points = JSON.parse(parent.bpArrayTemp);
 	document.getElementById('spanCurrentBreakpoint').innerHTML = parent.currentBreakpoint;
 	
@@ -179,7 +188,7 @@ var bandInfos;
 	function goToNextBreakPoint()
 	{
 		document.getElementById("bkgEvents").innerHTML = '';
-		$.getJSON(parent.serverURL + 'controls/run/', function(data) {
+		$.getJSON(parent.serverURL + 'controls/run/callback=?', function(data) {
 			if(data.done != "2012-Apr-27") //Date when sim is finished to avoid displaying blank grid
 			{
 				document.getElementById('spanCurrentBreakpoint').innerHTML = data.done;

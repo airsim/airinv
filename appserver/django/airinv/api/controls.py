@@ -1,6 +1,9 @@
 from piston.handler import BaseHandler
+from django.http import HttpResponse
+from decorator import decorator
 import json
 import zmq
+import simplejson
 
 # The first time a request is handled by Django (after that latter has been
 # started), a connection to the AirInv server is made (thanks to ZeroMQ).
@@ -13,7 +16,7 @@ print '... done'
 
 #
 class SimulatorCommands (BaseHandler):	
-	def read (self, request, command):
+	def read (self, request, command, callback):
 		print 'Command received: ', command
 		
 		if command == "run":
@@ -27,7 +30,9 @@ class SimulatorCommands (BaseHandler):
 			message = json.loads (jsonMessage)	
 
 			print 'Received reply ', request, '[', jsonMessage, ']'	
-			return message
+			message = simplejson.dumps (message)
+			message = callback + '(' + message + ');'	
+			return HttpResponse(message, mimetype="application/json")
 			print 'Message: ', message
 			
 		if command == "reset":
@@ -36,12 +41,14 @@ class SimulatorCommands (BaseHandler):
 
 			# print 'Sending request ', request, '...'
 			socket.send_unicode (jsonAction)
-
+			
 			jsonMessage = socket.recv()
 			message = json.loads (jsonMessage)	
-
+			
 			print 'Received reply ', request, '[', jsonMessage, ']'	
-			return message
+			message = simplejson.dumps (message)
+			message = callback + '(' + message + ');'	
+			return HttpResponse(message, mimetype="application/json")
 			print 'Message: ', message
 			
 		if command == "status":
@@ -54,6 +61,8 @@ class SimulatorCommands (BaseHandler):
 			jsonMessage = socket.recv()
 			message = json.loads (jsonMessage)	
 
-			print 'Received reply ', request, '[', jsonMessage, ']'	
-			return message
+			print 'Received reply ', request, '[', jsonMessage, ']'
+			message = simplejson.dumps (message)
+			message = callback + '(' + message + ');'	
+			return HttpResponse(message, mimetype="application/json")
 			print 'Message: ', message

@@ -24,6 +24,10 @@ var url = "http://ncevsediri-fed/api/get/getairlinelist/";
 
 function showAllGrid()
 {
+	$.getJSON(url + "callback=?", function(data) {
+	
+	console.log(data);
+	
 	var selected_AirlineCode;
 	var selected_Number;
 	var selected_Date;
@@ -31,9 +35,8 @@ function showAllGrid()
 	var store_airlines = Ext.create('Ext.data.Store', {
 		model: 'airlineinfo',
 		proxy: {
-			type: 'rest',
-			method: 'POST',
-			url: url,
+			type: 'memory',
+			data: data,
 			reader: {
 				type: 'json',
 				root: 'inventories'
@@ -41,6 +44,8 @@ function showAllGrid()
 		}   
 	});
 	store_airlines.load();
+	
+	console.log(store_airlines);
 	
 	var grid_AllInventory = Ext.create('Ext.grid.Panel', {
 		store: store_airlines,
@@ -72,6 +77,6 @@ function showAllGrid()
 			document.getElementById('datepicker').value = selected_Date;
 		}
 	});
-
+	});
 }
 

@@ -39,7 +39,10 @@ var url = "http://ncevsediri-fed/api/get/events/";
 
 function refreshBookingEvents()
 {
-
+	
+	$.getJSON(url + "callback=?", function(data) {	
+	
+	//console.log(data);
 	/*
 	var bkgRequest = [
 						['20-Mar-11, 08:15:37','NYC','IEV','Business','3','NYC','In/Off', 2000,'20-Mar-11','60 days','20-Jun-11','30-Jun-11','10 days','25-Apr-11','8AM','10PM','BA, AA']
@@ -55,9 +58,8 @@ function refreshBookingEvents()
 	var store_events = Ext.create('Ext.data.Store', {
 		model: 'eventsinfo',
 		proxy: {
-			type: 'rest',
-			method: 'POST',
-			url: url,
+			type: 'memory',
+			data: data,
 			reader: {
 				type: 'json',
 				root: 'events'
@@ -101,7 +103,7 @@ function refreshBookingEvents()
 			showTravelSolutions();
 		}
 	});
-	
+	});
 
 }
 

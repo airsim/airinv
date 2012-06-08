@@ -157,7 +157,7 @@ table /*Firefox table border fix*/
 		var flightNumber=document.getElementById('tbFlightNumber').value;
 		var date=document.getElementById('datepicker').value;
 		
-		$.getJSON(serverURL + companyCode + "/" + flightNumber + "/" + date, function(data) {
+		$.getJSON(serverURL + companyCode + "/" + flightNumber + "/" + date + "/callback=?", function(data) {
 			if(data.error != null)
 			{
 				document.getElementById('flights-GridDisplay').innerHTML = "No flight found."
