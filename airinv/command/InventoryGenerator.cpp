@@ -53,7 +53,11 @@ namespace AIRINV {
       const stdair::AirlineFeatureKey lAirlineFeatureKey (lAirlineCode);
       stdair::AirlineFeature& lAirlineFeature =
         stdair::FacBom<stdair::AirlineFeature>::instance().create (lAirlineFeatureKey);
-      lInventory_ptr->setAirlineFeature (lAirlineFeature);
+      stdair::FacBomManager::setAirlineFeature (*lInventory_ptr,
+                                                lAirlineFeature);
+      stdair::FacBomManager::linkWithParent (*lInventory_ptr, lAirlineFeature);
+      // Link the airline feature object with the top of the BOM tree
+      stdair::FacBomManager::addToListAndMap (ioBomRoot, lAirlineFeature);
     }
     assert (lInventory_ptr != NULL);
     
