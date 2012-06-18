@@ -36,6 +36,8 @@
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
 #include <airinv/command/ScheduleParser.hpp>
+#include <airinv/command/FRAT5Parser.hpp>
+#include <airinv/command/FFDisutilityParser.hpp>
 #include <airinv/command/InventoryParser.hpp>
 #include <airinv/command/InventoryManager.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
@@ -391,6 +393,8 @@ namespace AIRINV {
   void AIRINV_Service::
   parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
                 const stdair::ODFilePath& iODInputFilename,
+                const stdair::FRAT5FilePath& iFRAT5InputFilename,
+                const stdair::FFDisutilityFilePath& iFFDisutilityInputFilename,
                 const AIRRAC::YieldFilePath& iYieldFilename) {   
 
     // Retrieve the AirInv service context
@@ -417,6 +421,8 @@ namespace AIRINV {
     /**
      * 1. Initialise the airline inventories
      */
+    FRAT5Parser::parse (iFRAT5InputFilename, lPersistentBomRoot);
+    FFDisutilityParser::parse (iFFDisutilityInputFilename, lPersistentBomRoot);
     ScheduleParser::generateInventories (iScheduleInputFilename, 
 					 lPersistentBomRoot);
 

@@ -79,14 +79,16 @@ namespace AIRINV {
       const bool isDoWActive = lDoWList.getStandardDayOfWeek (currentDoW);
 
       if (isDoWActive == true) {
-        createFlightDate (*lInventory_ptr, currentDate, iFlightPeriod);
+        createFlightDate (ioBomRoot, *lInventory_ptr, currentDate,
+                          iFlightPeriod);
       }
     }
   }
   
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
-  createFlightDate (stdair::Inventory& ioInventory,
+  createFlightDate (stdair::BomRoot& ioBomRoot,
+                    stdair::Inventory& ioInventory,
                     const stdair::Date_T& iFlightDate,
                     const FlightPeriodStruct& iFlightPeriod) {
     // Create the FlightDateKey
@@ -155,7 +157,7 @@ namespace AIRINV {
          itSegment != lSegmentList.end(); ++itSegment) {
       const SegmentStruct& lSegment = *itSegment;
 
-      createSegmentDate (*lFlightDate_ptr, lSegment);
+      createSegmentDate (ioBomRoot, *lFlightDate_ptr, lSegment);
     }
   }
 
@@ -228,7 +230,8 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
-  createSegmentDate (stdair::FlightDate& ioFlightDate,
+  createSegmentDate (stdair::BomRoot& ioBomRoot,
+                     stdair::FlightDate& ioFlightDate,
                      const SegmentStruct& iSegment) {
     // Set the segment-date primary key
     const stdair::AirportCode_T& lBoardingPoint = iSegment._boardingPoint;
@@ -250,13 +253,14 @@ namespace AIRINV {
       const SegmentCabinStruct& lCabin = *itCabin;
 
       // Create the segment-cabin-branch of the segment-date BOM
-      createSegmentCabin (lSegmentDate, lCabin);
+      createSegmentCabin (ioBomRoot, lSegmentDate, lCabin);
     }
   }
     
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
-  createSegmentCabin (stdair::SegmentDate& ioSegmentDate,
+  createSegmentCabin (stdair::BomRoot& ioBomRoot,
+                      stdair::SegmentDate& ioSegmentDate,
                       const SegmentCabinStruct& iCabin) {
 
     // Instantiate an segment-cabin object with the corresponding cabin code
@@ -271,23 +275,14 @@ namespace AIRINV {
     // Set the segment-cabin attributes
     iCabin.fill (lSegmentCabin);
 
-    // Create the list of fare families
-    // TODO: remove the hard-coded FRAT5 and disutility curve assignment
-    FareFamilyStructList_T::const_iterator itFareFamily =
-      iCabin._fareFamilies.begin();
-    assert (itFareFamily != iCabin._fareFamilies.end());
-    const FareFamilyStruct& lHighestFareFamilyStruct = *itFareFamily;
-    // Create the fare families and the booking classes.
-    createFareFamily (lSegmentCabin, lHighestFareFamilyStruct,
-                      stdair::FRAT5_CURVE_C, stdair::FF_DISUTILITY_CURVE_A);
-    ++itFareFamily;
-        
-    for (;itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
+    // Create the list of fare families        
+    for (FareFamilyStructList_T::const_iterator itFareFamily =
+           iCabin._fareFamilies.begin();
+         itFareFamily != iCabin._fareFamilies.end(); itFareFamily++) {
       const FareFamilyStruct& lFareFamilyStruct = *itFareFamily;
 
       // Create the fare families and the booking classes.
-      createFareFamily (lSegmentCabin, lFareFamilyStruct,
-                        stdair::FRAT5_CURVE_B, stdair::FF_DISUTILITY_CURVE_A);
+      createFareFamily (ioBomRoot, lSegmentCabin, lFareFamilyStruct);
     } 
 
     const unsigned int lNbOfFareFamilies = iCabin._fareFamilies.size();
@@ -301,25 +296,26 @@ namespace AIRINV {
     
   // ////////////////////////////////////////////////////////////////////
   void InventoryGenerator::
-  createFareFamily (stdair::SegmentCabin& ioSegmentCabin,
-                    const FareFamilyStruct& iFF,
-                    const stdair::FRAT5Curve_T& iFRAT5Curve,
-                    const stdair::FFDisutilityCurve_T& iDisutilityCurve) {
+  createFareFamily (stdair::BomRoot& ioBomRoot,
+                    stdair::SegmentCabin& ioSegmentCabin,
+                    const FareFamilyStruct& iFF) {
     // Instantiate an segment-cabin object with the corresponding cabin code
     stdair::FareFamilyKey lKey (iFF._familyCode);
     stdair::FareFamily& lFareFamily =
       stdair::FacBom<stdair::FareFamily>::instance().create (lKey);
 
     // Link the fare family to its parent, the segment-cabin
-    stdair::FacBomManager::addToListAndMap (ioSegmentCabin,
-                                                       lFareFamily);
-    stdair::FacBomManager::linkWithParent (ioSegmentCabin,
-                                                      lFareFamily);
+    stdair::FacBomManager::addToListAndMap (ioSegmentCabin, lFareFamily);
+    stdair::FacBomManager::linkWithParent (ioSegmentCabin, lFareFamily);
     
     // Set the fare family attributes
     iFF.fill (lFareFamily);
-    lFareFamily.setFrat5Curve (iFRAT5Curve);
-    lFareFamily.setDisutilityCurve (iDisutilityCurve);
+    const stdair::FRAT5Curve_T& lFRAT5Curve =
+      ioBomRoot.getFRAT5Curve (iFF._frat5CurveKey);
+    lFareFamily.setFrat5Curve (lFRAT5Curve);
+    const stdair::FFDisutilityCurve_T& lDisutilityCurve =
+      ioBomRoot.getFFDisutilityCurve (iFF._ffDisutilityCurveKey);
+    lFareFamily.setDisutilityCurve (lDisutilityCurve);
 
     // Iterate on the classes
     const stdair::ClassList_String_T& lClassList = iFF._classes;

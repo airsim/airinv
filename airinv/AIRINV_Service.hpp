@@ -124,10 +124,14 @@ namespace AIRINV {
      *
      * @param const stdair::ScheduleFilePath& Filename of the input schedule file.
      * @param const stdair::ODFilePath& Filename of the input O&D file.
+     * @param const stdair::FRAT5FilePath& Filename of the input FRAT5 file.
+     * @param const stdair::FFDisutilityFilePath& Filename of the input FF disutility file.
      * @param const AIRRAC::YieldFilePath& Filename of the input yield file.
      */
     void parseAndLoad (const stdair::ScheduleFilePath&,
                        const stdair::ODFilePath&,
+                       const stdair::FRAT5FilePath&,
+                       const stdair::FFDisutilityFilePath&,
                        const AIRRAC::YieldFilePath&);
 
     /**

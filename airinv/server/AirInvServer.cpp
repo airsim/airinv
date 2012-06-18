@@ -50,6 +50,12 @@ const std::string K_AIRINV_DEFAULT_SCHEDULE_FILENAME (STDAIR_SAMPLE_DIR
 /** Default name and location for the (CSV) input files. */
 const std::string K_AIRINV_DEFAULT_OND_FILENAME (STDAIR_SAMPLE_DIR
                                                  "/ond01.csv");
+/** FRAT5 curve input file name. */
+const std::string K_AIRINV_DEFAULT_FRAT5_INPUT_FILENAME (STDAIR_SAMPLE_DIR
+                                                       "/frat5.csv");
+/** Fare family disutility curve input file name. */
+const std::string K_AIRINV_DEFAULT_FF_DISUTILITY_INPUT_FILENAME (STDAIR_SAMPLE_DIR
+                                                               "/ffDisutility.csv");
 
 /** Default name and location for the (CSV) input files. */
 const std::string K_AIRINV_DEFAULT_YIELD_FILENAME (STDAIR_SAMPLE_DIR
@@ -100,6 +106,8 @@ int readConfiguration (int argc, char* argv[], std::string& ioServerProtocol,
                        stdair::Filename_T& ioInventoryFilename,
                        stdair::Filename_T& ioScheduleInputFilename,
                        stdair::Filename_T& ioODInputFilename,
+                       stdair::Filename_T& ioFRAT5Filename,
+                       stdair::Filename_T& ioFFDisutilityFilename,
                        stdair::Filename_T& ioYieldInputFilename,
                        std::string& ioLogFilename) {
   // Default for the built-in input
@@ -133,6 +141,12 @@ int readConfiguration (int argc, char* argv[], std::string& ioServerProtocol,
     ("ond,o",
      boost::program_options::value< std::string >(&ioODInputFilename)->default_value(K_AIRINV_DEFAULT_OND_FILENAME),
      "(CVS) input file for the O&D")
+    ("frat5,r",
+     boost::program_options::value< std::string >(&ioFRAT5Filename)->default_value(K_AIRINV_DEFAULT_FRAT5_INPUT_FILENAME),
+     "(CSV) input file for the FRAT5 Curve")
+    ("ff_disutility,d",
+     boost::program_options::value< std::string >(&ioFFDisutilityFilename)->default_value(K_AIRINV_DEFAULT_FF_DISUTILITY_INPUT_FILENAME),
+     "(CSV) input file for the FF disutility Curve")
     ("yield,y",
      boost::program_options::value< std::string >(&ioYieldInputFilename)->default_value(K_AIRINV_DEFAULT_YIELD_FILENAME),
      "(CVS) input file for the yield")
@@ -259,6 +273,19 @@ int readConfiguration (int argc, char* argv[], std::string& ioServerProtocol,
         std::cout << "Input O&D filename is: " << ioODInputFilename << std::endl;
       }
 
+      if (vm.count ("frat5")) {
+        ioFRAT5Filename = vm["frat5"].as< std::string >();
+        std::cout << "FRAT5 input filename is: " << ioFRAT5Filename << std::endl;
+
+      }
+      
+      if (vm.count ("ff_disutility")) {
+        ioFRAT5Filename = vm["ff_disutility"].as< std::string >();
+        std::cout << "FF disutility input filename is: "
+                  << ioFFDisutilityFilename << std::endl;
+        
+      }
+      
       if (vm.count ("yield")) {
         ioYieldInputFilename = vm["yield"].as< std::string >();
         std::cout << "Input yield filename is: " << ioYieldInputFilename << std::endl;
@@ -315,6 +342,8 @@ int main (int argc, char* argv[]) {
   stdair::Filename_T lInventoryFilename;
   stdair::Filename_T lScheduleInputFilename;
   stdair::Filename_T lODInputFilename;
+  stdair::Filename_T lFRAT5InputFilename;
+  stdair::Filename_T lFFDisutilityInputFilename;
   stdair::Filename_T lYieldInputFilename;
 
   // Output log File
@@ -325,7 +354,9 @@ int main (int argc, char* argv[]) {
     readConfiguration (argc, argv, ioServerProtocol, ioServerAddress,
                        ioServerPort, isBuiltin, isForSchedule,
                        lInventoryFilename, lScheduleInputFilename,
-                       lODInputFilename, lYieldInputFilename, lLogFilename);
+                       lODInputFilename, lFRAT5InputFilename,
+                       lFFDisutilityInputFilename, lYieldInputFilename,
+                       lLogFilename);
 
   if (lOptionParserStatus == K_AIRINV_EARLY_RETURN_STATUS) {
     return 0;
@@ -355,8 +386,11 @@ int main (int argc, char* argv[]) {
       // Build the BOM tree from parsing a schedule file (and O&D list)
       stdair::ScheduleFilePath lScheduleFilePath (lScheduleInputFilename);
       stdair::ODFilePath lODFilePath (lODInputFilename);
+      stdair::FRAT5FilePath lFRAT5FilePath (lFRAT5InputFilename);
+      stdair::FFDisutilityFilePath lFFDisutilityFilePath (lFFDisutilityInputFilename);
       AIRRAC::YieldFilePath lYieldFilePath (lYieldInputFilename);
       airinvService.parseAndLoad (lScheduleFilePath, lODFilePath,
+                                  lFRAT5FilePath, lFFDisutilityFilePath,
                                   lYieldFilePath);
 
     } else {

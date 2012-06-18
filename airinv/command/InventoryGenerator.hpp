@@ -61,7 +61,7 @@ namespace AIRINV {
     /**
      * Generate a flight-date.
      */
-    static void createFlightDate (stdair::Inventory&,
+    static void createFlightDate (stdair::BomRoot&, stdair::Inventory&,
                                   const stdair::Date_T&,
                                   const FlightPeriodStruct&);
       
@@ -85,22 +85,20 @@ namespace AIRINV {
     /**
      * Generate a segment-date.
      */
-    static void createSegmentDate (stdair::FlightDate&, 
+    static void createSegmentDate (stdair::BomRoot&, stdair::FlightDate&, 
                                    const SegmentStruct&);
       
     /**
      * Generate a segment-cabin.
      */
-    static void createSegmentCabin (stdair::SegmentDate&,
+    static void createSegmentCabin (stdair::BomRoot&, stdair::SegmentDate&,
                                     const SegmentCabinStruct&);
       
     /**
      * Generate a fare family.
      */
-    static void createFareFamily (stdair::SegmentCabin&,
-                                  const FareFamilyStruct&,
-                                  const stdair::FRAT5Curve_T&,
-                                  const stdair::FFDisutilityCurve_T&);
+    static void createFareFamily (stdair::BomRoot&, stdair::SegmentCabin&,
+                                  const FareFamilyStruct&);
 
     /**
      * Generate a booking class.
