@@ -47,6 +47,32 @@ namespace AIRINV {
     ScheduleFileParsingFailedException (const std::string& iWhat)
       : stdair::ParsingFileFailedException (iWhat) {}
   };
+
+  /**
+   * The FRAT5 input file can not be parsed.
+   */
+  class FRAT5FileParsingFailedException
+    : public stdair::ParsingFileFailedException {
+  public:
+    /**
+     * Constructor.
+     */
+    FRAT5FileParsingFailedException (const std::string& iWhat)
+      : stdair::ParsingFileFailedException (iWhat) {}
+  };
+
+  /**
+   * The FFDisutility input file can not be parsed.
+   */
+  class FFDisutilityFileParsingFailedException
+    : public stdair::ParsingFileFailedException {
+  public:
+    /**
+     * Constructor.
+     */
+    FFDisutilityFileParsingFailedException (const std::string& iWhat)
+      : stdair::ParsingFileFailedException (iWhat) {}
+  };
   
   /**
    * Specific exception when some BOM objects can not be found within
@@ -82,6 +108,30 @@ namespace AIRINV {
      * Constructor.
      */
     ScheduleInputFileNotFoundException (const std::string& iWhat)
+      : stdair::FileNotFoundException (iWhat) {}
+  };
+
+  /**
+   * The FRAT5 input file can not be found or opened.
+   */
+  class FRAT5InputFileNotFoundException : public stdair::FileNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    FRAT5InputFileNotFoundException (const std::string& iWhat)
+      : stdair::FileNotFoundException (iWhat) {}
+  };
+
+  /**
+   * The FF disutility input file can not be found or opened.
+   */
+  class FFDisutilityInputFileNotFoundException : public stdair::FileNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    FFDisutilityInputFileNotFoundException (const std::string& iWhat)
       : stdair::FileNotFoundException (iWhat) {}
   };
 
@@ -141,4 +191,3 @@ namespace AIRINV {
 
 }
 #endif // __AIRINV_AIRINV_TYPES_HPP
-

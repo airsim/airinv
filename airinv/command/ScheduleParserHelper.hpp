@@ -179,6 +179,22 @@ namespace AIRINV {
       /** Actor Function (functor). */
       void operator() (int iCode) const;
     };
+  
+    /** Store the FRAT5 curve key. */
+    struct storeFRAT5CurveKey : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeFRAT5CurveKey (FlightPeriodStruct&);
+      /** Actor Function (functor). */
+      void operator() (iterator_t iStr, iterator_t iStrEnd) const;
+    };
+  
+    /** Store the FFDisutility curve key. */
+    struct storeFFDisutilityCurveKey : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeFFDisutilityCurveKey (FlightPeriodStruct&);
+      /** Actor Function (functor). */
+      void operator() (iterator_t iStr, iterator_t iStrEnd) const;
+    };
 
     /** Store the parsed list of class codes (for families). */
     struct storeFClasses : public ParserSemanticAction {
@@ -235,7 +251,8 @@ namespace AIRINV {
        SegmentKey          ::= BoardingPoint ';' OffPoint
        SegmentCabinDetails ::= CabinCode ';' Classes
        (';' FamilyCabinDetails)+
-       FamilyCabinDetails  ::= FamilyCode ';' Classes
+       FamilyCabinDetails  ::= FamilyCode ';' FRAT5Key ';' FFDisutilityKey
+       ';"  Classes
        FullSegmentCabinDetails::= (';' SegmentCabinDetails)+
        GenericSegment      ::= '0' (';' SegmentCabinDetails)+
        SpecificSegments    ::= '1' (';' SegmentKey ';' FullSegmentCabinDetails)+

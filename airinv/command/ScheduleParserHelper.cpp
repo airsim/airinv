@@ -342,6 +342,33 @@ namespace AIRINV {
       std::ostringstream ostr;
       ostr << iCode;
       _flightPeriod._itSegmentCabin._itFareFamily._familyCode = ostr.str(); 
+    }    
+
+    // //////////////////////////////////////////////////////////////////
+    storeFRAT5CurveKey::
+    storeFRAT5CurveKey (FlightPeriodStruct& ioFlightPeriod)
+      : ParserSemanticAction (ioFlightPeriod) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeFRAT5CurveKey::operator() (iterator_t iStr,
+                                         iterator_t iStrEnd) const { 
+      const std::string lKey (iStr, iStrEnd);
+      _flightPeriod._itSegmentCabin._itFareFamily._frat5CurveKey = lKey;
+      //STDAIR_LOG_DEBUG ("FRAT5 key: " << lKey);
+    } 
+
+    // //////////////////////////////////////////////////////////////////
+    storeFFDisutilityCurveKey::
+    storeFFDisutilityCurveKey (FlightPeriodStruct& ioFlightPeriod)
+      : ParserSemanticAction (ioFlightPeriod) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeFFDisutilityCurveKey::operator() (iterator_t iStr,
+                                                iterator_t iStrEnd) const { 
+      const std::string lKey (iStr, iStrEnd);
+      _flightPeriod._itSegmentCabin._itFareFamily._ffDisutilityCurveKey = lKey;
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -354,8 +381,7 @@ namespace AIRINV {
     void storeFClasses::operator() (iterator_t iStr,
                                     iterator_t iStrEnd) const {
       std::string lClasses (iStr, iStrEnd);
-      FareFamilyStruct lFareFamily (_flightPeriod._itSegmentCabin._itFareFamily._familyCode,
-                                    lClasses);
+      FareFamilyStruct lFareFamily (_flightPeriod._itSegmentCabin._itFareFamily._familyCode, _flightPeriod._itSegmentCabin._itFareFamily._frat5CurveKey, _flightPeriod._itSegmentCabin._itFareFamily._ffDisutilityCurveKey, lClasses);
 
       // The list of classes is the last (according to the arrival order
       // within the schedule input file) detail of the segment cabin. Hence,
@@ -370,7 +396,7 @@ namespace AIRINV {
         _flightPeriod.addFareFamily (_flightPeriod._itSegmentCabin,
                                      lFareFamily);
       }
-    }
+    } 
 
     // //////////////////////////////////////////////////////////////////
     doEndFlight::
@@ -453,6 +479,9 @@ namespace AIRINV {
 
     /** Family code parser */
     int1_p_t family_code_p;
+    
+    /** Key Parser: repeat_p(1,10)[chset_p("0-9A-Z")] */
+    repeat_p_t key_p (chset_t("0-9A-Z").derived(), 1, 10);
       
     /** Class Code List Parser: repeat_p(1,26)[chset_p("A-Z")] */
     repeat_p_t class_code_list_p (chset_t("A-Z").derived(), 1, 26);
@@ -583,6 +612,10 @@ namespace AIRINV {
 
       family_cabin_details =
         (family_code_p)[storeFamilyCode(self._flightPeriod)]
+        >> ';'
+        >> (key_p)[storeFRAT5CurveKey(self._flightPeriod)]
+        >> ';'
+        >> (key_p)[storeFFDisutilityCurveKey(self._flightPeriod)]
         >> ';'
         >> (class_code_list_p)[storeFClasses(self._flightPeriod)]
         ;

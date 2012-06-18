@@ -26,6 +26,8 @@ namespace AIRINV {
   struct FareFamilyStruct : public stdair::StructAbstract {
     // Attributes
     stdair::FamilyCode_T _familyCode;
+    stdair::CurveKey_T _frat5CurveKey;
+    stdair::CurveKey_T _ffDisutilityCurveKey;
     stdair::ClassList_String_T _classes;
     BookingClassStructList_T _classList;
 
@@ -37,6 +39,7 @@ namespace AIRINV {
      * Main constructor.
      */
     FareFamilyStruct (const stdair::FamilyCode_T&,
+                      const stdair::CurveKey_T&, const stdair::CurveKey_T&,
                       const stdair::ClassList_String_T&);
       
     /**
