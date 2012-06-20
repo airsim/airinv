@@ -153,6 +153,30 @@ namespace AIRINV {
   class BookingException : public stdair::RootException {
   };
 
+  /**
+   * Inventory not found.
+   */
+  class InventoryNotFoundException : public stdair::ObjectNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    InventoryNotFoundException (const std::string& iWhat)
+      : stdair::ObjectNotFoundException (iWhat) {}
+  };
+
+  /**
+   * Flight Date not found
+   */
+  class FlightDateNotFoundException : public stdair::ObjectNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    FlightDateNotFoundException (const std::string& iWhat)
+      : stdair::ObjectNotFoundException (iWhat) {}
+  };
+
 
   // //////// Type definitions /////////
   /**
