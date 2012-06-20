@@ -67,21 +67,9 @@ namespace AIRINV {
     // Update the commited space of the segment-cabin.
     ioSegmentCabin.updateFromReservation (iNbOfBookings);
 
-    // Update the commited space of the member leg-cabins.
-    const stdair::LegCabinList_T& lLegCabinList =
-      stdair::BomManager::getList<stdair::LegCabin> (ioSegmentCabin);
-    for (stdair::LegCabinList_T::const_iterator itLegCabin =
-           lLegCabinList.begin();
-         itLegCabin != lLegCabinList.end(); ++itLegCabin) {
-      stdair::LegCabin* lLegCabin_ptr = *itLegCabin;
-      assert (lLegCabin_ptr != NULL);
-      lLegCabin_ptr->updateFromReservation (iNbOfBookings);
-    }
-
-    // Update the availability pool of all the segment-cabin which belong to the
-    // same flight-date.
-    const stdair::CabinCode_T& lCabinCode = ioSegmentCabin.getCabinCode();
-    FlightDateHelper::updateAvailablityPool (iFlightDate, lCabinCode);
+    // Update the availability of the flight-date.
+    FlightDateHelper::updateAvailability (iFlightDate, ioSegmentCabin,
+                                          iNbOfBookings);
   }
 
   // ////////////////////////////////////////////////////////////////////

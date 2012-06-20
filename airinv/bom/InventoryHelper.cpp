@@ -72,7 +72,7 @@ namespace AIRINV {
 
       // Compute the availability using the AU and the cumulative
       // booking counter.
-      SegmentCabinHelper::updateAvailabilities (*lSegmentCabin_ptr);
+      // SegmentCabinHelper::updateAvailabilities (*lSegmentCabin_ptr);
       const stdair::BookingClassList_T& lBCList =
         stdair::BomManager::getList<stdair::BookingClass> (*lSegmentCabin_ptr);
       for (stdair::BookingClassList_T::const_reverse_iterator itBC =
