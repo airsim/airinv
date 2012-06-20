@@ -725,6 +725,14 @@ namespace AIRINV {
   }
 
   // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  recalculateAvailability (stdair::FlightDate& ioFlightDate) {
+
+    // Forward the call to FlightDateHelper.
+    FlightDateHelper::recalculateAvailability (ioFlightDate);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
   void InventoryManager::takeSnapshots(const stdair::Inventory& iInventory,
                                        const stdair::DateTime_T& iSnapshotTime){
 

@@ -1161,6 +1161,7 @@ namespace AIRINV {
     // So if EMSRb is used, do not call updateBookingControls.
     if (isOptimised == true && isEMSRb == false) {
       InventoryManager::updateBookingControls (*lFlightDate_ptr);
+      InventoryManager::recalculateAvailability (*lFlightDate_ptr);
     } 
   }
 }

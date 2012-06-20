@@ -140,4 +140,26 @@ namespace AIRINV {
     }
   }
 
+  // ////////////////////////////////////////////////////////////////////
+  void FlightDateHelper::
+  recalculateAvailability (const stdair::FlightDate& iFlightDate) {
+    const stdair::SegmentDateList_T& lSegmentDateList =
+      stdair::BomManager::getList<stdair::SegmentDate> (iFlightDate);
+    for (stdair::SegmentDateList_T::const_iterator itSegmentDate =
+           lSegmentDateList.begin(); itSegmentDate != lSegmentDateList.end();
+         ++itSegmentDate) {
+      const stdair::SegmentDate* lSegmentDate_ptr = *itSegmentDate;
+      assert (lSegmentDate_ptr != NULL);
+      const stdair::SegmentCabinList_T& lSegmentCabinList =
+        stdair::BomManager::getList<stdair::SegmentCabin> (*lSegmentDate_ptr);
+      for (stdair::SegmentCabinList_T::const_iterator itSegmentCabin =
+             lSegmentCabinList.begin();
+           itSegmentCabin != lSegmentCabinList.end(); ++itSegmentCabin) {
+        const stdair::SegmentCabin* lSegmentCabin_ptr = *itSegmentCabin;
+        assert (lSegmentCabin_ptr != NULL);
+        SegmentCabinHelper::updateAvailabilities (*lSegmentCabin_ptr);
+      }
+    }
+  }
+
 }

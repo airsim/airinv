@@ -40,6 +40,10 @@ namespace AIRINV {
 
     /** Update booking controls after optimisation. */
     static void updateBookingControls (stdair::FlightDate&);
+
+    /** Recalculate the availability of all the segment-cabins after an
+        optimisation. */
+    static void recalculateAvailability (const stdair::FlightDate&);
   };
 
 }

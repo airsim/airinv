@@ -98,6 +98,9 @@ namespace AIRINV {
     /** Update booking controls after optimisation. */
     static void updateBookingControls (stdair::FlightDate&);
 
+    /** Recalculate the availabilities after optimisation. */
+    static void recalculateAvailability (stdair::FlightDate&);
+
   public:
     /** Create the direct accesses within the invetories suck as links between
         leg-date and segment-date, ect. */
