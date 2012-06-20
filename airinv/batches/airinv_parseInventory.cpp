@@ -143,10 +143,10 @@ int readConfiguration (int argc, char* argv[],
     ("ond,o",
      boost::program_options::value< std::string >(&ioODInputFilename)->default_value(K_AIRINV_DEFAULT_OND_FILENAME),
      "(CSV) input file for the O&D")
-    ("frat5,r",
+    ("frat5,F",
      boost::program_options::value< std::string >(&ioFRAT5Filename)->default_value(K_AIRINV_DEFAULT_FRAT5_INPUT_FILENAME),
      "(CSV) input file for the FRAT5 Curve")
-    ("ff_disutility,d",
+    ("ff_disutility,D",
      boost::program_options::value< std::string >(&ioFFDisutilityFilename)->default_value(K_AIRINV_DEFAULT_FF_DISUTILITY_INPUT_FILENAME),
      "(CSV) input file for the FF disutility Curve")
     ("yield,y",
