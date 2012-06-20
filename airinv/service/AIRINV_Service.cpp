@@ -1106,28 +1106,45 @@ namespace AIRINV {
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
-    stdair::Inventory& lInventory =
-      stdair::BomManager::getObject<stdair::Inventory> (lBomRoot, iAirlineCode);
-    stdair::FlightDate& lFlightDate =
-      stdair::BomManager::getObject<stdair::FlightDate> (lInventory,
-                                                         iFDDescription);
+    stdair::Inventory* lInventory_ptr =
+      stdair::BomManager::getObjectPtr<stdair::Inventory> (lBomRoot, iAirlineCode);
+    if (lInventory_ptr == NULL) {
+      std::ostringstream oErrorMessage;
+      oErrorMessage << "The Inventory '" << iAirlineCode
+                    << "', can not be retrieved.";
+      STDAIR_LOG_ERROR (oErrorMessage.str());
+      throw InventoryNotFoundException (oErrorMessage.str());
+    }
+    assert (lInventory_ptr != NULL);
+    stdair::FlightDate* lFlightDate_ptr =
+      stdair::BomManager::getObjectPtr<stdair::FlightDate> (*lInventory_ptr,
+                                                            iFDDescription);
+    if (lFlightDate_ptr == NULL) {
+      std::ostringstream oErrorMessage;
+      oErrorMessage << "The flight date '" << iFDDescription
+                    << "', can not be retrieved in the '"
+                    << iAirlineCode << "' inventory.";
+      STDAIR_LOG_ERROR (oErrorMessage.str());
+      throw FlightDateNotFoundException (oErrorMessage.str());
+    }
+    assert (lFlightDate_ptr != NULL);
 
     const stdair::UnconstrainingMethod& lUnconstrainingMethod =
-      lInventory.getUnconstrainingMethod();   
+      lInventory_ptr->getUnconstrainingMethod();   
     const stdair::ForecastingMethod& lForecastingMethod =
-      lInventory.getForecastingMethod(); 
+      lInventory_ptr->getForecastingMethod(); 
     const stdair::PreOptimisationMethod& lPreOptimisationMethod =
-      lInventory.getPreOptimisationMethod();
+      lInventory_ptr->getPreOptimisationMethod();
     const stdair::OptimisationMethod& lOptimisationMethod =
-      lInventory.getOptimisationMethod();
+      lInventory_ptr->getOptimisationMethod();
     const stdair::PartnershipTechnique& lPartnershipTechnique =
-      lInventory.getPartnershipTechnique();
+      lInventory_ptr->getPartnershipTechnique();
 
     // Retrieve the RMOL service.
-    RMOL::RMOL_Service& lRMOL_Service =lAIRINV_ServiceContext.getRMOL_Service();
+    RMOL::RMOL_Service& lRMOL_Service = lAIRINV_ServiceContext.getRMOL_Service();
 
     // Optimise the flight-date.
-    bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
+    bool isOptimised = lRMOL_Service.optimise (*lFlightDate_ptr, iRMEventTime,
                                                lUnconstrainingMethod,
                                                lForecastingMethod,
                                                lPreOptimisationMethod,
@@ -1143,7 +1160,7 @@ namespace AIRINV {
     // authorization level and does not compute the bid price vector.
     // So if EMSRb is used, do not call updateBookingControls.
     if (isOptimised == true && isEMSRb == false) {
-      InventoryManager::updateBookingControls (lFlightDate);
-    }
+      InventoryManager::updateBookingControls (*lFlightDate_ptr);
+    } 
   }
 }
