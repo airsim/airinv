@@ -37,11 +37,11 @@ namespace AIRINV {
                                        const std::string&,
                                        stdair::TravelSolutionStruct&);
     
-    /** Make a sale with the given travel solution. */
+    /** Make a sale. */
     static bool sell (stdair::Inventory&, const std::string& iSegmentDateKey,
                       const stdair::ClassCode_T&, const stdair::PartySize_T&);
     
-    /** Make a sale with the given travel solution. */
+    /** Make a sale. */
     static bool sell (const stdair::BookingClassID_T&,
                       const stdair::PartySize_T&);
     
@@ -56,6 +56,13 @@ namespace AIRINV {
     /** Take inventory snapshots. */
     static void takeSnapshots (const stdair::Inventory&,
                                const stdair::DateTime_T&);
+  private:
+    
+    /** Make a sale. */
+    static bool sell (stdair::BookingClass&, const stdair::PartySize_T&);
+
+    /** Make a cancellation. */
+    static bool cancel (stdair::BookingClass&, const stdair::PartySize_T&);
   };
 
 }

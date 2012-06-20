@@ -267,34 +267,12 @@ namespace AIRINV {
     STDAIR_LOG_DEBUG ("Found booking class? " << hasFoundBookingClassStr);
 
     if (lBookingClass_ptr != NULL) {
+      
       // Register the sale in the class.
-      lBookingClass_ptr->sell (iPartySize);
-
-      //
-      stdair::FareFamily& lFareFamily =
-        stdair::BomManager::getParent<stdair::FareFamily> (*lBookingClass_ptr);
-
-      //
-      stdair::SegmentCabin& lSegmentCabin =
-        stdair::BomManager::getParent<stdair::SegmentCabin> (lFareFamily);
-
-      //
-      stdair::SegmentDate& lSegmentDate =
-        stdair::BomManager::getParent<stdair::SegmentDate,
-                                      stdair::SegmentCabin> (lSegmentCabin);
-
-      //
-      stdair::FlightDate& lFlightDate =
-        stdair::BomManager::getParent<stdair::FlightDate,
-                                      stdair::SegmentDate> (lSegmentDate);
+      hasSaleBeenSuccessful =
+        InventoryHelper::sell (*lBookingClass_ptr, iPartySize);
       
-      // Update the commited space of the segment-cabins and the leg-cabins.
-      SegmentCabinHelper::updateFromReservation (lFlightDate, lSegmentCabin,
-                                                 iPartySize);
-      
-      // STDAIR_LOG_NOTIFICATION (lFlightDate.getDepartureDate()
-      //                          << ";" << iClassCode);
-      hasSaleBeenSuccessful = true;
+      return hasSaleBeenSuccessful;
     }
 
     return hasSaleBeenSuccessful;
@@ -307,14 +285,24 @@ namespace AIRINV {
     //
     stdair::BookingClass& lBookingClass = iClassID.getObject();
 
-    // DEBUG
     // Register the sale in the class.
-    lBookingClass.sell (iPartySize);
+    const bool hasSaleBeenSuccessful =
+      InventoryHelper::sell (lBookingClass, iPartySize);
+    
+    return hasSaleBeenSuccessful;
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  bool InventoryHelper::sell (stdair::BookingClass& iBookingClass,
+                              const stdair::PartySize_T& iPartySize) {
+
+    // Register the sale in the class.
+    iBookingClass.sell (iPartySize);
 
     //
     stdair::FareFamily& lFareFamily =
-      stdair::BomManager::getParent<stdair::FareFamily> (lBookingClass);
-
+      stdair::BomManager::getParent<stdair::FareFamily> (iBookingClass);
+    
     //
     stdair::SegmentCabin& lSegmentCabin =
       stdair::BomManager::getParent<stdair::SegmentCabin> (lFareFamily);
@@ -359,34 +347,12 @@ namespace AIRINV {
     STDAIR_LOG_DEBUG ("Found booking class? " << hasFoundBookingClassStr);
 
     if (lBookingClass_ptr != NULL) {
+      
       // Register the cancellation in the class.
-      lBookingClass_ptr->cancel (iPartySize);
-
-      //
-      stdair::FareFamily& lFareFamily =
-        stdair::BomManager::getParent<stdair::FareFamily> (*lBookingClass_ptr);
-
-      //
-      stdair::SegmentCabin& lSegmentCabin =
-        stdair::BomManager::getParent<stdair::SegmentCabin> (lFareFamily);
-
-      //
-      stdair::SegmentDate& lSegmentDate =
-        stdair::BomManager::getParent<stdair::SegmentDate,
-                                      stdair::SegmentCabin> (lSegmentCabin);
-
-      //
-      stdair::FlightDate& lFlightDate =
-        stdair::BomManager::getParent<stdair::FlightDate,
-                                      stdair::SegmentDate> (lSegmentDate);
+      hasCancellationBeenSuccessful =
+        cancel (*lBookingClass_ptr, iPartySize);
       
-      // Update the commited space of the segment-cabins and the leg-cabins.
-      SegmentCabinHelper::updateFromReservation (lFlightDate, lSegmentCabin,
-                                                 -iPartySize);
-      
-      // STDAIR_LOG_NOTIFICATION (lFlightDate.getDepartureDate()
-      //                          << ";" << iClassCode);
-      hasCancellationBeenSuccessful = true;
+      return hasCancellationBeenSuccessful;
     }
 
     return hasCancellationBeenSuccessful;
@@ -395,14 +361,26 @@ namespace AIRINV {
   // ////////////////////////////////////////////////////////////////////
   bool InventoryHelper::cancel (const stdair::BookingClassID_T& iClassID,
                                 const stdair::PartySize_T& iPartySize) {
+    
     stdair::BookingClass& lBookingClass = iClassID.getObject();
     
     // Register the cancellation in the class.
-    lBookingClass.cancel (iPartySize);
+    const bool hasCancellationBeenSuccessful =
+      cancel (lBookingClass, iPartySize);
+      
+    return hasCancellationBeenSuccessful;
+  }
+  
+  // ////////////////////////////////////////////////////////////////////
+  bool InventoryHelper::cancel (stdair::BookingClass& iBookingClass,
+                                const stdair::PartySize_T& iPartySize) {
+
+    // Register the cancellation in the class.
+    iBookingClass.cancel (iPartySize);
 
     //
     stdair::FareFamily& lFareFamily =
-      stdair::BomManager::getParent<stdair::FareFamily> (lBookingClass);
+      stdair::BomManager::getParent<stdair::FareFamily> (iBookingClass);
 
     //
     stdair::SegmentCabin& lSegmentCabin =
