@@ -370,16 +370,21 @@ namespace AIRINV {
      * 1. Initialise the airline inventories
      */
     InventoryParser::buildInventory (iInventoryInputFilename, 
-				     lPersistentBomRoot);  
+				     lPersistentBomRoot);
+
+    /**
+     * 2. Try to export the airline features from the configuration holder.
+     */    
+    lSTDAIR_Service.updateAirlineFeatures();  
   
     /**
-     * 2. Build the complementary objects/links for the current component (here,
+     * 3. Build the complementary objects/links for the current component (here,
      *    AirInv)
      */ 
     buildComplementaryLinks (lPersistentBomRoot);
     
     /**
-     * 3. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
      *    service is owned by the current component (AirInv here).
      */
     if (doesOwnStdairService == true) {
@@ -424,16 +429,21 @@ namespace AIRINV {
     FRAT5Parser::parse (iFRAT5InputFilename, lPersistentBomRoot);
     FFDisutilityParser::parse (iFFDisutilityInputFilename, lPersistentBomRoot);
     ScheduleParser::generateInventories (iScheduleInputFilename, 
-					 lPersistentBomRoot);
+					 lPersistentBomRoot);  
 
     /**
-     * 2. Build the complementary objects/links for the current component (here,
+     * 2. Try to export the airline features from the configuration holder.
+     */   
+    lSTDAIR_Service.updateAirlineFeatures();
+   
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
      *    AirInv)
      */ 
     buildComplementaryLinks (lPersistentBomRoot);
  
     /**
-     * 3. Delegate the complementary building of objects and links by the
+     * 4. Delegate the complementary building of objects and links by the
      *    appropriate levels/components
      * 
      */
@@ -450,10 +460,10 @@ namespace AIRINV {
      *       because it needs information filled in by this call
      *       (such as the boarding date and time at the segment date level)
      */ 
-    lAIRRAC_Service.updateYields(lPersistentBomRoot);
+    lAIRRAC_Service.updateYields(lPersistentBomRoot); 
 
     /**
-     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     * 5. Have AirInv clone the whole persistent BOM tree, only when the StdAir
      *    service is owned by the current component (AirInv here).
      */
     if (doesOwnStdairService == true) {
@@ -523,10 +533,15 @@ namespace AIRINV {
      * 3. Build the complementary objects/links for the current component (here,
      *    AirInv.
      */
-    buildComplementaryLinks (lPersistentBomRoot);
+    buildComplementaryLinks (lPersistentBomRoot); 
 
     /**
-     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     * 4. Try to export the airline features from the configuration holder.
+     */   
+    lSTDAIR_Service.updateAirlineFeatures();
+
+    /**
+     * 5. Have AirInv clone the whole persistent BOM tree, only when the StdAir
      *    service is owned by the current component (AirInv here).
      */
     if (doesOwnStdairService == true) {
