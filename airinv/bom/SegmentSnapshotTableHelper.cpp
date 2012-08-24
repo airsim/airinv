@@ -46,7 +46,7 @@ namespace AIRINV {
       const stdair::Date_T& lDepartureDate = lSegmentDate.getBoardingDate();
       const stdair::DateOffset_T lDateOffset = lDepartureDate - lSnapshotDate;
       const stdair::DTD_T lDTD = lDateOffset.days() + 1;
-      
+
       if (lDTD >= 0 && lDTD <= stdair::DEFAULT_MAX_DTD) {
         SegmentCabinHelper::updateAvailabilities (*lSC_ptr);
         takeSnapshots (ioSegmentSnapshotTable, lDTD, *lSC_ptr, lSCIdx);
@@ -131,14 +131,25 @@ namespace AIRINV {
       ioSegmentSnapshotTable.getSegmentCabinDTDProductOrientedNetBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD);
     stdair::SegmentCabinDTDSnapshotView_T lPriceOrientedNetBookingView =
       ioSegmentSnapshotTable.getSegmentCabinDTDPriceOrientedNetBookingSnapshotView (iSegmentCabinIdx, iSegmentCabinIdx, iDTD);
-    
-    // Retrieve the lowest class and treat the number of gross
+
+    // Retrieve the lowest yield and the lowest class and treat the number of gross
     // bookings of this class the price oriented bookings.
     const stdair::BookingClassList_T& lBCList =
       stdair::BomManager::getList<stdair::BookingClass> (iSegmentCabin);
-    stdair::BookingClassList_T::const_reverse_iterator itBC = lBCList.rbegin();
-    assert (itBC != lBCList.rend());
-    stdair::BookingClass* lLowestClass_ptr = *itBC; ++itBC;
+    stdair::BookingClassList_T::const_iterator iterBC = lBCList.begin();
+    assert (iterBC != lBCList.end());
+    stdair::BookingClass* lLowestClass_ptr = *iterBC; 
+    assert (lLowestClass_ptr  != NULL);
+    stdair::Yield_T lLowestYield = lLowestClass_ptr->getYield();
+    for (; iterBC != lBCList.end(); iterBC++) {
+      const stdair::BookingClass* lBookingClass_ptr = *iterBC;
+      assert (lBookingClass_ptr != NULL);
+      const stdair::Yield_T& lYield = lBookingClass_ptr->getYield();
+      if (lYield < lLowestYield) {
+        lLowestYield = lYield;
+        lLowestClass_ptr = *iterBC;
+      }
+    }
     assert (lLowestClass_ptr != NULL);
 
     // Retrieve the block index of the booking class.
@@ -155,9 +166,6 @@ namespace AIRINV {
     // Write these numbern of bookings to the price-oriented value.
     lPriceOrientedGrossBookingView[lClassIdx] = lNbOfGrossBkgs;
     lPriceOrientedNetBookingView[lClassIdx] = lNbOfNetBkgs;
-
-    // Retrieve the lowest yield.
-    const stdair::Yield_T& lLowestYield = lLowestClass_ptr->getYield();
     
     // Boolean for "no lower class available" verification.
     bool noLowerClassAvl = true;
@@ -166,37 +174,40 @@ namespace AIRINV {
     }
     
     // Browse the booking class list
-    for (; itBC != lBCList.rend(); ++itBC) {
+    stdair::BookingClassList_T::const_reverse_iterator itBC = lBCList.rbegin();
+    for (; itBC != lBCList.rend(); itBC++) {
       const stdair::BookingClass* lBookingClass_ptr = *itBC;
       assert (lBookingClass_ptr != NULL);
 
       // Retrieve the yield of the this class.
       const stdair::Yield_T& lYield = lBookingClass_ptr->getYield();
-      assert (lYield > lLowestYield);
+      assert (lYield >= lLowestYield);
+      if (lYield > lLowestYield) {
       
-      // Retrieve the block index of the booking class.
-      const stdair::ClassIndex_T& lIdx =
-        ioSegmentSnapshotTable.getClassIndex (lBookingClass_ptr->describeKey());
+        // Retrieve the block index of the booking class.
+        const stdair::ClassIndex_T& lIdx =
+          ioSegmentSnapshotTable.getClassIndex (lBookingClass_ptr->describeKey());
 
-      // Compute the number of gross bookings for this class.
-      const stdair::NbOfBookings_T lNetBkgs = 
-        lRangeBookingView[lIdx][0] - lRangeBookingView[lIdx][1];
-      const stdair::NbOfCancellations_T lCx =
-        lRangeCancellationView[lIdx][0] - lRangeCancellationView[lIdx][1];
-      const stdair::NbOfBookings_T lGrossBkgs = lNetBkgs + lCx;
+        // Compute the number of gross bookings for this class.
+        const stdair::NbOfBookings_T lNetBkgs = 
+          lRangeBookingView[lIdx][0] - lRangeBookingView[lIdx][1];
+        const stdair::NbOfCancellations_T lCx =
+          lRangeCancellationView[lIdx][0] - lRangeCancellationView[lIdx][1];
+        const stdair::NbOfBookings_T lGrossBkgs = lNetBkgs + lCx;
       
-      // If there is a lower class available, these gross bookings
-      // will be considered product-oriented. Otherwise, they will be
-      // considered price-oriented
-      if (noLowerClassAvl == false) {
-        lProductOrientedGrossBookingView[lIdx] = lGrossBkgs;
-        lProductOrientedNetBookingView[lIdx] = lNetBkgs;
-      } else {
-        lPriceOrientedGrossBookingView[lIdx] = lGrossBkgs;
-        lPriceOrientedNetBookingView[lIdx] = lNetBkgs;
+        // If there is a lower class available, these gross bookings
+        // will be considered product-oriented. Otherwise, they will be
+        // considered price-oriented
+        if (noLowerClassAvl == false) {
+          lProductOrientedGrossBookingView[lIdx] = lGrossBkgs;
+          lProductOrientedNetBookingView[lIdx] = lNetBkgs;
+        } else {
+          lPriceOrientedGrossBookingView[lIdx] = lGrossBkgs;
+          lPriceOrientedNetBookingView[lIdx] = lNetBkgs;
         
-        if (lBookingClass_ptr->getSegmentAvailability() >= 1.0) {
-          noLowerClassAvl = false;
+          if (lBookingClass_ptr->getSegmentAvailability() >= 1.0) {
+            noLowerClassAvl = false;
+          }
         }
       }
     }
