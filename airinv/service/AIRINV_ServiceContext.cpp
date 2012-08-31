@@ -55,9 +55,22 @@ namespace AIRINV {
 
   // //////////////////////////////////////////////////////////////////////
   void AIRINV_ServiceContext::reset() {
-    if (_ownStdairService == true) {
-      _stdairService.reset();
-    }
+
+    // The shared_ptr<>::reset() method drops the refcount by one.
+    // If the count result is dropping to zero, the resource pointed to
+    // by the shared_ptr<> will be freed.
+    
+    // Reset the stdair shared pointer
+    _stdairService.reset();
+
+    // Reset the rmol shared pointer
+    _rmolService.reset();
+
+    // Reset the airrac shared pointer
+    _airracService.reset();
+
+    // Reset the sevmgr shared pointer
+    _sevmgrService.reset();
   }
 
 }
