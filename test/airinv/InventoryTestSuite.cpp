@@ -75,10 +75,8 @@ bool testInventoryHelper (const unsigned short iTestFlag,
   logOutputFile.clear();
   
   // Initialise the AirInv service object
-  const bool lForceMultipleInit = true;
   stdair::BasLogParams lLogParams (stdair::LOG::DEBUG,
-                                   logOutputFile,
-                                   lForceMultipleInit);
+                                   logOutputFile);
 
   // Initialise the inventory service
   AIRINV::AIRINV_Master_Service airinvService (lLogParams);
