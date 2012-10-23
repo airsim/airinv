@@ -173,7 +173,7 @@ var bandInfos;
 			eventSource.add(evt);
 			tli.paint();
 		} 
-		refreshBookingEvents();
+		refreshBookingEvents(serverURL);
 	}
 
 	var resizeTimerID = null;
@@ -195,7 +195,7 @@ var bandInfos;
 			{
 				document.getElementById('spanCurrentBreakpoint').innerHTML = data.done;
 				tli.getBand(0).date = data.done; //does not seem to work
-				refreshBookingEvents();
+				refreshBookingEvents(serverURL);
 			}else{
 				alert("Simulation is finished");
 			}
