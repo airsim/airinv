@@ -19,9 +19,6 @@ Ext.define('airlineinfo', {
 Ext.QuickTips.init();
 Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
 
-var url = "http://ncevsediri-fed/api/get/getairlinelist/";
-
-
 function showAllGrid(serverURL)
 {
 	var url = serverURL +  "api/get/getairlinelist/"

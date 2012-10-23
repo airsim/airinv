@@ -132,7 +132,7 @@ function loadGrids(rawJSON)
 	
 	var tempSegs;
 	var tempCabs;
-	//var url="http://ncevsediri-fed/api/display/inv/SV/5/2010-Mar-11";
+	
     var store_flights = Ext.create('Ext.data.Store', {
         model: 'flightinfo',
         proxy: {

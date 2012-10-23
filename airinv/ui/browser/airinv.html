@@ -203,25 +203,8 @@ table /*Firefox table border fix*/
 				}
 		});	
 		showAllGrid(localServer);
-		//populateShowAll(); WILL BE USED LATER FOR FILTERING
 		
 	}
-
-	/*function populateShowAll()
-	{
-		document.getElementById('allinvgrid').innerHTML = '';
-		
-		$.getJSON("http://ncevsediri-fed/api/get/getairlinelist/", function(data) {
-			$.each(data.inventories[0].airline_code, function(i, option) {
-            document.getElementById('ddlSelectedAirline').options[i] = new Option(data.inventories[0].airline_code);
-            var e = document.getElementById("ddlSelectedAirline");
-			var strAirline = e.options[e.selectedIndex].text;
-            //Check good data... Might not work
-            showAllGrid();
-			});
-		});
-	
-	}*/
 	
 	function initGrids(tmpData)
 	{
