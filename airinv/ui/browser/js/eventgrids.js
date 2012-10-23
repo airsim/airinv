@@ -36,7 +36,7 @@ Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
 
 function refreshBookingEvents(serverURL)
 {
-	var url = serverURL +  "api/get/events/"
+	var url = serverURL +  "get/events/"
 	$.getJSON(url + "callback=?", function(data) {	
 	
 	//console.log(data);
