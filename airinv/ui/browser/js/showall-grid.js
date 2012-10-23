@@ -25,7 +25,7 @@ var url = "http://ncevsediri-fed/api/get/getairlinelist/";
 function showAllGrid(serverURL)
 {
 	var url = serverURL +  "api/get/getairlinelist/"
-	$.getJSON(url url + "callback=?", function(data) {
+	$.getJSON(url + "callback=?", function(data) {
 	
 	//console.log(data);
 	
