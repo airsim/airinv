@@ -2,6 +2,7 @@
 <head>
 <meta charset="utf-8">
 <title>Welcome to AirInv</title>
+<script type="text/javascript" src="config.js"></script>
 <link type="text/css" href="js/mylibs/jQueryUI/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-1.5.1.min.js"></script>
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-ui-1.8.13.custom.min.js"></script>
@@ -131,7 +132,8 @@ table /*Firefox table border fix*/
 </div>
 
 <script type="text/javascript">
-	var serverURL = "http://ncevsediri-fed/api/display/inv/";
+	var localServer = currentServer; 
+	var serverURL = currentServer + "api/display/inv/";
 	var invJSON;
 	function onLoad()
 	{
@@ -200,7 +202,7 @@ table /*Firefox table border fix*/
 				Close:function() {$( this ).dialog( "close" );}
 				}
 		});	
-		showAllGrid();
+		showAllGrid(localServer);
 		//populateShowAll(); WILL BE USED LATER FOR FILTERING
 		
 	}
@@ -241,7 +243,7 @@ table /*Firefox table border fix*/
 			arrayBPVData[i] = parseFloat(arrayBPVData[i]);
 		}
 		
-		console.log(arrayBPVData);
+		//console.log(arrayBPVData);
 		buildBPV(arrayBPVData, chartLegName, chartFlightName);
 	}
 

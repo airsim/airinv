@@ -22,11 +22,12 @@ Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
 var url = "http://ncevsediri-fed/api/get/getairlinelist/";
 
 
-function showAllGrid()
+function showAllGrid(serverURL)
 {
-	$.getJSON(url + "callback=?", function(data) {
+	var url = serverURL +  "api/get/getairlinelist/"
+	$.getJSON(url url + "callback=?", function(data) {
 	
-	console.log(data);
+	//console.log(data);
 	
 	var selected_AirlineCode;
 	var selected_Number;
@@ -45,7 +46,7 @@ function showAllGrid()
 	});
 	store_airlines.load();
 	
-	console.log(store_airlines);
+	//console.log(store_airlines);
 	
 	var grid_AllInventory = Ext.create('Ext.grid.Panel', {
 		store: store_airlines,

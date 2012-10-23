@@ -8,6 +8,7 @@
 <meta charset="utf-8">
 <title>Welcome to AirSim</title>
 <script type="text/javascript" src="js/airsimbean.js"></script>
+<script type="text/javascript" src="config.js"></script>
 <link type="text/css" href="js/mylibs/jQueryUI/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-1.5.1.min.js"></script>
 <script type="text/javascript" src="js/mylibs/jQueryUI/js/jquery-ui-1.8.13.custom.min.js"></script>
@@ -117,7 +118,8 @@
     });
   </script>-->
 <script>
-var serverURL = "http://ncevsediri-fed/api/";
+var localServer = currentServer; 
+var serverURL = currentServer + "api/";
 var rebuiltBpArrayTemp;
 var rebuiltCurrentBreakpoint;
 
@@ -267,7 +269,7 @@ var rebuiltCurrentBreakpoint;
 	{
 		$("#dialog-launch").dialog( "close" );
 		
-		document.getElementById("confirmSimDates").innerHTML = "Simulation Pariod: " + simulationStartEndDates;
+		document.getElementById("confirmSimDates").innerHTML = "Simulation Period: " + simulationStartEndDates;
 		document.getElementById("confirmRandomSeed").innerHTML = "Random Seed: " + randomSeed;
 		document.getElementById("confirmNumberOfRuns").innerHTML = "Simulation Run(s): " + numberOfRuns;
 		document.getElementById("confirmDemandGeneration").innerHTML = "Demand Generation: " + demandGenerationType;
