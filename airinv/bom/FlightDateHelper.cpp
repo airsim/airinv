@@ -64,7 +64,32 @@ namespace AIRINV {
 
   // ////////////////////////////////////////////////////////////////////
   void FlightDateHelper::
-  updateAvailablityPool (const stdair::FlightDate& iFlightDate,
+  updateAvailability (const stdair::FlightDate& iFlightDate,
+                     const stdair::SegmentCabin& iSegmentCabin,
+                     const stdair::PartySize_T& iNbOfBookings) {
+    // Update the commited space of the member leg-cabins.
+    const stdair::LegCabinList_T& lLegCabinList =
+      stdair::BomManager::getList<stdair::LegCabin> (iSegmentCabin);
+    for (stdair::LegCabinList_T::const_iterator itLegCabin =
+           lLegCabinList.begin();
+         itLegCabin != lLegCabinList.end(); ++itLegCabin) {
+      stdair::LegCabin* lLegCabin_ptr = *itLegCabin;
+      assert (lLegCabin_ptr != NULL);
+      lLegCabin_ptr->updateFromReservation (iNbOfBookings);
+    }
+
+    // Update the availability pool of all the segment-cabin which belong to the
+    // same flight-date.
+    const stdair::CabinCode_T& lCabinCode = iSegmentCabin.getCabinCode();
+    FlightDateHelper::updateAvailabilityPool (iFlightDate, lCabinCode);
+
+    // Recaculate the availability of all classes of the given cabin (code).
+    FlightDateHelper::recalculateAvailability (iFlightDate, lCabinCode);
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void FlightDateHelper::
+  updateAvailabilityPool (const stdair::FlightDate& iFlightDate,
                          const stdair::CabinCode_T& iCabinCode){
     const stdair::SegmentDateList_T& lSegmentDateList =
       stdair::BomManager::getList<stdair::SegmentDate> (iFlightDate);
@@ -94,6 +119,46 @@ namespace AIRINV {
         }
       }
       lSegmentCabin.setAvailabilityPool (lAvailabilityPool);
+    }
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void FlightDateHelper::
+  recalculateAvailability (const stdair::FlightDate& iFlightDate,
+                           const stdair::CabinCode_T& iCabinCode){
+    const stdair::SegmentDateList_T& lSegmentDateList =
+      stdair::BomManager::getList<stdair::SegmentDate> (iFlightDate);
+    for (stdair::SegmentDateList_T::const_iterator itSegmentDate =
+           lSegmentDateList.begin(); itSegmentDate != lSegmentDateList.end();
+         ++itSegmentDate) {
+      const stdair::SegmentDate* lSegmentDate_ptr = *itSegmentDate;
+      assert (lSegmentDate_ptr != NULL);
+      stdair::SegmentCabin& lSegmentCabin =
+        stdair::BomManager::getObject<stdair::SegmentCabin> (*lSegmentDate_ptr,
+                                                             iCabinCode);
+      SegmentCabinHelper::updateAvailabilities (lSegmentCabin);
+    }
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void FlightDateHelper::
+  recalculateAvailability (const stdair::FlightDate& iFlightDate) {
+    const stdair::SegmentDateList_T& lSegmentDateList =
+      stdair::BomManager::getList<stdair::SegmentDate> (iFlightDate);
+    for (stdair::SegmentDateList_T::const_iterator itSegmentDate =
+           lSegmentDateList.begin(); itSegmentDate != lSegmentDateList.end();
+         ++itSegmentDate) {
+      const stdair::SegmentDate* lSegmentDate_ptr = *itSegmentDate;
+      assert (lSegmentDate_ptr != NULL);
+      const stdair::SegmentCabinList_T& lSegmentCabinList =
+        stdair::BomManager::getList<stdair::SegmentCabin> (*lSegmentDate_ptr);
+      for (stdair::SegmentCabinList_T::const_iterator itSegmentCabin =
+             lSegmentCabinList.begin();
+           itSegmentCabin != lSegmentCabinList.end(); ++itSegmentCabin) {
+        const stdair::SegmentCabin* lSegmentCabin_ptr = *itSegmentCabin;
+        assert (lSegmentCabin_ptr != NULL);
+        SegmentCabinHelper::updateAvailabilities (*lSegmentCabin_ptr);
+      }
     }
   }
 

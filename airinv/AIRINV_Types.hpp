@@ -47,6 +47,32 @@ namespace AIRINV {
     ScheduleFileParsingFailedException (const std::string& iWhat)
       : stdair::ParsingFileFailedException (iWhat) {}
   };
+
+  /**
+   * The FRAT5 input file can not be parsed.
+   */
+  class FRAT5FileParsingFailedException
+    : public stdair::ParsingFileFailedException {
+  public:
+    /**
+     * Constructor.
+     */
+    FRAT5FileParsingFailedException (const std::string& iWhat)
+      : stdair::ParsingFileFailedException (iWhat) {}
+  };
+
+  /**
+   * The FFDisutility input file can not be parsed.
+   */
+  class FFDisutilityFileParsingFailedException
+    : public stdair::ParsingFileFailedException {
+  public:
+    /**
+     * Constructor.
+     */
+    FFDisutilityFileParsingFailedException (const std::string& iWhat)
+      : stdair::ParsingFileFailedException (iWhat) {}
+  };
   
   /**
    * Specific exception when some BOM objects can not be found within
@@ -86,6 +112,30 @@ namespace AIRINV {
   };
 
   /**
+   * The FRAT5 input file can not be found or opened.
+   */
+  class FRAT5InputFileNotFoundException : public stdair::FileNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    FRAT5InputFileNotFoundException (const std::string& iWhat)
+      : stdair::FileNotFoundException (iWhat) {}
+  };
+
+  /**
+   * The FF disutility input file can not be found or opened.
+   */
+  class FFDisutilityInputFileNotFoundException : public stdair::FileNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    FFDisutilityInputFileNotFoundException (const std::string& iWhat)
+      : stdair::FileNotFoundException (iWhat) {}
+  };
+
+  /**
    * Duplicated flight date object.
    */
   class FlightDateDuplicationException : public stdair::ObjectCreationgDuplicationException {
@@ -101,6 +151,30 @@ namespace AIRINV {
    * Specific exception related to bookings made against the inventory.
    */
   class BookingException : public stdair::RootException {
+  };
+
+  /**
+   * Inventory not found.
+   */
+  class InventoryNotFoundException : public stdair::ObjectNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    InventoryNotFoundException (const std::string& iWhat)
+      : stdair::ObjectNotFoundException (iWhat) {}
+  };
+
+  /**
+   * Flight Date not found
+   */
+  class FlightDateNotFoundException : public stdair::ObjectNotFoundException {
+  public:
+    /**
+     * Constructor.
+     */
+    FlightDateNotFoundException (const std::string& iWhat)
+      : stdair::ObjectNotFoundException (iWhat) {}
   };
 
 
@@ -141,4 +215,3 @@ namespace AIRINV {
 
 }
 #endif // __AIRINV_AIRINV_TYPES_HPP
-

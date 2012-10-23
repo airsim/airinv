@@ -352,6 +352,8 @@ namespace AIRINV {
   void AIRINV_Master_Service::
   parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
                 const stdair::ODFilePath& iODInputFilename,
+                const stdair::FRAT5FilePath& iFRAT5InputFilename,
+                const stdair::FFDisutilityFilePath& iFFDisutilityInputFilename,
                 const AIRRAC::YieldFilePath& iYieldFilename) {
     
     // Retrieve the AirInv Master service context
@@ -383,7 +385,8 @@ namespace AIRINV {
      * 1. Delegate the file parsing and BOM building to the dedicated service
      */
     lAIRINV_Service.parseAndLoad (iScheduleInputFilename, iODInputFilename,
-                                  iYieldFilename);  
+                                  iFRAT5InputFilename,
+                                  iFFDisutilityInputFilename, iYieldFilename);  
 
     /**
      * 2. Delegate the complementary building of objects and links by the

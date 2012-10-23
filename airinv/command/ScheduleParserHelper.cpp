@@ -153,6 +153,32 @@ namespace AIRINV {
     }
 
     // //////////////////////////////////////////////////////////////////
+    storeOperatingAirlineCode::
+    storeOperatingAirlineCode (FlightPeriodStruct& ioFlightPeriod)
+      : ParserSemanticAction (ioFlightPeriod) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeOperatingAirlineCode::operator() (iterator_t iStr,
+                                                iterator_t iStrEnd) const { 
+      const stdair::AirlineCode_T lAirlineCode (iStr, iStrEnd);
+      _flightPeriod._itLeg._airlineCode = lAirlineCode;
+      //STDAIR_LOG_DEBUG ("Airline code: " << lAirlineCode);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeOperatingFlightNumber::
+    storeOperatingFlightNumber (FlightPeriodStruct& ioFlightPeriod)
+      : ParserSemanticAction (ioFlightPeriod) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeOperatingFlightNumber::operator() (unsigned int iNumber) const { 
+      _flightPeriod._itLeg._flightNumber = iNumber;
+      //STDAIR_LOG_DEBUG ("Flight number: " << iNumber);
+    }
+
+    // //////////////////////////////////////////////////////////////////
     storeBoardingTime::
     storeBoardingTime (FlightPeriodStruct& ioFlightPeriod)
       : ParserSemanticAction (ioFlightPeriod) {
@@ -342,6 +368,33 @@ namespace AIRINV {
       std::ostringstream ostr;
       ostr << iCode;
       _flightPeriod._itSegmentCabin._itFareFamily._familyCode = ostr.str(); 
+    }    
+
+    // //////////////////////////////////////////////////////////////////
+    storeFRAT5CurveKey::
+    storeFRAT5CurveKey (FlightPeriodStruct& ioFlightPeriod)
+      : ParserSemanticAction (ioFlightPeriod) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeFRAT5CurveKey::operator() (iterator_t iStr,
+                                         iterator_t iStrEnd) const { 
+      const std::string lKey (iStr, iStrEnd);
+      _flightPeriod._itSegmentCabin._itFareFamily._frat5CurveKey = lKey;
+      //STDAIR_LOG_DEBUG ("FRAT5 key: " << lKey);
+    } 
+
+    // //////////////////////////////////////////////////////////////////
+    storeFFDisutilityCurveKey::
+    storeFFDisutilityCurveKey (FlightPeriodStruct& ioFlightPeriod)
+      : ParserSemanticAction (ioFlightPeriod) {
+    }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeFFDisutilityCurveKey::operator() (iterator_t iStr,
+                                                iterator_t iStrEnd) const { 
+      const std::string lKey (iStr, iStrEnd);
+      _flightPeriod._itSegmentCabin._itFareFamily._ffDisutilityCurveKey = lKey;
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -354,8 +407,7 @@ namespace AIRINV {
     void storeFClasses::operator() (iterator_t iStr,
                                     iterator_t iStrEnd) const {
       std::string lClasses (iStr, iStrEnd);
-      FareFamilyStruct lFareFamily (_flightPeriod._itSegmentCabin._itFareFamily._familyCode,
-                                    lClasses);
+      FareFamilyStruct lFareFamily (_flightPeriod._itSegmentCabin._itFareFamily._familyCode, _flightPeriod._itSegmentCabin._itFareFamily._frat5CurveKey, _flightPeriod._itSegmentCabin._itFareFamily._ffDisutilityCurveKey, lClasses);
 
       // The list of classes is the last (according to the arrival order
       // within the schedule input file) detail of the segment cabin. Hence,
@@ -370,7 +422,7 @@ namespace AIRINV {
         _flightPeriod.addFareFamily (_flightPeriod._itSegmentCabin,
                                      lFareFamily);
       }
-    }
+    } 
 
     // //////////////////////////////////////////////////////////////////
     doEndFlight::
@@ -453,6 +505,9 @@ namespace AIRINV {
 
     /** Family code parser */
     int1_p_t family_code_p;
+    
+    /** Key Parser: repeat_p(1,10)[chset_p("0-9A-Z")] */
+    repeat_p_t key_p (chset_t("0-9A-Z").derived(), 1, 10);
       
     /** Class Code List Parser: repeat_p(1,26)[chset_p("A-Z")] */
     repeat_p_t class_code_list_p (chset_t("A-Z").derived(), 1, 26);
@@ -515,14 +570,22 @@ namespace AIRINV {
 
       dow = bsc::lexeme_d[ dow_p ]
         ;
-      
-      leg = leg_key >> ';' >> leg_details >> +( ';' >> leg_cabin_details )
+
+      leg = !( operating_leg_details >> ';' )
+        >> leg_key
+        >> ';' >> leg_details
+        >> +( ';' >> leg_cabin_details )
         ;
-	 
-      leg_key =
-        (airport_p)[storeLegBoardingPoint(self._flightPeriod)]
-        >> ';'
-        >> (airport_p)[storeLegOffPoint(self._flightPeriod)]
+
+      leg_key = (airport_p)[storeLegBoardingPoint(self._flightPeriod)]
+         >> ';'
+         >> (airport_p)[storeLegOffPoint(self._flightPeriod)]
+         ;
+ 
+      operating_leg_details =
+        bsc::lexeme_d[(airline_code_p)[storeOperatingAirlineCode(self._flightPeriod)] ]
+        >> ";"
+        >> bsc::lexeme_d[(flight_number_p)[storeOperatingFlightNumber(self._flightPeriod)] ]
         ;
 	 
       leg_details =
@@ -583,6 +646,10 @@ namespace AIRINV {
 
       family_cabin_details =
         (family_code_p)[storeFamilyCode(self._flightPeriod)]
+        >> ';'
+        >> (key_p)[storeFRAT5CurveKey(self._flightPeriod)]
+        >> ';'
+        >> (key_p)[storeFFDisutilityCurveKey(self._flightPeriod)]
         >> ';'
         >> (class_code_list_p)[storeFClasses(self._flightPeriod)]
         ;

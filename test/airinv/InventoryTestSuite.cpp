@@ -57,6 +57,8 @@ bool testInventoryHelper (const unsigned short iTestFlag,
                           const stdair::Filename_T& iInventoryInputFilename,  
                           const stdair::Filename_T& iScheduleInputFilename,
                           const stdair::Filename_T& iODInputFilename,
+                          const stdair::Filename_T& iFRAT5InputFilename,
+                          const stdair::Filename_T& iFFDisutilityInputFilename,
                           const stdair::Filename_T& iYieldInputFilename,
                           const bool isBuiltin,
                           const bool isForSchedule) {
@@ -73,10 +75,8 @@ bool testInventoryHelper (const unsigned short iTestFlag,
   logOutputFile.clear();
   
   // Initialise the AirInv service object
-  const bool lForceMultipleInit = true;
   stdair::BasLogParams lLogParams (stdair::LOG::DEBUG,
-                                   logOutputFile,
-                                   lForceMultipleInit);
+                                   logOutputFile);
 
   // Initialise the inventory service
   AIRINV::AIRINV_Master_Service airinvService (lLogParams);
@@ -102,8 +102,11 @@ bool testInventoryHelper (const unsigned short iTestFlag,
       // Build the BOM tree from parsing a schedule file (and O&D list)
       stdair::ScheduleFilePath lScheduleFilePath (iScheduleInputFilename);
       stdair::ODFilePath lODFilePath (iODInputFilename);
+      stdair::FRAT5FilePath lFRAT5FilePath (iFRAT5InputFilename);
+      stdair::FFDisutilityFilePath lFFDisutilityFilePath (iFFDisutilityInputFilename);
       AIRRAC::YieldFilePath lYieldFilePath (iYieldInputFilename);
       airinvService.parseAndLoad (lScheduleFilePath, lODFilePath,
+                                  lFRAT5FilePath, lFFDisutilityFilePath,
                                   lYieldFilePath);
 
       // Define a specific segment-date key for the schedule-based inventory
@@ -170,7 +173,7 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell) {
   bool hasTestBeenSuccessful = false;
   BOOST_CHECK_NO_THROW (hasTestBeenSuccessful =
                         testInventoryHelper (0, lInventoryInputFilename,
-                                             " ", " ", " ", isBuiltin, isForSchedule));
+                                             " ", " ", " ", " ", " ", isBuiltin, isForSchedule));
   BOOST_CHECK_EQUAL (hasTestBeenSuccessful, true);
 
 }
@@ -188,7 +191,7 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell_built_in) {
   // Try sell a default segment.
   bool hasTestBeenSuccessful = false;
   BOOST_CHECK_NO_THROW (hasTestBeenSuccessful =
-                        testInventoryHelper (1, " ", " ", " ", " ",
+                        testInventoryHelper (1, " ", " ", " ", " ", " ", " ",
                                              isBuiltin, isForSchedule));
   BOOST_CHECK_EQUAL (hasTestBeenSuccessful, true);
 
@@ -204,6 +207,10 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell_schedule) {
                                                    "/schedule01.csv");
   const stdair::Filename_T lODInputFilename (STDAIR_SAMPLE_DIR
                                              "/ond01.csv");
+  const stdair::Filename_T lFRAT5InputFilename (STDAIR_SAMPLE_DIR
+                                               "/frat5.csv");
+  const stdair::Filename_T lFFDisutilityInputFilename (STDAIR_SAMPLE_DIR
+                                                       "/ffDisutility.csv");
   const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR
                                                 "/yieldstore01.csv");
   
@@ -218,6 +225,8 @@ BOOST_AUTO_TEST_CASE (airinv_simple_inventory_sell_schedule) {
                         testInventoryHelper (2, " ",
                                              lScheduleInputFilename,
                                              lODInputFilename,
+                                             lFRAT5InputFilename,
+                                             lFFDisutilityInputFilename,
                                              lYieldInputFilename,
                                              isBuiltin, isForSchedule));
   BOOST_CHECK_EQUAL (hasTestBeenSuccessful, true);
@@ -241,7 +250,7 @@ BOOST_AUTO_TEST_CASE (airinv_error_inventory_input_file) {
 
   // Try sell a default segment.
   BOOST_CHECK_THROW (testInventoryHelper (3, lMissingInventoryFilename,
-                                          " ", " ", " ", isBuiltin, isForSchedule),
+                                          " ", " ", " ", " ", " ", isBuiltin, isForSchedule),
                      AIRINV::InventoryInputFileNotFoundException);
 
 }
@@ -255,6 +264,10 @@ BOOST_AUTO_TEST_CASE (airinv_error_schedule_input_file) {
   // Schedule input file name
   const stdair::Filename_T lMissingScheduleFilename (STDAIR_SAMPLE_DIR
                                                      "/missingFile.csv");
+  const stdair::Filename_T lFRAT5InputFilename (STDAIR_SAMPLE_DIR
+                                               "/frat5.csv");
+  const stdair::Filename_T lFFDisutilityInputFilename (STDAIR_SAMPLE_DIR
+                                                       "/ffDisutility.csv");
   
   // State whether the BOM tree should be built-in or parsed from an input file
   const bool isBuiltin = false;
@@ -263,7 +276,9 @@ BOOST_AUTO_TEST_CASE (airinv_error_schedule_input_file) {
 
   // Try sell a default segment.
   BOOST_CHECK_THROW (testInventoryHelper (4, " ", lMissingScheduleFilename,
-                                          " ", " ", isBuiltin, isForSchedule),
+                                          " ", lFRAT5InputFilename,
+                                          lFFDisutilityInputFilename, " ",
+                                          isBuiltin, isForSchedule),
                      AIRINV::ScheduleInputFileNotFoundException);
 
 }
@@ -279,6 +294,10 @@ BOOST_AUTO_TEST_CASE (airinv_error_yield_input_file) {
                                                    "/schedule01.csv");
   const stdair::Filename_T lODInputFilename (STDAIR_SAMPLE_DIR
                                              "/ond01.csv");
+  const stdair::Filename_T lFRAT5InputFilename (STDAIR_SAMPLE_DIR
+                                               "/frat5.csv");
+  const stdair::Filename_T lFFDisutilityInputFilename (STDAIR_SAMPLE_DIR
+                                                       "/ffDisutility.csv");
   const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR
                                                 "/missingFile.csv");
   
@@ -291,6 +310,8 @@ BOOST_AUTO_TEST_CASE (airinv_error_yield_input_file) {
   BOOST_CHECK_THROW (testInventoryHelper (5, " ",
                                           lScheduleInputFilename,
                                           lODInputFilename,
+                                          lFRAT5InputFilename,
+                                          lFFDisutilityInputFilename,
                                           lYieldInputFilename,
                                           isBuiltin, isForSchedule),
                      AIRRAC::YieldInputFileNotFoundException);
@@ -308,6 +329,10 @@ BOOST_AUTO_TEST_CASE (airinv_error_flight_date_duplication) {
                                                    "/scheduleError01.csv");
   const stdair::Filename_T lODInputFilename (STDAIR_SAMPLE_DIR
                                              "/ond01.csv");
+  const stdair::Filename_T lFRAT5InputFilename (STDAIR_SAMPLE_DIR
+                                               "/frat5.csv");
+  const stdair::Filename_T lFFDisutilityInputFilename (STDAIR_SAMPLE_DIR
+                                                       "/ffDisutility.csv");
   const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR
                                                 "/missingFile.csv");
   
@@ -320,6 +345,8 @@ BOOST_AUTO_TEST_CASE (airinv_error_flight_date_duplication) {
   BOOST_CHECK_THROW (testInventoryHelper (6, " ",
                                           lScheduleInputFilename,
                                           lODInputFilename,
+                                          lFRAT5InputFilename,
+                                          lFFDisutilityInputFilename,
                                           lYieldInputFilename,
                                           isBuiltin, isForSchedule),
                      AIRINV::FlightDateDuplicationException);
@@ -337,6 +364,10 @@ BOOST_AUTO_TEST_CASE (airinv_error_schedule_parsing_failed) {
                                                    "/scheduleError02.csv");
   const stdair::Filename_T lODInputFilename (STDAIR_SAMPLE_DIR
                                              "/ond01.csv");
+  const stdair::Filename_T lFRAT5InputFilename (STDAIR_SAMPLE_DIR
+                                               "/frat5.csv");
+  const stdair::Filename_T lFFDisutilityInputFilename (STDAIR_SAMPLE_DIR
+                                                       "/ffDisutility.csv");
   const stdair::Filename_T lYieldInputFilename (STDAIR_SAMPLE_DIR
                                                 "/yieldstore01.csv");
   
@@ -349,6 +380,8 @@ BOOST_AUTO_TEST_CASE (airinv_error_schedule_parsing_failed) {
   BOOST_CHECK_THROW (testInventoryHelper (7, " ",
                                           lScheduleInputFilename,
                                           lODInputFilename,
+                                          lFRAT5InputFilename,
+                                          lFFDisutilityInputFilename,
                                           lYieldInputFilename,
                                           isBuiltin, isForSchedule),
                      AIRINV::ScheduleFileParsingFailedException);

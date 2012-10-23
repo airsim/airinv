@@ -67,21 +67,9 @@ namespace AIRINV {
     // Update the commited space of the segment-cabin.
     ioSegmentCabin.updateFromReservation (iNbOfBookings);
 
-    // Update the commited space of the member leg-cabins.
-    const stdair::LegCabinList_T& lLegCabinList =
-      stdair::BomManager::getList<stdair::LegCabin> (ioSegmentCabin);
-    for (stdair::LegCabinList_T::const_iterator itLegCabin =
-           lLegCabinList.begin();
-         itLegCabin != lLegCabinList.end(); ++itLegCabin) {
-      stdair::LegCabin* lLegCabin_ptr = *itLegCabin;
-      assert (lLegCabin_ptr != NULL);
-      lLegCabin_ptr->updateFromReservation (iNbOfBookings);
-    }
-
-    // Update the availability pool of all the segment-cabin which belong to the
-    // same flight-date.
-    const stdair::CabinCode_T& lCabinCode = ioSegmentCabin.getCabinCode();
-    FlightDateHelper::updateAvailablityPool (iFlightDate, lCabinCode);
+    // Update the availability of the flight-date.
+    FlightDateHelper::updateAvailability (iFlightDate, ioSegmentCabin,
+                                          iNbOfBookings);
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -122,16 +110,17 @@ namespace AIRINV {
     ioSegmentCabin.setBidPriceVector (lPseudoBidPriceVector);
     
     // // DEBUG
-    // std::ostringstream ostr;
-    // ostr << "Pseudo BPV: ";
+    // std::ostringstream oStr;
+    // oStr << "Pseudo BPV: ";
     // for (stdair::BidPriceVector_T::const_iterator itBP =
     //       lPseudoBidPriceVector.begin(); itBP != lPseudoBidPriceVector.end();
     //      ++itBP) {
     //   const stdair::BidPrice_T& lCurrentBP = *itBP;      
-    //   ostr << lCurrentBP << " ";
+    //   oStr << lCurrentBP << " ";
     // }
-    // //    STDAIR_LOG_DEBUG (ostr.str());
-    // std::cout << ostr.str() << std::endl;
+    // oStr << std::endl;
+    // // STDAIR_LOG_DEBUG (oStr.str());
+    // std::cout << oStr.str() << std::endl;
   }
 
   // ////////////////////////////////////////////////////////////////////
@@ -164,11 +153,16 @@ namespace AIRINV {
       assert(itBC != lBCList.end());
       // Browse the booking class list of the current node   
       const stdair::Yield_T& lYield = lNestingNode_ptr->getYield();
+      const FloatingPoint<double> lYieldFlotingPoint (lYield);
       stdair::BookingLimit_T lCumuBL = lAvlPool;
       for (stdair::BidPriceVector_T::const_reverse_iterator itBP =
            lPseudoBPV.rbegin(); itBP != lPseudoBPV.rend(); ++itBP) {
         const stdair::BidPrice_T& lBP = *itBP;
-        if (lYield < lBP) {
+        const FloatingPoint<double> lBPFlotingPoint (lBP);
+        const bool isAlmostEqual = 
+          lYieldFlotingPoint.AlmostEquals(lBPFlotingPoint);
+
+        if ((lYield < lBP) && (isAlmostEqual == false)) {
           lCumuBL = itBP - lPseudoBPV.rbegin();
           break;
         }
@@ -177,6 +171,11 @@ namespace AIRINV {
         stdair::BookingClass* lBC_ptr = *itBC;
         assert (lBC_ptr != NULL);
         lBC_ptr->setCumulatedBookingLimit (lCumuBL);
+        // DEBUG
+        // STDAIR_LOG_DEBUG("Updating the BL for class: "
+        //                  << lBC_ptr->describeKey()
+        //                  << ", with yield " << lNodeYield
+        //                  << " and BL: " << lCumuBL);
       }
     }
     // Update the authorization levels from the booking limits

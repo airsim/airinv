@@ -36,6 +36,8 @@
 #include <airinv/basic/BasConst_AIRINV_Service.hpp>
 #include <airinv/factory/FacAirinvServiceContext.hpp>
 #include <airinv/command/ScheduleParser.hpp>
+#include <airinv/command/FRAT5Parser.hpp>
+#include <airinv/command/FFDisutilityParser.hpp>
 #include <airinv/command/InventoryParser.hpp>
 #include <airinv/command/InventoryManager.hpp>
 #include <airinv/service/AIRINV_ServiceContext.hpp>
@@ -368,16 +370,21 @@ namespace AIRINV {
      * 1. Initialise the airline inventories
      */
     InventoryParser::buildInventory (iInventoryInputFilename, 
-				     lPersistentBomRoot);  
+				     lPersistentBomRoot);
+
+    /**
+     * 2. Try to export the airline features from the configuration holder.
+     */    
+    lSTDAIR_Service.updateAirlineFeatures();  
   
     /**
-     * 2. Build the complementary objects/links for the current component (here,
+     * 3. Build the complementary objects/links for the current component (here,
      *    AirInv)
      */ 
     buildComplementaryLinks (lPersistentBomRoot);
     
     /**
-     * 3. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
      *    service is owned by the current component (AirInv here).
      */
     if (doesOwnStdairService == true) {
@@ -391,6 +398,8 @@ namespace AIRINV {
   void AIRINV_Service::
   parseAndLoad (const stdair::ScheduleFilePath& iScheduleInputFilename,
                 const stdair::ODFilePath& iODInputFilename,
+                const stdair::FRAT5FilePath& iFRAT5InputFilename,
+                const stdair::FFDisutilityFilePath& iFFDisutilityInputFilename,
                 const AIRRAC::YieldFilePath& iYieldFilename) {   
 
     // Retrieve the AirInv service context
@@ -417,17 +426,24 @@ namespace AIRINV {
     /**
      * 1. Initialise the airline inventories
      */
+    FRAT5Parser::parse (iFRAT5InputFilename, lPersistentBomRoot);
+    FFDisutilityParser::parse (iFFDisutilityInputFilename, lPersistentBomRoot);
     ScheduleParser::generateInventories (iScheduleInputFilename, 
-					 lPersistentBomRoot);
+					 lPersistentBomRoot);  
 
     /**
-     * 2. Build the complementary objects/links for the current component (here,
+     * 2. Try to export the airline features from the configuration holder.
+     */   
+    lSTDAIR_Service.updateAirlineFeatures();
+   
+    /**
+     * 3. Build the complementary objects/links for the current component (here,
      *    AirInv)
      */ 
     buildComplementaryLinks (lPersistentBomRoot);
  
     /**
-     * 3. Delegate the complementary building of objects and links by the
+     * 4. Delegate the complementary building of objects and links by the
      *    appropriate levels/components
      * 
      */
@@ -444,10 +460,10 @@ namespace AIRINV {
      *       because it needs information filled in by this call
      *       (such as the boarding date and time at the segment date level)
      */ 
-    lAIRRAC_Service.updateYields(lPersistentBomRoot);
+    lAIRRAC_Service.updateYields(lPersistentBomRoot); 
 
     /**
-     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     * 5. Have AirInv clone the whole persistent BOM tree, only when the StdAir
      *    service is owned by the current component (AirInv here).
      */
     if (doesOwnStdairService == true) {
@@ -517,10 +533,15 @@ namespace AIRINV {
      * 3. Build the complementary objects/links for the current component (here,
      *    AirInv.
      */
-    buildComplementaryLinks (lPersistentBomRoot);
+    buildComplementaryLinks (lPersistentBomRoot); 
 
     /**
-     * 4. Have AirInv clone the whole persistent BOM tree, only when the StdAir
+     * 4. Try to export the airline features from the configuration holder.
+     */   
+    lSTDAIR_Service.updateAirlineFeatures();
+
+    /**
+     * 5. Have AirInv clone the whole persistent BOM tree, only when the StdAir
      *    service is owned by the current component (AirInv here).
      */
     if (doesOwnStdairService == true) {
@@ -1100,28 +1121,45 @@ namespace AIRINV {
     stdair::STDAIR_Service& lSTDAIR_Service =
       lAIRINV_ServiceContext.getSTDAIR_Service();
     stdair::BomRoot& lBomRoot = lSTDAIR_Service.getBomRoot();
-    stdair::Inventory& lInventory =
-      stdair::BomManager::getObject<stdair::Inventory> (lBomRoot, iAirlineCode);
-    stdair::FlightDate& lFlightDate =
-      stdair::BomManager::getObject<stdair::FlightDate> (lInventory,
-                                                         iFDDescription);
+    stdair::Inventory* lInventory_ptr =
+      stdair::BomManager::getObjectPtr<stdair::Inventory> (lBomRoot, iAirlineCode);
+    if (lInventory_ptr == NULL) {
+      std::ostringstream oErrorMessage;
+      oErrorMessage << "The Inventory '" << iAirlineCode
+                    << "', can not be retrieved.";
+      STDAIR_LOG_ERROR (oErrorMessage.str());
+      throw InventoryNotFoundException (oErrorMessage.str());
+    }
+    assert (lInventory_ptr != NULL);
+    stdair::FlightDate* lFlightDate_ptr =
+      stdair::BomManager::getObjectPtr<stdair::FlightDate> (*lInventory_ptr,
+                                                            iFDDescription);
+    if (lFlightDate_ptr == NULL) {
+      std::ostringstream oErrorMessage;
+      oErrorMessage << "The flight date '" << iFDDescription
+                    << "', can not be retrieved in the '"
+                    << iAirlineCode << "' inventory.";
+      STDAIR_LOG_ERROR (oErrorMessage.str());
+      throw FlightDateNotFoundException (oErrorMessage.str());
+    }
+    assert (lFlightDate_ptr != NULL);
 
     const stdair::UnconstrainingMethod& lUnconstrainingMethod =
-      lInventory.getUnconstrainingMethod();   
+      lInventory_ptr->getUnconstrainingMethod();   
     const stdair::ForecastingMethod& lForecastingMethod =
-      lInventory.getForecastingMethod(); 
+      lInventory_ptr->getForecastingMethod(); 
     const stdair::PreOptimisationMethod& lPreOptimisationMethod =
-      lInventory.getPreOptimisationMethod();
+      lInventory_ptr->getPreOptimisationMethod();
     const stdair::OptimisationMethod& lOptimisationMethod =
-      lInventory.getOptimisationMethod();
+      lInventory_ptr->getOptimisationMethod();
     const stdair::PartnershipTechnique& lPartnershipTechnique =
-      lInventory.getPartnershipTechnique();
+      lInventory_ptr->getPartnershipTechnique();
 
     // Retrieve the RMOL service.
-    RMOL::RMOL_Service& lRMOL_Service =lAIRINV_ServiceContext.getRMOL_Service();
+    RMOL::RMOL_Service& lRMOL_Service = lAIRINV_ServiceContext.getRMOL_Service();
 
     // Optimise the flight-date.
-    bool isOptimised = lRMOL_Service.optimise (lFlightDate, iRMEventTime,
+    bool isOptimised = lRMOL_Service.optimise (*lFlightDate_ptr, iRMEventTime,
                                                lUnconstrainingMethod,
                                                lForecastingMethod,
                                                lPreOptimisationMethod,
@@ -1137,7 +1175,8 @@ namespace AIRINV {
     // authorization level and does not compute the bid price vector.
     // So if EMSRb is used, do not call updateBookingControls.
     if (isOptimised == true && isEMSRb == false) {
-      InventoryManager::updateBookingControls (lFlightDate);
-    }
+      InventoryManager::updateBookingControls (*lFlightDate_ptr);
+      InventoryManager::recalculateAvailability (*lFlightDate_ptr);
+    } 
   }
 }

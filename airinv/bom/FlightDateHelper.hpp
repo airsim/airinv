@@ -23,13 +23,27 @@ namespace AIRINV {
         and off dates). */
     static void fillFromRouting (const stdair::FlightDate&);
 
+    /** Update the availability of all classes after a reservation. */
+    static void updateAvailability (const stdair::FlightDate&,
+                                   const stdair::SegmentCabin&,
+                                   const stdair::PartySize_T& iNbOfBookings);
+
     /** Update the availability pool of all the segment-cabins after a
         reservation. */
-    static void updateAvailablityPool (const stdair::FlightDate&,
+    static void updateAvailabilityPool (const stdair::FlightDate&,
                                        const stdair::CabinCode_T&);
+
+    /** Recalculate the availability of all the segment-cabins after a
+        reservation. */
+    static void recalculateAvailability (const stdair::FlightDate&,
+                                         const stdair::CabinCode_T&);
 
     /** Update booking controls after optimisation. */
     static void updateBookingControls (stdair::FlightDate&);
+
+    /** Recalculate the availability of all the segment-cabins after an
+        optimisation. */
+    static void recalculateAvailability (const stdair::FlightDate&);
   };
 
 }

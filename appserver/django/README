@@ -18,6 +18,7 @@ yum -y install httpd phpMyAdmin mysql-server
 yum -y install Django django-piston python-docutils python-simplejson python-zmq
 yum -y install gdal-devel gdal-python proj-devel proj-epsg proj-nad
 yum -y install soci-mysql-devel zeromq-devel stdair-devel
+yum -y install MySQL-python
 
 ##
 # Mirror for the client-side JavaScript libraries
