@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Next Events</title>
 <script type="text/javascript" src="js/airsimbean.js"></script>
+<script type="text/javascript" src="config.js"></script>
 <link type="text/css" href="js/mylibs/jQueryUI/css/redmond/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="js/mylibs/extJS/resources/css/ext-all.css" />
 <link rel="stylesheet" type="text/css" href="js/mylibs/extJS/resources/css/grid.css" />
@@ -94,7 +95,8 @@ body {
 </body>
 
 <script type="text/javascript">
-var serverURL = "http://ncevsediri-fed/api/";
+var localServer = currentServer; 
+var serverURL = currentServer + "api/";
 var tli;
 var eventSource;
 var listOfBreak_Points;
@@ -171,7 +173,7 @@ var bandInfos;
 			eventSource.add(evt);
 			tli.paint();
 		} 
-		refreshBookingEvents();
+		refreshBookingEvents(serverURL);
 	}
 
 	var resizeTimerID = null;
@@ -193,7 +195,7 @@ var bandInfos;
 			{
 				document.getElementById('spanCurrentBreakpoint').innerHTML = data.done;
 				tli.getBand(0).date = data.done; //does not seem to work
-				refreshBookingEvents();
+				refreshBookingEvents(serverURL);
 			}else{
 				alert("Simulation is finished");
 			}

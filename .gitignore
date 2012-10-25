@@ -18,4 +18,5 @@ config/missing
 configure
 airinv/config.h.in*
 test/airinv/InventoryTestSuite_results.xml
+airinv/ui/browser/config.js
 

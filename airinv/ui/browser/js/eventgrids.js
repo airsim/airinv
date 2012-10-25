@@ -34,12 +34,9 @@ Ext.define('eventsinfo', {
 Ext.QuickTips.init();
 Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
 
-var url = "http://ncevsediri-fed/api/get/events/";
-
-
-function refreshBookingEvents()
+function refreshBookingEvents(serverURL)
 {
-	
+	var url = serverURL +  "get/events/"
 	$.getJSON(url + "callback=?", function(data) {	
 	
 	//console.log(data);

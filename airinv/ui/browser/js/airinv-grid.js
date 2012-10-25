@@ -132,7 +132,7 @@ function loadGrids(rawJSON)
 	
 	var tempSegs;
 	var tempCabs;
-	//var url="http://ncevsediri-fed/api/display/inv/SV/5/2010-Mar-11";
+	
     var store_flights = Ext.create('Ext.data.Store', {
         model: 'flightinfo',
         proxy: {
@@ -216,7 +216,7 @@ function loadGrids(rawJSON)
 		if(selectedRecord[0] != undefined)
 		{
 			selectedSegment = selectedRecord[0].data.segment;
-			console.log("Segment selected is: " + selectedSegment);
+			//console.log("Segment selected is: " + selectedSegment);
 			
 			var $tabs = $('#tabs').tabs();		
 			$tabs.tabs('select', 0); // switch to first tab
@@ -227,7 +227,7 @@ function loadGrids(rawJSON)
 				if(rawJSON.flight_date.segments[i].segment == selectedSegment)
 				{	
 					tempSegs = rawJSON.flight_date.segments[i];
-					console.log(tempSegs);
+					//console.log(tempSegs);
 				}
 			}
 			
@@ -264,7 +264,7 @@ function loadGrids(rawJSON)
 			selectedLegBoard = selectedRecord[0].data.board_point;
 			selectedLegOff = selectedRecord[0].data.off_point;
 			
-			console.log("Leg selected is: " + selectedLegBoard +" to " + selectedLegOff);
+			//console.log("Leg selected is: " + selectedLegBoard +" to " + selectedLegOff);
 			chartLegName = selectedLegBoard +" to " + selectedLegOff;
 			
 			var displayLeg = selectedRecord[0].data.board_point;
@@ -280,10 +280,7 @@ function loadGrids(rawJSON)
 					BPVData = rawJSON.flight_date.legs[i].cabins[0].BPV;
 					chartFlightName = rawJSON.flight_date.airline_code + " " + rawJSON.flight_date.flight_number;
 					
-					console.log(BPVData);
-					//console.log(chartFlightName);
-					//console.log(chartLegName);
-					//console.log(tempCabs);
+					//console.log(BPVData);
 				}
 			}
 			
