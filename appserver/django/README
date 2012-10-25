@@ -100,14 +100,14 @@ make install
 ./AirInvClient
 
 ##
-# Set-up the JavaScript script for the grid data fecther
+# Set-up the JavaScript script server URL
 ##
-su - ${MY_USER}
 cd ${AIRINV_DIR}/ui/browser/js
-# Search for 'var url = "http://[...]/api/display/inv/[...]"' (circa line 185)
-# and replace by the appropriate host name (${MY_HOST}). Remember that that
-# code may be executed by external browser clients. Hence, 'localhost' does
-# not fit in there.
+cp config.js.sample config.js
+# Replace the 'var currentServer = "http://[...]/"  in the config.js file by 
+# the appropriate host name (${MY_HOST}). Remember that that code may be 
+# executed by external browser clients. Hence, 'localhost' does not fit in 
+# there.
 
 ##
 # Install the ExtJS and jQueryUI libraries
