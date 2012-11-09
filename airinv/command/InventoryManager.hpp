@@ -102,12 +102,22 @@ namespace AIRINV {
     static void recalculateAvailability (stdair::FlightDate&);
 
   public:
-    /** Create the direct accesses within the invetories suck as links between
+    /** Create the direct accesses within the inventories suck as links between
         leg-date and segment-date, ect. */
     static void createDirectAccesses (const stdair::BomRoot&);
-    static void createDirectAccesses (stdair::Inventory&);
-    static void createDirectAccesses (stdair::FlightDate&);
+    static void createDirectAccesses (const stdair::BomRoot&,
+                                      stdair::Inventory&);
+    static void createDirectAccesses (const stdair::BomRoot&,
+                                      stdair::Inventory&, stdair::FlightDate&);
     static void createDirectAccesses (stdair::SegmentDate&);
+
+    /** Create the direct accesses within the inventories suck as the link
+        between a marketing segment date and its operating one. */
+    static void createPartnerAccesses (const stdair::BomRoot&,
+                                       stdair::Inventory&);
+    static void createPartnerAccesses (stdair::FlightDate&);
+    static void createPartnerAccesses (const stdair::BomRoot&,
+                                       stdair::Inventory&, stdair::FlightDate&);
 
 
     /** Build the similar segment-cabin sets and the corresponding 

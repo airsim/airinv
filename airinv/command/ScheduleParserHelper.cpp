@@ -94,6 +94,11 @@ namespace AIRINV {
         
       // Reset the number of seconds
       _flightPeriod._itSeconds = 0;
+
+      // Set the (default) operating airline and flight number
+      _flightPeriod._itLeg._airlineCode = _flightPeriod._airlineCode;
+      _flightPeriod._itLeg._flightNumber = _flightPeriod._flightNumber;
+
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -162,7 +167,9 @@ namespace AIRINV {
     void storeOperatingAirlineCode::operator() (iterator_t iStr,
                                                 iterator_t iStrEnd) const { 
       const stdair::AirlineCode_T lAirlineCode (iStr, iStrEnd);
-      _flightPeriod._itLeg._airlineCode = lAirlineCode;
+      if (lAirlineCode.size() == 2) {
+        _flightPeriod._itLeg._airlineCode = lAirlineCode;
+      }
       //STDAIR_LOG_DEBUG ("Airline code: " << lAirlineCode);
     }
 

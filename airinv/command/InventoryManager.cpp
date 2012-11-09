@@ -28,6 +28,7 @@
 #include <stdair/bom/RMEventStruct.hpp>
 #include <stdair/bom/FareFamily.hpp> // Contains the definition of FareFamilyList_T
 #include <stdair/bom/BookingClass.hpp> //
+#include <stdair/bom/BomRetriever.hpp>
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/factory/FacBom.hpp>
 #include <stdair/service/Logger.hpp>// SEvMgr
@@ -738,7 +739,7 @@ namespace AIRINV {
 
     // Make the snapshots within the inventory
     InventoryHelper::takeSnapshots (iInventory, iSnapshotTime);
-  }
+  } 
     
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
@@ -753,16 +754,27 @@ namespace AIRINV {
       stdair::Inventory* lCurrentInv_ptr = *itInv;
       assert (lCurrentInv_ptr != NULL);
 
-      createDirectAccesses (*lCurrentInv_ptr);
+      createDirectAccesses (iBomRoot, *lCurrentInv_ptr);
+    }
+
+    // Browse the list of inventories and create partner accesses
+    // within each inventory.
+    for (stdair::InventoryList_T::const_iterator itInv = lInvList.begin();
+         itInv != lInvList.end(); ++itInv) {
+      stdair::Inventory* lCurrentInv_ptr = *itInv;
+      assert (lCurrentInv_ptr != NULL);
+      
+      createPartnerAccesses (iBomRoot, *lCurrentInv_ptr);
     }
 
     // Fill some attributes of segment-date with the routing legs.
-    BomRootHelper::fillFromRouting (iBomRoot);
+    BomRootHelper::fillFromRouting (iBomRoot);	
   }
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
-  createDirectAccesses (stdair::Inventory& ioInventory) {
+  createDirectAccesses (const stdair::BomRoot& iBomRoot,
+                        stdair::Inventory& ioInventory) {
 
     // Browse the list of flight-dates and create direct accesses
     // within each flight-date.
@@ -774,13 +786,33 @@ namespace AIRINV {
       stdair::FlightDate* lCurrentFlightDate_ptr = *itFlightDate;
       assert (lCurrentFlightDate_ptr != NULL);
 
-      createDirectAccesses (*lCurrentFlightDate_ptr);
+      createDirectAccesses (iBomRoot, ioInventory, *lCurrentFlightDate_ptr);
     }
-  }
+    
+    // Browse the list of inventories and create direct accesses
+    // within each inventory.
+    const bool hasInventoryList =
+      stdair::BomManager::hasList<stdair::Inventory> (ioInventory);
+    if (hasInventoryList == true) {
+      const stdair::InventoryList_T& lInvList =
+        stdair::BomManager::getList<stdair::Inventory> (ioInventory);
+      for (stdair::InventoryList_T::const_iterator itInv = lInvList.begin();
+           itInv != lInvList.end(); ++itInv) {
+        stdair::Inventory* lCurrentInv_ptr = *itInv;
+        assert (lCurrentInv_ptr != NULL);
+
+        createDirectAccesses (iBomRoot, *lCurrentInv_ptr);
+      }
+    }
+  } 
 
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
-  createDirectAccesses (stdair::FlightDate& ioFlightDate) {
+  createDirectAccesses (const stdair::BomRoot& ioBomRoot,
+                         stdair::Inventory& ioInventory,
+                         stdair::FlightDate& ioFlightDate) {
+
+    bool areSegmentAndRoutingLegLinked = false;
 
     // Browse the list of segment-dates and create direct accesses
     // within each segment-date.
@@ -791,51 +823,33 @@ namespace AIRINV {
          itSegmentDate != lSegmentDateList.end(); ++itSegmentDate) {
 
       stdair::SegmentDate* lCurrentSegmentDate_ptr = *itSegmentDate;
-      assert (lCurrentSegmentDate_ptr != NULL);
+      assert (lCurrentSegmentDate_ptr != NULL);	
 
-      /*
-       * If the segment is just marketed by this carrier,
-       * retrieve the operating segment and call the createDirectAcces
-       * method on its parent (flight date).
-       */
-      const stdair::SegmentDate* lOperatingSegmentDate_ptr =
-        lCurrentSegmentDate_ptr->getOperatingSegmentDate ();
-      if (lOperatingSegmentDate_ptr == NULL) {
+      // Get the routing leg keys list
+      const stdair::RoutingLegKeyList_T& lRoutingLegKeyList = 
+	lCurrentSegmentDate_ptr->getLegKeyList ();
 
-        const stdair::AirportCode_T& lBoardingPoint =
-          lCurrentSegmentDate_ptr->getBoardingPoint();
+      // Browse the list of routing leg keys and try to create direct accesses
+      // with each corresponding leg date.
+      for (stdair::RoutingLegKeyList_T::const_iterator itRoutingLegKey = 
+           lRoutingLegKeyList.begin();
+         itRoutingLegKey != lRoutingLegKeyList.end(); ++itRoutingLegKey) {
+
+	// Try to retrieve the routing LegDate within the flight date
+	stdair::LegDate* lLegDate_ptr = stdair::BomRetriever::
+	  retrieveOperatingLegDateFromLongKey (ioFlightDate, *itRoutingLegKey);
         
-        stdair::AirportCode_T currentBoardingPoint = lBoardingPoint;
-        const stdair::AirportCode_T& lOffPoint =
-          lCurrentSegmentDate_ptr->getOffPoint();
-        
-        // Add a sanity check so as to ensure that the loop stops. If
-        // there are more than MAXIMAL_NUMBER_OF_LEGS legs, there is
-        // an issue somewhere in the code (not in the parser, as the
-        // segments are derived from the legs thanks to the
-        // FlightPeriodStruct::buildSegments() method).
-        unsigned short i = 1;
-        while (currentBoardingPoint != lOffPoint
-               && i <= stdair::MAXIMAL_NUMBER_OF_LEGS_IN_FLIGHT) {
-          // Retrieve the (unique) LegDate getting that Boarding Point
-          stdair::LegDate& lLegDate = stdair::BomManager::
-            getObject<stdair::LegDate> (ioFlightDate, currentBoardingPoint);
-          
+	if (lLegDate_ptr != NULL) {
+
           // Link the SegmentDate and LegDate together
           stdair::FacBomManager::addToListAndMap (*lCurrentSegmentDate_ptr,
-                                                  lLegDate);
-          stdair::FacBomManager::addToListAndMap (lLegDate,
+                                                  *lLegDate_ptr);
+          stdair::FacBomManager::addToListAndMap (*lLegDate_ptr,
                                                   *lCurrentSegmentDate_ptr);
-          
-          // Prepare the next iteration
-          currentBoardingPoint = lLegDate.getOffPoint();
-          ++i;
+          areSegmentAndRoutingLegLinked = true;
         }
-        assert (i <= stdair::MAXIMAL_NUMBER_OF_LEGS_IN_FLIGHT);
-        
-        // Create the routing for the leg- and segment-cabins.
-        // At the same time, set the SegmentDate attributes derived from
-        // its routing legs (e.g., boarding and off dates).
+      }
+      if (areSegmentAndRoutingLegLinked == true) {
         createDirectAccesses (*lCurrentSegmentDate_ptr);
       }
     }
@@ -906,6 +920,107 @@ namespace AIRINV {
       }      
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  createPartnerAccesses (const stdair::BomRoot& iBomRoot,
+                        stdair::Inventory& ioInventory) {
+
+    // Browse the list of flight-dates and create partner accesses
+    // within each flight-date.
+    const stdair::FlightDateList_T& lFlightDateList = 
+      stdair::BomManager::getList<stdair::FlightDate> (ioInventory);
+    for (stdair::FlightDateList_T::const_iterator itFlightDate = 
+           lFlightDateList.begin();
+         itFlightDate != lFlightDateList.end(); ++itFlightDate) {
+      stdair::FlightDate* lCurrentFlightDate_ptr = *itFlightDate;
+      assert (lCurrentFlightDate_ptr != NULL);
+
+      createPartnerAccesses (iBomRoot, ioInventory, *lCurrentFlightDate_ptr);
+    }
+  }
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryManager::
+  createPartnerAccesses (const stdair::BomRoot& ioBomRoot,
+                         stdair::Inventory& ioInventory,
+                         stdair::FlightDate& ioFlightDate) {
+
+    // Browse the list of segment-dates and create partner accesses
+    // within each segment-date.
+    const stdair::SegmentDateList_T& lSegmentDateList = 
+      stdair::BomManager::getList<stdair::SegmentDate> (ioFlightDate);
+    for (stdair::SegmentDateList_T::const_iterator itSegmentDate = 
+           lSegmentDateList.begin();
+         itSegmentDate != lSegmentDateList.end(); ++itSegmentDate) {
+
+      stdair::SegmentDate* lCurrentSegmentDate_ptr = *itSegmentDate;
+      assert (lCurrentSegmentDate_ptr != NULL);	
+
+      // Get the routing leg keys list
+      const stdair::RoutingLegKeyList_T& lRoutingLegKeyList = 
+	lCurrentSegmentDate_ptr->getLegKeyList ();
+
+      // Browse the list of routing leg keys and try to create partner accesses
+      // with each corresponding leg date.
+      for (stdair::RoutingLegKeyList_T::const_iterator itRoutingLegKey = 
+           lRoutingLegKeyList.begin();
+         itRoutingLegKey != lRoutingLegKeyList.end(); ++itRoutingLegKey) {
+
+	// Try to retrieve the LegDate getting that Boarding Point within the
+        // flight date
+	stdair::LegDate* lLegDate_ptr = stdair::BomRetriever::
+	  retrieveOperatingLegDateFromLongKey (ioFlightDate, *itRoutingLegKey);
+
+        // If there is no LegDate getting that Boarding Point within the flight
+        // date, the segment is operating by a partner
+	if (lLegDate_ptr == NULL) {
+
+          // Retrieve the (unique) operating LegDate getting that Boarding Point
+          // within the partner inventory
+          std::ostringstream lRoutingSegmentKey;
+          lRoutingSegmentKey << *itRoutingLegKey << ";"
+                             << lCurrentSegmentDate_ptr->getOffPoint();
+          
+          stdair::SegmentDate* lPartnerOperatingSegmentDate_ptr =
+            stdair::BomRetriever::
+            retrievePartnerSegmentDateFromLongKey (ioInventory,
+                                                   lRoutingSegmentKey.str());
+          assert (lPartnerOperatingSegmentDate_ptr != NULL);
+
+          // Link the current segment date with its operating one
+          stdair::FacBomManager::linkWithOperating (*lCurrentSegmentDate_ptr,
+                                                    *lPartnerOperatingSegmentDate_ptr);
+
+          stdair::SegmentDate* lOperatingSegmentDate_ptr =
+            stdair::BomRetriever::
+            retrieveSegmentDateFromLongKey (ioBomRoot,
+                                            lRoutingSegmentKey.str());
+          assert(lOperatingSegmentDate_ptr != NULL);
+
+          stdair::Inventory* lInventory_ptr =
+            stdair::BomRetriever::
+            retrieveInventoryFromLongKey (ioBomRoot, *itRoutingLegKey);
+          assert (lInventory_ptr != NULL);
+
+          std::ostringstream lRoutingSegment;
+          lRoutingSegment << ioFlightDate.getAirlineCode() << ";"
+                          << ioFlightDate.describeKey() << ";"
+                          << lCurrentSegmentDate_ptr->getBoardingPoint() << ";"
+                          << lCurrentSegmentDate_ptr->getOffPoint();
+
+          stdair::SegmentDate* lPartnerMarketingSegmentDate_ptr =
+            stdair::BomRetriever::
+            retrievePartnerSegmentDateFromLongKey (*lInventory_ptr, lRoutingSegment.str());
+          assert(lPartnerMarketingSegmentDate_ptr  != NULL);
+
+          stdair::FacBomManager::addToList (*lOperatingSegmentDate_ptr, *lPartnerMarketingSegmentDate_ptr);
+
+        }
+      }
+    }
+  }
+
     
   // ////////////////////////////////////////////////////////////////////
   void InventoryManager::
