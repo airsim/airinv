@@ -52,6 +52,10 @@ namespace AIRINV {
     ioLegDate.setOffTime (_offTime);
     // Set the Elapsed Time
     ioLegDate.setElapsedTime (_elapsed);
+    // Set the operating airline code
+    ioLegDate.setOperatingAirlineCode (_airlineCode);
+    // Set the operating flight number
+    ioLegDate.setOperatingFlightNumber (_flightNumber);
   }
 
   // //////////////////////////////////////////////////////////////////////
@@ -68,6 +72,10 @@ namespace AIRINV {
     ioLegDate.setOffTime (_offTime);
     // Set the Elapsed Time
     ioLegDate.setElapsedTime (_elapsed);
+    // Set the operating airline code
+    ioLegDate.setOperatingAirlineCode (_airlineCode);
+    // Set the operating flight number
+    ioLegDate.setOperatingFlightNumber (_flightNumber);
   }
 
 }
