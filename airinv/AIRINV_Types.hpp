@@ -49,6 +49,19 @@ namespace AIRINV {
   };
 
   /**
+   * Missing partner flight date within the schedule file.
+   */
+  class MissingPartnerFlightDateWithinScheduleFile
+    : public ScheduleFileParsingFailedException {
+  public:
+    /**
+     * Constructor.
+     */
+    MissingPartnerFlightDateWithinScheduleFile (const std::string& iWhat)
+      : ScheduleFileParsingFailedException (iWhat) {}
+  };
+
+  /**
    * The FRAT5 input file can not be parsed.
    */
   class FRAT5FileParsingFailedException
