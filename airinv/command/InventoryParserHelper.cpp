@@ -143,8 +143,11 @@ namespace AIRINV {
       _flightDate._itLegCabin._bucketList.clear();
       _flightDate._itBucket._yieldRangeUpperValue = 0.0;
 
-
       // ///////////////////
+      // Set the (default) operating airline and flight number
+      _flightDate._itLeg._airlineCode = _flightDate._airlineCode;
+      _flightDate._itLeg._flightNumber = _flightDate._flightNumber;
+      
       // Set the (new) boarding point
       _flightDate._itLeg._boardingPoint = lBoardingPoint;
       
