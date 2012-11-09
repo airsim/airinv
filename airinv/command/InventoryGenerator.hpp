@@ -64,6 +64,11 @@ namespace AIRINV {
     static void createFlightDate (stdair::BomRoot&, stdair::Inventory&,
                                   const stdair::Date_T&,
                                   const FlightPeriodStruct&);
+
+    /**
+     * Add the corresponding routing leg key to each segment date.
+     */
+    static void createRoutingLegKey (stdair::FlightDate&);
       
     /**
      * Generate a leg-date.

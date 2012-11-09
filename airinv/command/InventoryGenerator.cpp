@@ -23,7 +23,8 @@
 #include <stdair/bom/SimpleNestingStructure.hpp>
 #include <stdair/bom/NestingNode.hpp>
 #include <stdair/bom/Policy.hpp>
-#include <stdair/bom/Bucket.hpp>
+#include <stdair/bom/Bucket.hpp>  
+#include <stdair/bom/BomKeyManager.hpp>
 #include <stdair/factory/FacBomManager.hpp>
 #include <stdair/service/Logger.hpp>
 // AirInv
@@ -158,6 +159,54 @@ namespace AIRINV {
       const SegmentStruct& lSegment = *itSegment;
 
       createSegmentDate (ioBomRoot, *lFlightDate_ptr, lSegment);
+    }
+
+    createRoutingLegKey (*lFlightDate_ptr);
+  }  
+
+  // ////////////////////////////////////////////////////////////////////
+  void InventoryGenerator::
+  createRoutingLegKey (stdair::FlightDate& ioFlightDate) {
+
+    // Browse the list of segment-dates and create direct accesses
+    // within each segment-date.
+    const stdair::SegmentDateList_T& lSegmentDateList = 
+      stdair::BomManager::getList<stdair::SegmentDate> (ioFlightDate);
+    for (stdair::SegmentDateList_T::const_iterator itSegmentDate = 
+           lSegmentDateList.begin();
+         itSegmentDate != lSegmentDateList.end(); ++itSegmentDate) {
+
+      stdair::SegmentDate* lCurrentSegmentDate_ptr = *itSegmentDate;
+      assert (lCurrentSegmentDate_ptr != NULL);
+
+      const stdair::AirportCode_T& lBoardingPoint =
+        lCurrentSegmentDate_ptr->getBoardingPoint();
+        
+      stdair::AirportCode_T currentBoardingPoint = lBoardingPoint;
+      const stdair::AirportCode_T& lOffPoint =
+        lCurrentSegmentDate_ptr->getOffPoint();
+        
+      // Add a sanity check so as to ensure that the loop stops. If
+      // there are more than MAXIMAL_NUMBER_OF_LEGS legs, there is
+      // an issue somewhere in the code (not in the parser, as the
+      // segments are derived from the legs thanks to the
+      // FlightPeriodStruct::buildSegments() method).
+      unsigned short i = 1;
+      while (currentBoardingPoint != lOffPoint
+             && i <= stdair::MAXIMAL_NUMBER_OF_LEGS_IN_FLIGHT) {
+        // Retrieve the (unique) LegDate getting that Boarding Point
+        stdair::LegDate& lLegDate = stdair::BomManager::
+          getObject<stdair::LegDate> (ioFlightDate, currentBoardingPoint);
+        
+        // Link the SegmentDate and LegDate together
+        const std::string& lRoutingKeyStr = lLegDate.describeRoutingKey();
+        lCurrentSegmentDate_ptr->addLegKey(lRoutingKeyStr);
+          
+        // Prepare the next iteration
+        currentBoardingPoint = lLegDate.getOffPoint();
+        ++i;
+      }
+      assert (i <= stdair::MAXIMAL_NUMBER_OF_LEGS_IN_FLIGHT);
     }
   }
 
