@@ -95,6 +95,22 @@ namespace AIRINV {
       storeLegOffPoint (FlightDateStruct&);
       /** Actor Function (functor). */
       void operator() (iterator_t iStr, iterator_t iStrEnd) const;
+    };    
+
+    /** Store the parsed operating airline code. */
+    struct storeOperatingAirlineCode : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeOperatingAirlineCode (FlightDateStruct&);
+      /** Actor Function (functor). */
+      void operator() (iterator_t iStr, iterator_t iStrEnd) const;
+    };
+  
+    /** Store the parsed operating flight number. */
+    struct storeOperatingFlightNumber : public ParserSemanticAction {
+      /** Actor Constructor. */
+      storeOperatingFlightNumber (FlightDateStruct&);
+      /** Actor Function (functor). */
+      void operator() (unsigned int iNumber) const;
     };
 
     /** Store the boarding date. */
@@ -465,7 +481,7 @@ namespace AIRINV {
           not_to_be_parsed,
           flight_date, flight_date_end, flight_key, airline_code, flight_number,
           flight_type_code, flight_visibility_code,
-          date, leg_list, leg, leg_key, leg_details,
+          date, leg_list, leg, operating_leg_details, leg_key, leg_details,
           leg_cabin_list, leg_cabin_details,
           bucket_list, bucket_details,
           time, segment_list, segment, segment_key, full_segment_cabin_details,
