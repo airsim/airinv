@@ -1,3 +1,13 @@
+2012-12-12:
+- [Dev] Computation of availability done after each booking instead of each request.
+- [Dev] Operating airline code and flight number can be defined either in the
+  schedule or in the inventory input file.
+- [Dev] AirInv now depends on SEvMgr which allows to add events in the
+  queue (such as revenue management events, inventory snapshots).
+- [WebApp] New services in the Django-based Web application exchanging JSON
+  messages with the C++ server.
+- [Build] Test coverage option with gcov.
+
 2011-12-04:
 - Version 0.1.2
 - [Doc] Added a missing BOM tree (PNG) image. The (PDF) reference manual is now
