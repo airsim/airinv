@@ -169,7 +169,36 @@ namespace AIRINV {
 
       // Add the airport code if it is not already stored in the airport lists
       _flightDate.addAirport (lOffPoint);
+    }  
+
+    // //////////////////////////////////////////////////////////////////
+    storeOperatingAirlineCode::
+    storeOperatingAirlineCode (FlightDateStruct& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
     }
+    
+    // //////////////////////////////////////////////////////////////////
+    void storeOperatingAirlineCode::operator() (iterator_t iStr,
+                                                iterator_t iStrEnd) const { 
+      const stdair::AirlineCode_T lAirlineCode (iStr, iStrEnd);
+      if (lAirlineCode.size() == 2) {
+        _flightDate._itLeg._airlineCode = lAirlineCode;
+      }
+      //STDAIR_LOG_DEBUG ("Airline code: " << lAirlineCode);
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    storeOperatingFlightNumber::
+    storeOperatingFlightNumber (FlightDateStruct& ioFlightDate)
+      : ParserSemanticAction (ioFlightDate) {
+    }
+
+    // //////////////////////////////////////////////////////////////////
+    void storeOperatingFlightNumber::operator() (unsigned int iNumber) const { 
+      _flightDate._itLeg._flightNumber = iNumber;
+      //STDAIR_LOG_DEBUG ("Flight number: " << iNumber);
+    }
+
 
     // //////////////////////////////////////////////////////////////////
     storeBoardingDate::storeBoardingDate (FlightDateStruct& ioFlightDate)
@@ -923,9 +952,16 @@ namespace AIRINV {
         ;
 
       leg_list = +( '/' >> leg )
+        ; 
+
+      leg = !( operating_leg_details >> ';' )
+        >> leg_key >> ';' >> leg_details >> leg_cabin_list
         ;
-      
-      leg = leg_key >> ';' >> leg_details >> leg_cabin_list
+
+      operating_leg_details =
+        bsc::lexeme_d[(airline_code_p)[storeOperatingAirlineCode(self._flightDate)] ]
+        >> ";"
+        >> bsc::lexeme_d[(flight_number_p)[storeOperatingFlightNumber(self._flightDate)] ]
         ;
 	 
       leg_key = (airport_p)[storeLegBoardingPoint(self._flightDate)]
@@ -1051,6 +1087,7 @@ namespace AIRINV {
       BOOST_SPIRIT_DEBUG_NODE (date);
       BOOST_SPIRIT_DEBUG_NODE (leg_list);
       BOOST_SPIRIT_DEBUG_NODE (leg);
+      BOOST_SPIRIT_DEBUG_NODE (operating_leg_details);
       BOOST_SPIRIT_DEBUG_NODE (leg_key);
       BOOST_SPIRIT_DEBUG_NODE (leg_details);
       BOOST_SPIRIT_DEBUG_NODE (leg_cabin_list);
