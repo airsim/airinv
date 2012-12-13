@@ -31,7 +31,7 @@ Then, you need the following packages (Fedora/RedHat/CentOS names here,
 but names may vary according to distributions):
   * cmake
   * gcc-c++
-  * stdair-devel, airrac-devel, rmol-devel
+  * stdair-devel, airrac-devel, rmol-devel, sevmgr-devel
   * boost-devel
   * zeromq-devel
   * readline-devel
