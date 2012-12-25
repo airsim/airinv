@@ -80,9 +80,9 @@ Then, as usual:
 * To package the binary and the (HTML and PDF) documentation:
   make package
 * To browse the (just installed, if enabled) HTML documentation:
-  midori file://${INSTALL_BASEDIR}/airinv-99.99.99/share/doc/airinv-99.99.99/html/index.html
+  midori file://${INSTALL_BASEDIR}/airinv-stable/share/doc/airinv-1.00.0/html/index.html
 * To browse the (just installed, if enabled) PDF documentation:
-  evince ${INSTALL_BASEDIR}/airinv-99.99.99/share/doc/airinv-99.99.99/html/refman.pdf
+  evince ${INSTALL_BASEDIR}/airinv-stable/share/doc/airinv-1.00.0/html/refman.pdf
 * To run the local binary version:
   ./airinv/airinv -b
 * To run the installed version:
