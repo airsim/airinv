@@ -262,12 +262,15 @@ macro (packaging_set_other_options _package_type_list _source_package_type_list)
     "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}"
     CACHE INTERNAL "tarball basename")
   set (AUTOTOOLS_IGNRD "/tmp/;/tmp2/;/autom4te\\\\.cache/;autogen\\\\.sh$")
-  set (PACK_IGNRD "${CMAKE_CURRENT_BINARY_DIR};${CPACK_PACKAGE_NAME}\\\\.spec;\\\\.gz$;\\\\.bz2$")
+  set (PACK_IGNRD
+    "${CMAKE_CURRENT_BINARY_DIR};${CPACK_PACKAGE_NAME}\\\\.spec;\\\\.gz$;\\\\.bz2$")
   set (EDIT_IGNRD "\\\\.swp$;\\\\.#;/#;~$")
   set (SCM_IGNRD 
     "/CVS/;/\\\\.svn/;/\\\\.bzr/;/\\\\.hg/;/\\\\.git/;\\\\.gitignore$")
+  set (PYTHON_IGNRD "\\\\.pyc$")
+  set (JS_IGNRD "/browser/js/mylibs;/browser/libs")
   set (CPACK_SOURCE_IGNORE_FILES
-    "${AUTOTOOLS_IGNRD};${SCM_IGNRD};${EDIT_IGNRD};${PACK_IGNRD}"
+    "${AUTOTOOLS_IGNRD};${SCM_IGNRD};${EDIT_IGNRD};${PACK_IGNRD};${PYTHON_IGNRD};${JS_IGNRD}"
     CACHE STRING "CPACK will ignore these files")
   #set (CPACK_SOURCE_IGNORE_DIRECTORY ${CPACK_SOURCE_IGNORE_FILES} .git)
 
