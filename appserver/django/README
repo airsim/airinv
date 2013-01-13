@@ -8,16 +8,17 @@
 ##
 MY_USER=`whoami`
 HOME_DIR=/home/${MY_USER}
-AIRINV_DIR=${HOME_DIR}/dev/sim/airinv/airinvgit
+AIRINV_DIR=${HOME_DIR}/dev/sim/metasimgit/workspace/src/airinv
+#AIRINV_DIR=${HOME_DIR}/dev/sim/airinv/airinvgit
 MY_HOST=myhost
 
 ##
 # Required packages (on Fedora/RedHat)
 ##
-yum -y install httpd phpMyAdmin mysql-server
-yum -y install Django django-piston python-docutils python-simplejson python-zmq
+yum -y install httpd phpMyAdmin mysql-server Django Django-doc django-piston
+yum -y install python-docutils python-simplejson python-zmq python-decorator python-decoratortools
 yum -y install gdal-devel gdal-python proj-devel proj-epsg proj-nad
-yum -y install soci-mysql-devel zeromq-devel stdair-devel
+yum -y install soci-mysql-devel zeromq-devel stdair-devel airinv-devel
 yum -y install MySQL-python
 
 ##
@@ -50,6 +51,21 @@ ln -s jquery-ui-1.8.16.custom.css jquery-ui-1.8.13.custom.css
 
 ##
 # Set-up of the Apache Web server
+##
+# 0. Create the airinv-related MySQL database
+# If needed, install the MySQL database:
+# mysql_install_db
+# chown -R mysql.mysql /var/lib/mysql
+# With SysV init scripts:
+# service mysqld start
+# chkconfig mysqld on
+# With systemd init scripts:
+# systemctl start mysqld.service
+# systemctl enable mysqld.service
+# Then:
+/usr/libexec/stdair/create_airinv_user.sh
+/usr/libexec/stdair/create_airinv_db.sh
+
 ##
 # 1. Create symbolic links to local sub-directories:
 su -
