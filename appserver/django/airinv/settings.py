@@ -10,7 +10,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'sim_airinv',  # Or path to database file if using sqlite3.
         'USER': 'airinv',      # Not used with sqlite3.
         'PASSWORD': 'airinv',  # Not used with sqlite3.
