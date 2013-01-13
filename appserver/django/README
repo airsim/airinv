@@ -97,7 +97,7 @@ cd ${AIRINV_DIR}/appserver/django/airinv
 # AirInv server
 ##
 # 0. If needed, build the AirInvServer binary
-su - build
+su - ${MY_USER}
 cd ${AIRINV_DIR}
 rm -rf build && mkdir build
 cd build
@@ -110,10 +110,20 @@ make install
 
 # 1. Launch the AirInvServer
 #    Note that, by default, it listens on port 5555
-./AirInvserver
+./AirInvserver &
 
-# 2. Check that the AirInvServer runs correctly with the AirInvClient
+# 2.1. Check that the AirInvServer runs correctly with the C++ AirInvClient
 ./AirInvClient
+# 2.2. Check that the AirInvServer runs correctly with the Python airinvClient.py
+cd ${AIRINV_DIR}/appserver/django
+./airinvClient.py
+
+##
+# Test that the Django server works
+cd ${AIRINV_DIR}/appserver/django
+./airinvDjangoClient.py
+midori "http://localhost:8000/sim/airinv/api/display/inv/SV/5/2010-Mar-11/callback=list/"
+
 
 ##
 # Set-up the JavaScript script server URL

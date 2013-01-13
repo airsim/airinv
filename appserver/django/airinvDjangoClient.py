@@ -6,6 +6,7 @@ AIRINV_PORT=":8000"
 API_URL_PREFIX="sim/airinv/api"
 AIRINV_API_ACTION="display/inv"
 AIRINV_BASE_URL="http://${AIRINV_HOSTNAME}${AIRINV_PORT}/${API_URL_PREFIX}/${AIRINV_API_ACTION}"
+AIRINV_ACTION="callback%3Dlist"
 TMP_FILE="found.tmp"
 
 # Check whether curl is installed
@@ -24,11 +25,12 @@ fi
 
 #
 displayInventory() {
+    echo
     echo "Trying with the classical (GET) query string:"
-    curl "${AIRINV_BASE_URL}?ac=${AIRLINE_CODE}&fn=${FLIGHT_NUMBER}&dd=${DEPARTURE_DATE}"
+    curl "${AIRINV_BASE_URL}?ac=${AIRLINE_CODE}&fn=${FLIGHT_NUMBER}&dd=${DEPARTURE_DATE}/${AIRINV_ACTION}"
     echo
     echo "Trying with the typical Django URL:"
-    curl "${AIRINV_BASE_URL}/${AIRLINE_CODE}/${FLIGHT_NUMBER}/${DEPARTURE_DATE}"
+    curl "${AIRINV_BASE_URL}/${AIRLINE_CODE}/${FLIGHT_NUMBER}/${DEPARTURE_DATE}/${AIRINV_ACTION}/"
     echo
 }
 
