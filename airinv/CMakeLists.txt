@@ -32,3 +32,4 @@ module_binary_add (server AirInvClient)
 # Install the CMake import helper, so that third party projects can refer to it
 # (for libraries, header files and binaries)
 module_export_install ()
+
