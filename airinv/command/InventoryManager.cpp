@@ -173,7 +173,9 @@ namespace AIRINV {
         lFirstClass.append (lCurrentClassList, 0, 1);
         
         // Retrieve the booking class map for the current segment
-        const stdair::ClassAvailabilityMap_T& lClassAvlMap = *itCAMH;
+        const stdair::ClassAvailabilityStruct& lClassAvlStruct = *itCAMH;
+        const stdair::ClassAvailabilityMap_T& lClassAvlMap =
+          lClassAvlStruct.getClassAvailabilityMap();
         
         // Retrieve the availability of the chosen booking class
         const stdair::ClassAvailabilityMap_T::const_iterator itClassAvl =
