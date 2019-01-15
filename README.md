@@ -60,7 +60,7 @@ https://sourceforge.net/projects/airinv/files/
 To customise the following to your environment, you can alter the path
 to the installation directory:
 export INSTALL_BASEDIR=/home/user/dev/deliveries
-export AIRINV_VER=1.00.1
+export AIRINV_VER=1.00.2
 if [ -d /usr/lib64 ]; then LIBSUFFIX=64; fi
 export LIBSUFFIX_4_CMAKE="-DLIB_SUFFIX=$LIBSUFFIX"
 
@@ -82,7 +82,7 @@ Then, as usual:
   just type:
   make install
   cd ${INSTALL_BASEDIR}
-  rm -f airinv-stable && ln -s airinv-1.00.0 airinv-stable
+  rm -f airinv-stable && ln -s airinv-1.00.2 airinv-stable
   cd -
 * To package the source files, type:
   make dist
