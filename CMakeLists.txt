@@ -7,6 +7,7 @@ include (config/project_config_embeddable.cmake)
 
 ##
 # Project info
+project (airinv)
 set_project_names (airinv AirInv)
 set_project_brief ("C++ Simulated Airline Inventory Management System library")
 set_project_versions (1 00 3)
