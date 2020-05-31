@@ -1,3 +1,6 @@
+* Sat May 30 2020 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 1.00.4
+- Removed dependency on Python
+
 * Thu Jul 11 2019 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> - 1.00.3
 - CMake support files updated for Python 3.8
 
@@ -11,11 +14,11 @@
 * Wed Dec 12 2012 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 1.00.0 
 - [Dev] Computation of availability done after each booking instead of each request.
 - [Dev] Operating airline code and flight number can be defined either in the
-  schedule or in the inventory input file.
+schedule or in the inventory input file.
 - [Dev] AirInv now depends on SEvMgr which allows to add events in the
-  queue (such as revenue management events, inventory snapshots).
+queue (such as revenue management events, inventory snapshots).
 - [WebApp] New services in the Django-based Web application exchanging JSON
-  messages with the C++ server.
+messages with the C++ server.
 - [Build] Test coverage option with gcov.
 
 * Sun Dec 04 2011 Denis Arnaud <denis_arnaud at users dot sourceforge dot net> 0.1.2

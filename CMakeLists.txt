@@ -9,8 +9,8 @@ include (config/project_config_embeddable.cmake)
 # Project info
 project (airinv)
 set_project_names (airinv AirInv)
-set_project_brief ("C++ Simulated Airline Inventory Management System library")
-set_project_versions (1 00 3)
+set_project_brief ("C++ Simulated Airline Inventory Management System Library")
+set_project_versions (1 00 4)
 
 ##
 # Project options
@@ -26,7 +26,9 @@ set_project_options (on on off)
 #####################################
 #
 packaging_init (${PROJECT_NAME})
-packaging_set_summary ("${PROJECT_NAME} is a C++ library of airline inventory management classes and functions, mainly targeting simulation purposes.
+packaging_set_summary ("${PROJECT_NAME} is a
+C++ library of airline inventory management classes and functions,
+mainly targeting simulation purposes.
 
 ${PROJECT_NAME} makes an extensive use of existing open-source libraries for
 increased functionality, speed and accuracy. In particular the
@@ -42,7 +44,7 @@ packaging_set_other_options (TBZ2 "TBZ2;TGZ")
 ##            Dependencies            ##
 ########################################
 #
-get_external_libs (git "python 3.4" "boost 1.41" "mysql 5.0" "soci 3.0"
+get_external_libs (git "boost 1.41" "mysql 5.0" "soci 3.0"
         "zeromq 2.0" readline curses "doxygen 1.4" "gcov 4.6.3" "lcov 1.9"
         "stdair 1.00.0" "airrac 1.00.0" "rmol 1.00.0" "sevmgr 1.00.0")
 
