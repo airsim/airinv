@@ -1,3 +1,6 @@
+* Sun Aug 09 2020 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 1.00.5
+- Updated the use of ZeroMQ API
+
 * Sat May 30 2020 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 1.00.4
 - Removed dependency on Python
 
