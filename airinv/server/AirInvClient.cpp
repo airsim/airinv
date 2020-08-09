@@ -21,11 +21,15 @@ int main (int argc, char* argv[]) {
     zmq::message_t request (6);
     memcpy ((void *) request.data (), "Hello", 5);
     std::cout << "Sending Hello " << request_nbr << "…" << std::endl;
-    socket.send (request);
+
+    zmq::send_flags flags = zmq::send_flags::none;
+    // zmq::send_result_t rc =
+    socket.send (request, flags);
+    // std::cout << "Result of sending paylod: " << rc << std::endl;
 
     // Get the reply.
     zmq::message_t reply;
-    socket.recv (&reply);
+    socket.recv (reply);
     std::cout << "Received World " << request_nbr << std::endl;
   }
   return 0;
