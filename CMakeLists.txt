@@ -1,5 +1,5 @@
 #
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.15..)
 
 ##
 # CMake macros for the project
@@ -10,7 +10,7 @@ include (config/project_config_embeddable.cmake)
 project (airinv)
 set_project_names (airinv AirInv)
 set_project_brief ("C++ Simulated Airline Inventory Management System Library")
-set_project_versions (1 00 8)
+set_project_versions (1 00 9)
 
 ##
 # Project options
