@@ -1,4 +1,8 @@
 * 2025-03-31:
+- Version 1.00.12
+- Fixed an issue related to client/server not using ZeroMQ return status
+
+* 2025-03-31:
 - Version 1.00.11
 - Upgraded CMake support files
 

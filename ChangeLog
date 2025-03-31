@@ -1,3 +1,6 @@
+* Mon Mar 31 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 1.00.12
+- Fixed an issue related to client/server not using ZeroMQ return status
+
 * Mon Mar 31 2025 Denis Arnaud <denis.arnaud_fedora at m4x.org> - 1.00.11
 - Upgraded CMake support files
 
