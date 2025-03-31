@@ -23,13 +23,25 @@ int main (int argc, char* argv[]) {
     std::cout << "Sending Hello " << request_nbr << "…" << std::endl;
 
     zmq::send_flags flags = zmq::send_flags::none;
-    // zmq::send_result_t rc =
-    socket.send (request, flags);
-    // std::cout << "Result of sending paylod: " << rc << std::endl;
+    const zmq::send_result_t rcs = socket.send (request, flags);
+
+    // DEBUG
+    if (rcs.has_value()) {
+      const unsigned int rcs_val = rcs.value();
+      std::cout << "Result of sending payload: " << rcs_val << std::endl;
+    }
 
     // Get the reply.
     zmq::message_t reply;
-    socket.recv (reply);
+    zmq::recv_result_t rcr = socket.recv (reply);
+
+    // DEBUG
+    if (rcr.has_value()) {
+      const unsigned int rcr_val = rcr.value();
+      std::cout << "Receive status: " << rcr_val << std::endl;
+    }
+
+    //
     std::cout << "Received World " << request_nbr << std::endl;
   }
   return 0;
