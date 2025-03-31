@@ -1,3 +1,5 @@
+@PACKAGE_INIT@
+
 #
 # Config file for the AirInv package. It defines the following variables:
 #  AIRINV_VERSION      - version of AirInv
@@ -9,13 +11,13 @@
 
 # Tell the user project where to find AirInv headers and libraries
 set (AIRINV_VERSION "@PACKAGE_VERSION@")
-set (AIRINV_BINARY_DIRS "@AIRINV_BIN_DIR@")
-set (AIRINV_INCLUDE_DIRS "@AIRINV_INCLUDE_DIRS@")
-set (AIRINV_LIBRARY_DIRS "@AIRINV_LIB_DIR@")
+set (AIRINV_BINARY_DIRS "@PACKAGE_AIRINV_BIN_DIR@")
+set (AIRINV_INCLUDE_DIRS "@PACKAGE_AIRINV_INCLUDE_DIRS@")
+set (AIRINV_LIBRARY_DIRS "@PACKAGE_AIRINV_LIB_DIR@")
 
 # Library dependencies for AirInv (contains definitions for the AirInv IMPORTED
 # targets)
-include ("@AIRINV_CMAKE_DIR@/airinv-library-depends.cmake")
+include ("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-library-depends.cmake")
 
 # These are the AirInv IMPORTED targets, created by airinv-library-depends.cmake
 set (AIRINV_LIBRARIES airinvlib)
