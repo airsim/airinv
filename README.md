@@ -64,7 +64,7 @@ To customise the following to your environment, you can alter the path
 to the installation directory:
 ```bash
 export INSTALL_BASEDIR="${HOME}/dev/deliveries"
-export AIRINV_VER="1.00.14"
+export AIRINV_VER="1.00.15"
 ```
 
 Then, as usual:
